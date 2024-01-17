@@ -25,6 +25,10 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Welcome from './pages/Welcome';
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -57,7 +61,7 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
-function App(): React.JSX.Element {
+function Boilerplate(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -80,7 +84,7 @@ function App(): React.JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}
         >
-          <Section title="Step One">
+          <Section title="Step One t">
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
@@ -97,6 +101,19 @@ function App(): React.JSX.Element {
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+const Stack = createNativeStackNavigator();
+
+function App(): React.JSX.Element {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Down for a Cross" component={Welcome} />
+        <Stack.Screen name="Boilerplate" component={Boilerplate} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
