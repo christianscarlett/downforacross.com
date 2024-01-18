@@ -1,14 +1,20 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+import Puzzle from '../../lib/Puzzle/Puzzle';
 
-function PuzzleCard(): React.JSX.Element {
+interface PuzzleCardProps {
+  puzzle: Puzzle;
+}
+
+function PuzzleCard(props: PuzzleCardProps): React.JSX.Element {
+  const {puzzle} = props;
   return (
     <View style={styles.puzzleCard}>
-      <Text style={styles.puzzleCardTop}>Will Shortz | Standard</Text>
-      <Text style={styles.puzzleCardMain}>
-        NY Times, Sunday, January 21, 2024
+      <Text style={styles.puzzleCardTop}>{puzzle.content.info.author}</Text>
+      <Text style={styles.puzzleCardMain}>{puzzle.content.info.title}</Text>
+      <Text style={styles.puzzleCardDetails}>
+        Solved {puzzle.stats.numSolves} times
       </Text>
-      <Text style={styles.puzzleCardDetails}>Solved XX times</Text>
     </View>
   );
 }
