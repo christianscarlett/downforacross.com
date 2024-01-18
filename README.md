@@ -1,7 +1,6 @@
-[![built with Codeium](https://codeium.com/badges/main)](https://codeium.com/?repo_name=downforacross/downforacross.com
-)
+[![built with Codeium](https://codeium.com/badges/main)](https://codeium.com/?repo_name=downforacross/downforacross.com)
 
-## downforacross 
+## downforacross
 
 Downforacross is an online website for sharing crosswords and playing collaboratively with friends in real time.
 
@@ -56,3 +55,29 @@ Developing for mobile web:
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=downforacross/downforacross.com&type=Date)](https://star-history.com/#downforacross/downforacross.com&Date)
+
+## downforacross mobile app
+
+The mobile app is written in React Native.
+
+### Getting Started
+
+1. Install `nvm` and `yarn`
+
+2. Clone repo and cd to repo root.
+
+   `git clone https://github.com/downforacross/downforacross.com.git`
+   `cd downforacross.com`
+
+3. Use node v18
+   `nvm install`
+   `nvm use`
+   `nvm alias default 18` (optional)
+
+4. Go to mobile app directory Dependencies
+   `cd mobileapp`
+
+5. Install dependencies
+   `yarn`
+
+6. To build and run the app, please visit the [React Docs](https://reactnative.dev/docs/environment-setup) to set up for the desired platform.
