@@ -59,6 +59,7 @@ backfills/*.json
 /mobileapp/*.ipa
 /mobileapp/*.xcuserstate
 /mobileapp/ios/.xcode.env.local
+/mobileapp/ios/build/
 
 # Android/IntelliJ
 #
