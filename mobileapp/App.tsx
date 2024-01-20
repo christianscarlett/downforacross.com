@@ -1,12 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import type {PropsWithChildren} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,7 +11,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
 import {
   Colors,
   DebugInstructions,
@@ -24,10 +18,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Welcome from './pages/Welcome';
+import {useTheme} from './lib/Theme';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -107,10 +99,22 @@ function Boilerplate(): React.JSX.Element {
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
+  let [theme] = useTheme();
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Down for a Cross" component={Welcome} />
+        <Stack.Screen
+          name="Down for a Cross"
+          component={Welcome}
+          options={{
+            headerStyle: {
+              backgroundColor: theme.colors.primary,
+            },
+            headerTitleStyle: {
+              color: 'white',
+            },
+          }}
+        />
         <Stack.Screen name="Boilerplate" component={Boilerplate} />
       </Stack.Navigator>
     </NavigationContainer>
