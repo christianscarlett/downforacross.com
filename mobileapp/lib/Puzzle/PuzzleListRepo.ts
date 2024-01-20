@@ -47,7 +47,12 @@ export default class PuzzleListRepo {
         nameOrTitleFilter: '',
       },
     });
-    this.puzzles = this.puzzles.concat(puzzleListResponse.puzzles);
+
+    let newPuzzles = puzzleListResponse.puzzles.map(
+      p => new Puzzle(p.pid, p.content, p.stats),
+    );
+
+    this.puzzles = this.puzzles.concat(newPuzzles);
     this.currentPage += 1;
     this.isFetching = false;
   }

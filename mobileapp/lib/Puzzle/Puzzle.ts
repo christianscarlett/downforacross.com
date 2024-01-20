@@ -10,4 +10,15 @@ export default class Puzzle {
     this.content = content;
     this.stats = stats;
   }
+
+  get displaySize() {
+    const {type} = this.content.info;
+    if (type === 'Daily Puzzle') {
+      return 'Standard';
+    }
+    if (type === 'Mini Puzzle') {
+      return 'Mini';
+    }
+    return 'Puzzle';
+  }
 }
