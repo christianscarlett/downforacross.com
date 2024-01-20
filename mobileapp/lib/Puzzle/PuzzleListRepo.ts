@@ -21,6 +21,9 @@ export default class PuzzleListRepo {
 
   private puzzles: Puzzle[] = [];
 
+  /**
+   * Get all puzzles currently stored in the repo
+   */
   getPuzzles(): Puzzle[] {
     return this.puzzles;
   }
@@ -49,6 +52,12 @@ export default class PuzzleListRepo {
     this.isFetching = false;
   }
 
+  /**
+   * Fetches more puzzles if there is not a current fetch currently executing AND:
+   *    1. It is the initial fetch and there are no current puzzles
+   *    OR
+   *    2. It is not the initial fetch
+   */
   async maybeFetchPuzzles(initialFetch: boolean = false) {
     let isInvalidInitialFetch = initialFetch && this.currentPage !== 0;
     if (this.isFetching || isInvalidInitialFetch) {
@@ -57,6 +66,9 @@ export default class PuzzleListRepo {
     await this.executeFetchPuzzles();
   }
 
+  /**
+   * Removes all puzzles and fetches a new batch
+   */
   async refresh() {
     await this.executeFetchPuzzles(true);
   }
