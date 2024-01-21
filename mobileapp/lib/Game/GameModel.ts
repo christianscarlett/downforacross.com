@@ -48,6 +48,36 @@ class GameModel extends EventEmitter {
     this.socket.disconnect();
     this.isConnected = false;
   }
+
+  async subscribeToWebsocketEvents() {
+    if (!this.socket || !this.socket.connected) {
+      throw new Error('Not connected to websocket');
+    }
+
+    this.socket.on('game_event', (event: any) => {
+      this.emitWSEvent(event);
+      // console.log(event);
+    });
+    const response = await emitAsync(
+      this.socket,
+      'sync_all_game_events',
+      this.gid,
+    );
+    (response as any).forEach((event: any) => {
+      this.emitWSEvent(event);
+      // console.log(event);
+    });
+  }
+
+  emitWSEvent(event: any) {
+    if (event.type === 'create') {
+      console.log(event);
+      this.emit('wsCreateEvent', event);
+      console.debug('Created!');
+    } else {
+      this.emit('wsEvent', event);
+    }
+  }
 }
 
 export default GameModel;

@@ -13,11 +13,17 @@ function Game(): React.JSX.Element {
   const [gameModel] = useState(new GameModel(gid));
 
   useEffect(() => {
-    gameModel.connectToWebsocket();
+    async function connect() {
+      await gameModel.connectToWebsocket();
 
-    gameModel.on('latencyUpdate', () => {
-      setLatency(gameModel.latency);
-    });
+      gameModel.subscribeToWebsocketEvents();
+
+      gameModel.on('latencyUpdate', () => {
+        setLatency(gameModel.latency);
+      });
+    }
+
+    connect();
 
     return () => {
       gameModel.disconnect();
