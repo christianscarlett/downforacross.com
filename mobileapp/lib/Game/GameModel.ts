@@ -14,14 +14,11 @@ class GameModel extends EventEmitter {
   }
 
   async connectToWebsocket() {
-    console.log('here');
     if (this.isConnected) {
       return;
     }
-    console.log('here2');
     this.socket = await initSocket();
     this.isConnected = true;
-    console.log('here3: ' + this.socket);
 
     await emitAsync(this.socket, 'join_game', this.gid);
 

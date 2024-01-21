@@ -26,7 +26,17 @@ function App(): React.JSX.Element {
             },
           }}
         />
-        <Stack.Screen name={PageNames.GAME} component={Game} />
+        <Stack.Screen
+          name={PageNames.GAME}
+          component={Game}
+          options={{
+            headerBackTitle: 'Home',
+            headerTintColor: 'white',
+            headerStyle: {
+              backgroundColor: theme.colors.primary,
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
