@@ -1,6 +1,8 @@
+import {useNavigation} from '@react-navigation/native';
 import _ from 'lodash';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import PageNames from '../../lib/PageNames';
 import Puzzle from '../../lib/Puzzle/Puzzle';
 import {Theme, useTheme} from '../../lib/Theme';
 
@@ -11,6 +13,7 @@ interface PuzzleCardProps {
 function PuzzleCard(props: PuzzleCardProps): React.JSX.Element {
   const {puzzle} = props;
   const [theme] = useTheme();
+  const navigation = useNavigation();
 
   let headerText = _.compact([
     puzzle.content.info.author.trim(),
@@ -19,24 +22,33 @@ function PuzzleCard(props: PuzzleCardProps): React.JSX.Element {
 
   const styles = makeStyles(theme);
   return (
-    <View style={styles.puzzleCard}>
-      <Text style={styles.puzzleCardTop}>{headerText}</Text>
-      <Text style={styles.puzzleCardMain}>{puzzle.content.info.title}</Text>
-      <Text style={styles.puzzleCardDetails}>
-        Solved {puzzle.stats.numSolves} times
-      </Text>
-    </View>
+    <TouchableOpacity
+      style={styles.wrapper}
+      onPress={() => {
+        navigation.navigate(PageNames.GAME as never);
+      }}
+    >
+      <View style={styles.puzzleCard}>
+        <Text style={styles.puzzleCardTop}>{headerText}</Text>
+        <Text style={styles.puzzleCardMain}>{puzzle.content.info.title}</Text>
+        <Text style={styles.puzzleCardDetails}>
+          Solved {puzzle.stats.numSolves} times
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
+    wrapper: {
+      marginBottom: 10,
+      borderRadius: 10,
+    },
     puzzleCard: {
-      backgroundColor: theme.colors.background,
       borderWidth: 1,
       borderRadius: 10,
       borderColor: theme.colors.border,
-      marginBottom: 10,
       padding: 20,
       justifyContent: 'space-between',
     },
