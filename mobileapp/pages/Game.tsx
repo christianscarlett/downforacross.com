@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import GameModel from '../lib/Game/GameModel';
+import GameWebsocketModel from '../lib/Game/GameWebsocketModel';
 import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../lib/Theme';
 
@@ -10,7 +10,7 @@ function Game(): React.JSX.Element {
   const [theme] = useTheme();
   const [gid] = useState(GID);
   const [latency, setLatency] = useState(-1);
-  const [gameModel] = useState(new GameModel(gid));
+  const [gameModel] = useState(new GameWebsocketModel(gid));
 
   useEffect(() => {
     async function connect() {

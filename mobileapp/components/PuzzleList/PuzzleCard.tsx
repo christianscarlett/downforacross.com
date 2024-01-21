@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PageNames from '../../lib/PageNames';
-import Puzzle from '../../lib/Puzzle/Puzzle';
+import Puzzle from '../../lib/PuzzleList/PuzzleListItem';
 import {Theme, useTheme} from '../../lib/Theme';
 
 interface PuzzleCardProps {

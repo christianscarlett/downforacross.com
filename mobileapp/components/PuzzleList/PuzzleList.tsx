@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import PuzzleCard from './PuzzleCard';
 import {FlatList, StyleSheet} from 'react-native';
-import PuzzleListRepo from '../../lib/Puzzle/PuzzleListRepo';
-import Puzzle from '../../lib/Puzzle/Puzzle';
+import PuzzleListRepo from '../../lib/PuzzleList/PuzzleListRepo';
+import Puzzle from '../../lib/PuzzleList/PuzzleListItem';
 
 function PuzzleList(): React.JSX.Element {
   let puzzleRepo = PuzzleListRepo.getInstance();
