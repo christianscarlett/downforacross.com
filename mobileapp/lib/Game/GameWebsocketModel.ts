@@ -56,7 +56,6 @@ class GameWebsocketModel extends EventEmitter {
 
     this.socket.on('game_event', (event: any) => {
       this.emitWSEvent(event);
-      // console.log(event);
     });
     const response = await emitAsync(
       this.socket,
@@ -65,15 +64,12 @@ class GameWebsocketModel extends EventEmitter {
     );
     (response as any).forEach((event: any) => {
       this.emitWSEvent(event);
-      // console.log(event);
     });
   }
 
   emitWSEvent(event: any) {
     if (event.type === 'create') {
-      console.log(event);
       this.emit('wsCreateEvent', event);
-      console.debug('Created!');
     } else {
       this.emit('wsEvent', event);
     }
