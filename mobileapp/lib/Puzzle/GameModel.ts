@@ -1,12 +1,16 @@
+import EventEmitter from 'events';
 import {WsCreateEvent} from '../Events/WsEventTypes';
 import HistoryModel from '../History/HistoryModel';
-import {PuzzleState} from './PuzzleState';
+import PuzzleState from './PuzzleState';
 
-class GameModel {
+class GameModel extends EventEmitter {
   historyModel: HistoryModel;
+  puzzleState: PuzzleState;
 
   constructor() {
+    super();
     this.historyModel = new HistoryModel();
+    this.puzzleState = PuzzleState.getEmpty();
   }
 
   updateForEvent(event: any) {
@@ -14,23 +18,15 @@ class GameModel {
     if (event.type === 'create') {
       this.updateForCreateEvent(event);
     }
-
-    // console.log(this.historyModel.getSortedEvents().length);
-    // console.log(event);
   }
 
   private updateForCreateEvent(event: WsCreateEvent) {
-    // console.log(event.params.game.grid);
+    this.puzzleState = new PuzzleState(event.params.game.grid);
+    this.emitUpdate();
   }
 
-  getCurrentStateFromHistory() {
-    this.historyModel.getSortedEvents().forEach(element => {
-      console.log(element);
-    });
-  }
-
-  get state(): PuzzleState {
-    return {grid: [[]]};
+  private emitUpdate() {
+    this.emit('update');
   }
 }
 

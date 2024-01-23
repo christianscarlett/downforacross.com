@@ -37,9 +37,9 @@ class GameManager extends EventEmitter {
     this.gameWsModel.disconnect();
   }
 
-  get puzzleState() {
-    return this.gameModel.getCurrentStateFromHistory();
-  }
+  // get puzzleState() {
+  //   return this.gameModel.getCurrentStateFromHistory();
+  // }
 }
 
 export default GameManager;

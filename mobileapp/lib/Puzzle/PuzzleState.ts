@@ -1,6 +1,6 @@
 import {WsGridEntry} from '../Events/WsEventTypes';
 
-class GridEntry {
+export class GridEntry {
   black: boolean;
   edits: [];
   number: number;
@@ -14,6 +14,16 @@ class GridEntry {
     this.parents = entry.parents;
     this.value = entry.value;
   }
+
+  static getEmpty(): GridEntry {
+    return {
+      black: false,
+      edits: [],
+      number: 1,
+      parents: [],
+      value: 'E',
+    };
+  }
 }
 
 class PuzzleState {
@@ -21,6 +31,12 @@ class PuzzleState {
 
   constructor(wsGrid: WsGridEntry[][]) {
     this.grid = wsGrid.map(rows => rows.map(entry => new GridEntry(entry)));
+  }
+
+  static getEmpty(): PuzzleState {
+    return {
+      grid: [],
+    };
   }
 }
 
