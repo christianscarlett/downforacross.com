@@ -17,7 +17,6 @@ function Game(): React.JSX.Element {
   useEffect(() => {
     gameManager.reset();
     gameManager.gameModel.on('update', () => {
-      console.log('updated');
       setGrid(gameManager.gameModel.puzzleState.grid);
     });
 

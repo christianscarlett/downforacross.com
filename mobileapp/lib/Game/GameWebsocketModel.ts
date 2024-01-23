@@ -23,14 +23,14 @@ class GameWebsocketModel extends EventEmitter {
     await emitAsync(this.socket, 'join_game', this.gid);
 
     this.socket.on('disconnect', () => {
-      console.log('received disconnect from server');
+      console.debug('received disconnect from server');
     });
 
     // handle future reconnects
     this.socket.on('connect', async () => {
-      console.log('reconnecting...');
+      console.debug('reconnecting...');
       await emitAsync(this.socket, 'join_game', this.gid);
-      console.log('reconnected...');
+      console.debug('reconnected...');
       this.emitReconnect();
     });
 
