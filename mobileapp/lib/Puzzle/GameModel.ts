@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import {WsCreateEvent} from '../Events/WsEventTypes';
+import {WsCreateEvent, WsEvent} from '../Events/WsEventTypes';
 import HistoryModel from '../History/HistoryModel';
 import PuzzleState from './PuzzleState';
 
@@ -17,11 +17,18 @@ class GameModel extends EventEmitter {
     this.historyModel.pushEvent(event);
     if (event.type === 'create') {
       this.updateForCreateEvent(event);
+    } else {
+      this.updateForOtherEvent(event);
     }
   }
 
+  private updateForOtherEvent(event: WsEvent) {
+    this.puzzleState.updateForEvent(event);
+    this.emitUpdate();
+  }
+
   private updateForCreateEvent(event: WsCreateEvent) {
-    this.puzzleState = new PuzzleState(event.params.game.grid);
+    this.puzzleState = PuzzleState.fromWsGrid(event.params.game.grid);
     this.emitUpdate();
   }
 

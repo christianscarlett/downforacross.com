@@ -11,6 +11,20 @@ export interface WsGridEntry {
   value: string;
 }
 
+export interface WsUpdateCellEvent extends WsEvent {
+  id: string;
+  params: {
+    id: string;
+    color: string;
+    pencil: boolean;
+    value: string;
+    cell: {
+      c: number;
+      r: number;
+    };
+  };
+}
+
 export interface WsCreateEvent extends WsEvent {
   params: {
     game: {
