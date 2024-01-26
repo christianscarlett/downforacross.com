@@ -11,35 +11,21 @@ export interface GridEntryState {
 }
 
 class GridEntry extends EventEmitter {
-  black: boolean;
-  edits: Array<string>;
-  number: number;
-  parents: any;
-  value: string;
+  state: GridEntryState;
 
-  constructor(
-    black: boolean,
-    edits: Array<string>,
-    number: number,
-    parents: any,
-    value: string,
-  ) {
+  constructor(state: GridEntryState) {
     super();
-    this.black = black;
-    this.edits = edits;
-    this.number = number;
-    this.parents = parents;
-    this.value = value;
+    this.state = state;
   }
 
   getState(): GridEntryState {
     return {
-      ...this,
+      ...this.state,
     };
   }
 
-  updateValue(newValue: string) {
-    this.value = newValue;
+  update(newState: GridEntryState) {
+    this.state = GridEntry.copyState(newState);
     this.emitUpdate();
   }
 
@@ -48,27 +34,43 @@ class GridEntry extends EventEmitter {
   }
 
   copy(): GridEntry {
-    return new GridEntry(
-      this.black,
-      deepCopyObject(this.edits),
-      this.number,
-      this.parents,
-      this.value,
-    );
+    return new GridEntry(GridEntry.copyState(this.state));
+  }
+
+  static copyState(state: GridEntryState): GridEntryState {
+    return {...state, edits: deepCopyObject(state.edits)};
+  }
+
+  static makeState(
+    black: boolean,
+    edits: Array<string>,
+    number: number,
+    parents: any,
+    value: string,
+  ): GridEntryState {
+    return {
+      black: black,
+      edits: edits,
+      number: number,
+      parents: parents,
+      value: value,
+    };
   }
 
   static fromWsGridEntry(entry: WsGridEntry): GridEntry {
     return new GridEntry(
-      entry.black,
-      entry.edits,
-      entry.number,
-      entry.parents,
-      entry.value,
+      GridEntry.makeState(
+        entry.black,
+        entry.edits,
+        entry.number,
+        entry.parents,
+        entry.value,
+      ),
     );
   }
 
   static getEmpty(): GridEntry {
-    return new GridEntry(false, [], 1, [], 'A');
+    return new GridEntry(GridEntry.makeState(false, [], 1, [], 'A'));
   }
 }
 

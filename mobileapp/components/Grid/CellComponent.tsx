@@ -29,7 +29,7 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
   const [theme] = useTheme();
   const state = useGridEntryState(gridEntry);
 
-  const styles = makeStyles(theme, gridEntry.black, squareSize);
+  const styles = makeStyles(theme, state.black, squareSize);
   return (
     <View style={styles.gridEntry}>
       <Text style={styles.gridEntryNumber}>{state.number}</Text>
