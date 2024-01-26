@@ -3,6 +3,8 @@ import {deepCopyObject} from '../../util/util';
 import {WsGridEntry} from '../Events/WsEventTypes';
 
 export interface GridEntryState {
+  r: number;
+  c: number;
   black: boolean;
   color?: string;
   cursorIds: Array<string>;
@@ -47,6 +49,8 @@ class GridEntry extends EventEmitter {
   }
 
   static makeState(
+    r: number,
+    c: number,
     black: boolean,
     edits: Array<string>,
     number: number,
@@ -54,18 +58,22 @@ class GridEntry extends EventEmitter {
     value: string,
   ): GridEntryState {
     return {
-      black: black,
+      r,
+      c,
+      black,
       cursorIds: [],
-      edits: edits,
-      number: number,
-      parents: parents,
-      value: value,
+      edits,
+      number,
+      parents,
+      value,
     };
   }
 
-  static fromWsGridEntry(entry: WsGridEntry): GridEntry {
+  static fromWsGridEntry(entry: WsGridEntry, r: number, c: number): GridEntry {
     return new GridEntry(
       GridEntry.makeState(
+        r,
+        c,
         entry.black,
         entry.edits,
         entry.number,
@@ -76,7 +84,7 @@ class GridEntry extends EventEmitter {
   }
 
   static getEmpty(): GridEntry {
-    return new GridEntry(GridEntry.makeState(false, [], 1, [], 'A'));
+    return new GridEntry(GridEntry.makeState(0, 0, false, [], 1, [], 'A'));
   }
 }
 

@@ -19,20 +19,13 @@ class PuzzleState {
     this.playerStateManager = playerStateManager;
   }
 
-  types = new Set<string>();
-
   updateForEvent(event: WsEvent) {
     if (event.type === 'updateCell') {
       this.onUpdateCellEvent(event as WsUpdateCellEvent);
     } else if (event.type === 'updateCursor') {
       this.onUpdateCursorEvent(event as WsUpdateCursorEvent);
     } else if (event.type === 'updateColor') {
-      console.log(event);
       this.onUpdateColorEvent(event as WsUpdateColorEvent);
-    }
-    if (!this.types.has(event.type)) {
-      this.types.add(event.type);
-      console.log(event.type);
     }
   }
 
@@ -86,7 +79,9 @@ class PuzzleState {
     playerState: PlayerStateManager,
   ): PuzzleState {
     return new PuzzleState(
-      wsGrid.map(rows => rows.map(entry => GridEntry.fromWsGridEntry(entry))),
+      wsGrid.map((rows, r) =>
+        rows.map((entry, c) => GridEntry.fromWsGridEntry(entry, r, c)),
+      ),
       playerState,
     );
   }

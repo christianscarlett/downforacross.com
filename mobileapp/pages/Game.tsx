@@ -39,7 +39,7 @@ function Game(): React.JSX.Element {
   const style = makeStyles(theme);
   return (
     <View style={style.game}>
-      <GridComponent grid={grid} />
+      <GridComponent grid={grid} gameManager={gameManager} />
       <Text>{'latency: ' + latency}</Text>
     </View>
   );

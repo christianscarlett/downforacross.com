@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import GridEntry, {GridEntryState} from '../../lib/Puzzle/GridEntry';
+import GameManager from '../../lib/Game/GameManager';
 
 export interface CellComponentProps {
   gridEntry: GridEntry;
   squareSize: number;
+  gameManager: GameManager;
 }
 
 function useGridEntryState(gridEntry: GridEntry): GridEntryState {
@@ -25,11 +27,11 @@ function useGridEntryState(gridEntry: GridEntry): GridEntryState {
 }
 
 function CellComponent(props: CellComponentProps): React.JSX.Element {
-  const {gridEntry, squareSize} = props;
+  const {gridEntry, squareSize, gameManager} = props;
   const [theme] = useTheme();
   const state = useGridEntryState(gridEntry);
 
-  const styles = makeStyles(theme, state, squareSize);
+  const styles = makeStyles(theme, state, squareSize, gameManager);
   return (
     <View style={styles.gridEntry}>
       <Text style={styles.gridEntryNumber}>{state.number}</Text>
@@ -48,6 +50,7 @@ const makeStyles = (
   theme: Theme,
   state: GridEntryState,
   squareSize: number,
+  gameManager: GameManager,
 ) => {
   let numberPadding = squareSize / 10;
   let numberSize = squareSize / 5;
@@ -70,7 +73,7 @@ const makeStyles = (
     gridEntry: {
       borderWidth: 0.25,
       borderColor: theme.colors.border,
-      backgroundColor: getCellBackgroundColor(theme, state),
+      backgroundColor: getCellBackgroundColor(theme, state, gameManager),
       height: squareSize,
       width: squareSize,
       flexGrow: 0,
@@ -81,13 +84,23 @@ const makeStyles = (
   });
 };
 
-function getCellBackgroundColor(theme: Theme, state: GridEntryState): string {
+function getCellBackgroundColor(
+  theme: Theme,
+  state: GridEntryState,
+  gameManager: GameManager,
+): string {
   if (state.black) {
     return 'black';
   } else if (state.cursorIds.length !== 0) {
-    return theme.colors.primary;
+    console.log(
+      gameManager.gameModel.playerStateManager.getState(state.cursorIds[0]),
+    );
+    return (
+      gameManager.gameModel.playerStateManager.getState(state.cursorIds[0])
+        ?.color ?? theme.colors.primary
+    );
   }
   return 'white';
 }
 
-export default CellComponent;
+export default memo(CellComponent);
