@@ -10,7 +10,7 @@ const GID = '4539636-besp';
 function Game(): React.JSX.Element {
   const [theme] = useTheme();
   const [gid] = useState(GID);
-  const [latency, setLatency] = useState(-1);
+  const [latency, setLatency] = useState<number | null>(null);
   const [gameManager] = useState(() => new GameManager(gid));
   const [grid, setGrid] = useState(gameManager.gameModel.puzzleState.grid);
 

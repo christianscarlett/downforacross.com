@@ -1,61 +1,6 @@
 import {deepCopyObject} from '../../util/util';
 import {WsEvent, WsGridEntry, WsUpdateCellEvent} from '../Events/WsEventTypes';
-
-export class GridEntry {
-  black: boolean;
-  edits: Array<string>;
-  number: number;
-  parents: any;
-  value: string;
-
-  constructor(
-    black: boolean,
-    edits: Array<string>,
-    number: number,
-    parents: any,
-    value: string,
-  ) {
-    this.black = black;
-    this.edits = edits;
-    this.number = number;
-    this.parents = parents;
-    this.value = value;
-  }
-
-  updateValue(value: string): GridEntry {
-    return new GridEntry(
-      this.black,
-      deepCopyObject(this.edits),
-      this.number,
-      this.parents,
-      value,
-    );
-  }
-
-  copy(): GridEntry {
-    return new GridEntry(
-      this.black,
-      deepCopyObject(this.edits),
-      this.number,
-      this.parents,
-      this.value,
-    );
-  }
-
-  static fromWsGridEntry(entry: WsGridEntry): GridEntry {
-    return new GridEntry(
-      entry.black,
-      entry.edits,
-      entry.number,
-      entry.parents,
-      entry.value,
-    );
-  }
-
-  static getEmpty(): GridEntry {
-    return new GridEntry(false, [], 1, [], 'A');
-  }
-}
+import GridEntry from './GridEntry';
 
 class PuzzleState {
   grid: GridEntry[][];
@@ -72,7 +17,7 @@ class PuzzleState {
 
   private updateForUpdateCellEvent(event: WsUpdateCellEvent) {
     const {cell, value} = event.params;
-    this.grid[cell.r][cell.c].value = value;
+    this.grid[cell.r][cell.c].updateValue(value);
   }
 
   static copyGrid(grid: GridEntry[][]): GridEntry[][] {

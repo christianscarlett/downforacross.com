@@ -1,27 +1,44 @@
-import React from 'react';
-import {GridEntry} from '../../lib/Puzzle/PuzzleState';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
+import GridEntry, {GridEntryState} from '../../lib/Puzzle/GridEntry';
 
 export interface CellComponentProps {
   gridEntry: GridEntry;
   squareSize: number;
 }
 
+function useGridEntryState(gridEntry: GridEntry): GridEntryState {
+  const [state, setState] = useState(gridEntry.getState());
+
+  useEffect(() => {
+    function gridEntryListener() {
+      setState(gridEntry.getState());
+    }
+    gridEntry.on('update', gridEntryListener);
+    return () => {
+      gridEntry.removeListener('update', gridEntryListener);
+    };
+  }, [gridEntry]);
+
+  return state;
+}
+
 function CellComponent(props: CellComponentProps): React.JSX.Element {
   const {gridEntry, squareSize} = props;
   const [theme] = useTheme();
+  const state = useGridEntryState(gridEntry);
 
   const styles = makeStyles(theme, gridEntry.black, squareSize);
   return (
     <View style={styles.gridEntry}>
-      <Text style={styles.gridEntryNumber}>{gridEntry.number}</Text>
+      <Text style={styles.gridEntryNumber}>{state.number}</Text>
       <Text
         style={styles.gridEntryValue}
         adjustsFontSizeToFit={true}
         numberOfLines={1}
       >
-        {gridEntry.value}
+        {state.value}
       </Text>
     </View>
   );

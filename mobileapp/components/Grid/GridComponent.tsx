@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {GridEntry} from '../../lib/Puzzle/PuzzleState';
 import CellComponent from './CellComponent';
+import GridEntry from '../../lib/Puzzle/GridEntry';
 
 export interface GridComponentProps {
   grid: GridEntry[][];
