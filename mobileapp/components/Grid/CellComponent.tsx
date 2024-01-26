@@ -5,15 +5,14 @@ import {Theme, useTheme} from '../../lib/Theme';
 
 export interface CellComponentProps {
   gridEntry: GridEntry;
+  squareSize: number;
 }
 
-const SQUARE_SIZE = 20;
-
 function CellComponent(props: CellComponentProps): React.JSX.Element {
-  const {gridEntry} = props;
+  const {gridEntry, squareSize} = props;
   const [theme] = useTheme();
 
-  const styles = makeStyles(theme, gridEntry.black, SQUARE_SIZE);
+  const styles = makeStyles(theme, gridEntry.black, squareSize);
   return (
     <View style={styles.gridEntry}>
       <Text style={styles.gridEntryNumber}>{gridEntry.number}</Text>

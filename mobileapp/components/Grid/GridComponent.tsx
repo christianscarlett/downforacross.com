@@ -9,6 +9,8 @@ export interface GridComponentProps {
 
 // See https://stackoverflow.com/questions/44384773/react-native-100-items-flatlist-very-slow-performance for perf optimizations
 
+const SQUARE_SIZE = 20;
+
 function renderRow(row: {item: GridEntry[]}) {
   const styles = makeStyles();
   return (
@@ -18,7 +20,14 @@ function renderRow(row: {item: GridEntry[]}) {
       contentContainerStyle={styles.contentContainerStyle}
       scrollEnabled={false}
       initialNumToRender={row.item.length}
-      renderItem={({item}) => <CellComponent gridEntry={item} />}
+      getItemLayout={(data, index) => ({
+        length: SQUARE_SIZE,
+        offset: SQUARE_SIZE * index,
+        index,
+      })}
+      renderItem={({item}) => (
+        <CellComponent gridEntry={item} squareSize={SQUARE_SIZE} />
+      )}
     />
   );
 }
@@ -33,6 +42,11 @@ function renderGrid(props: GridComponentProps) {
       contentContainerStyle={styles.contentContainerStyle}
       scrollEnabled={false}
       initialNumToRender={grid.length}
+      getItemLayout={(data, index) => ({
+        length: SQUARE_SIZE,
+        offset: SQUARE_SIZE * index,
+        index,
+      })}
       renderItem={renderRow}
     />
   );
