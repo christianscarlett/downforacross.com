@@ -70,7 +70,7 @@ const makeStyles = (
     gridEntry: {
       borderWidth: 0.25,
       borderColor: theme.colors.border,
-      backgroundColor: state.black ? 'black' : 'white',
+      backgroundColor: getCellBackgroundColor(theme, state),
       height: squareSize,
       width: squareSize,
       flexGrow: 0,
@@ -80,5 +80,14 @@ const makeStyles = (
     },
   });
 };
+
+function getCellBackgroundColor(theme: Theme, state: GridEntryState): string {
+  if (state.black) {
+    return 'black';
+  } else if (state.cursorIds.length !== 0) {
+    return theme.colors.primary;
+  }
+  return 'white';
+}
 
 export default CellComponent;

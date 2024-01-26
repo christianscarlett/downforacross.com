@@ -3,6 +3,20 @@ export interface WsEvent {
   type: string;
 }
 
+export interface WsCell {
+  c: number;
+  r: number;
+}
+
+export interface WsUpdateCursorEvent extends WsEvent {
+  id: string;
+  params: {
+    cell: WsCell;
+    id: string;
+    timestamp: number;
+  };
+}
+
 export interface WsGridEntry {
   black: boolean;
   edits: [];
@@ -18,10 +32,7 @@ export interface WsUpdateCellEvent extends WsEvent {
     color: string;
     pencil: boolean;
     value: string;
-    cell: {
-      c: number;
-      r: number;
-    };
+    cell: WsCell;
   };
 }
 

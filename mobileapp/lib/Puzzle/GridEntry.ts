@@ -5,6 +5,7 @@ import {WsGridEntry} from '../Events/WsEventTypes';
 export interface GridEntryState {
   black: boolean;
   color?: string;
+  cursorIds: Array<string>;
   edits: Array<string>;
   number: number;
   parents: any;
@@ -25,8 +26,8 @@ class GridEntry extends EventEmitter {
     };
   }
 
-  update(newState: GridEntryState) {
-    this.state = GridEntry.copyState(newState);
+  update(newState: Partial<GridEntryState>) {
+    this.state = GridEntry.copyState({...this.state, ...newState});
     this.emitUpdate();
   }
 
@@ -39,7 +40,10 @@ class GridEntry extends EventEmitter {
   }
 
   static copyState(state: GridEntryState): GridEntryState {
-    return {...state, edits: deepCopyObject(state.edits)};
+    return {
+      ...state,
+      edits: deepCopyObject(state.edits),
+    };
   }
 
   static makeState(
@@ -51,6 +55,7 @@ class GridEntry extends EventEmitter {
   ): GridEntryState {
     return {
       black: black,
+      cursorIds: [],
       edits: edits,
       number: number,
       parents: parents,
