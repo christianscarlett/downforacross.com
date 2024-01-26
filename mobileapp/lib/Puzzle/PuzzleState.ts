@@ -16,9 +16,9 @@ class PuzzleState {
   }
 
   private updateForUpdateCellEvent(event: WsUpdateCellEvent) {
-    const {cell, value} = event.params;
+    const {cell, value, color} = event.params;
     let gridEntry = this.grid[cell.r][cell.c];
-    gridEntry.update({...gridEntry.state, value: value});
+    gridEntry.update({...gridEntry.state, value: value, color: color});
   }
 
   static copyGrid(grid: GridEntry[][]): GridEntry[][] {

@@ -29,7 +29,7 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
   const [theme] = useTheme();
   const state = useGridEntryState(gridEntry);
 
-  const styles = makeStyles(theme, state.black, squareSize);
+  const styles = makeStyles(theme, state, squareSize);
   return (
     <View style={styles.gridEntry}>
       <Text style={styles.gridEntryNumber}>{state.number}</Text>
@@ -44,7 +44,11 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
   );
 }
 
-const makeStyles = (theme: Theme, black: boolean, squareSize: number) => {
+const makeStyles = (
+  theme: Theme,
+  state: GridEntryState,
+  squareSize: number,
+) => {
   let numberPadding = squareSize / 10;
   let numberSize = squareSize / 5;
   return StyleSheet.create({
@@ -66,7 +70,7 @@ const makeStyles = (theme: Theme, black: boolean, squareSize: number) => {
     gridEntry: {
       borderWidth: 0.25,
       borderColor: theme.colors.border,
-      backgroundColor: black ? 'black' : 'white',
+      backgroundColor: state.black ? 'black' : 'white',
       height: squareSize,
       width: squareSize,
       flexGrow: 0,

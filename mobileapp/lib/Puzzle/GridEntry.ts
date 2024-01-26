@@ -4,6 +4,7 @@ import {WsGridEntry} from '../Events/WsEventTypes';
 
 export interface GridEntryState {
   black: boolean;
+  color?: string;
   edits: Array<string>;
   number: number;
   parents: any;
