@@ -4,6 +4,7 @@ import {
   WsEvent,
   WsGridEntry,
   WsUpdateCellEvent,
+  WsUpdateColorEvent,
   WsUpdateCursorEvent,
 } from '../Events/WsEventTypes';
 import GridEntry from './GridEntry';
@@ -18,20 +19,36 @@ class PuzzleState {
     this.playerStateManager = playerStateManager;
   }
 
+  types = new Set<string>();
+
   updateForEvent(event: WsEvent) {
     if (event.type === 'updateCell') {
-      this.updateForUpdateCellEvent(event as WsUpdateCellEvent);
+      this.onUpdateCellEvent(event as WsUpdateCellEvent);
     } else if (event.type === 'updateCursor') {
-      this.updateForUpdateCursorEvent(event as WsUpdateCursorEvent);
+      this.onUpdateCursorEvent(event as WsUpdateCursorEvent);
+    } else if (event.type === 'updateColor') {
+      console.log(event);
+      this.onUpdateColorEvent(event as WsUpdateColorEvent);
+    }
+    if (!this.types.has(event.type)) {
+      this.types.add(event.type);
+      console.log(event.type);
     }
   }
 
-  private updateForUpdateCellEvent(event: WsUpdateCellEvent) {
+  private onUpdateColorEvent(event: WsUpdateColorEvent) {
+    const {id, color} = event.params;
+    this.playerStateManager.updateState(id, {
+      color: color,
+    });
+  }
+
+  private onUpdateCellEvent(event: WsUpdateCellEvent) {
     const {cell, value, color} = event.params;
     this.getGridEntry(cell).update({value: value, color: color});
   }
 
-  private updateForUpdateCursorEvent(event: WsUpdateCursorEvent) {
+  private onUpdateCursorEvent(event: WsUpdateCursorEvent) {
     const {cell, id} = event.params;
     // Remove cursor from previous cell
     const oldState = this.playerStateManager.getState(id);

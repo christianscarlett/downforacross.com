@@ -3,6 +3,14 @@ export interface WsEvent {
   type: string;
 }
 
+export interface WsUpdateColorEvent extends WsEvent {
+  id: string;
+  params: {
+    color: string;
+    id: string;
+  };
+}
+
 export interface WsCell {
   c: number;
   r: number;

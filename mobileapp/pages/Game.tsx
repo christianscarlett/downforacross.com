@@ -16,17 +16,23 @@ function Game(): React.JSX.Element {
 
   useEffect(() => {
     gameManager.reset();
-    gameManager.gameModel.on('update', () => {
+
+    function onGameModelUpdate() {
       setGrid(gameManager.gameModel.puzzleState.grid);
-    });
+    }
+    gameManager.gameModel.on('update', onGameModelUpdate);
 
     gameManager.connect();
-    gameManager.gameWsModel.on('latencyUpdate', () => {
+
+    function onLatencyUpdate() {
       setLatency(gameManager.gameWsModel.latency);
-    });
+    }
+    gameManager.gameWsModel.on('latencyUpdate', onLatencyUpdate);
 
     return () => {
       gameManager.disconnect();
+      gameManager.gameModel.removeListener('update', onGameModelUpdate);
+      gameManager.gameWsModel.removeListener('latencyUpdate', onLatencyUpdate);
     };
   }, [gameManager]);
 
