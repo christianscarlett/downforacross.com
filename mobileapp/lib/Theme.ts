@@ -3,6 +3,8 @@ import {createContext, useContext} from 'react';
 export interface Theme {
   colors: {
     primary: string;
+    secondary: string;
+    tertiary: string;
     background: string;
     border: string;
     textPrimary: string;
@@ -18,6 +20,8 @@ interface ThemeContext {
 export const LightTheme: Theme = {
   colors: {
     primary: '#6aa9f4',
+    secondary: 'rgba(110, 198, 255, 1)',
+    tertiary: '#dcefff',
     background: 'white',
     border: 'silver',
     textPrimary: 'black',

@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../lib/Theme';
 import GameManager from '../lib/Game/GameManager';
 import GridComponent from '../components/Grid/GridComponent';
+import ClueHeader from '../components/Clue/ClueHeader';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -39,6 +40,7 @@ function Game(): React.JSX.Element {
   const style = makeStyles(theme);
   return (
     <View style={style.game}>
+      <ClueHeader />
       <GridComponent grid={grid} gameManager={gameManager} />
       <Text>{'latency: ' + latency}</Text>
     </View>
