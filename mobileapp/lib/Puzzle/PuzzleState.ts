@@ -1,4 +1,4 @@
-import {deepCopyObject, withItems, withoutItems} from '../../util/util';
+import {deepCopyObject, withItems} from '../../util/util';
 import {
   WsCell,
   WsEvent,
@@ -7,6 +7,7 @@ import {
   WsUpdateColorEvent,
   WsUpdateCursorEvent,
 } from '../Events/WsEventTypes';
+import CursorState from './CursorState';
 import GridEntry from './GridEntry';
 import PlayerStateManager from './PlayerStateManager';
 
@@ -34,6 +35,10 @@ class PuzzleState {
     this.playerStateManager.updateState(id, {
       color: color,
     });
+    const state = this.playerStateManager.getState(id);
+    if (state) {
+      this.getGridEntry(state.cursorPos).updateCursor(id, color);
+    }
   }
 
   private onUpdateCellEvent(event: WsUpdateCellEvent) {
@@ -48,13 +53,20 @@ class PuzzleState {
     if (oldState != null) {
       const oldGridEntry = this.getGridEntry(oldState.cursorPos);
       oldGridEntry.update({
-        cursorIds: withoutItems(oldGridEntry.getState().cursorIds, [id]),
+        cursors: oldGridEntry
+          .getState()
+          .cursors.filter(cursor => cursor.id !== id),
       });
     }
     // Add cursor to new cell
     const newGridEntry = this.getGridEntry(cell);
     newGridEntry.update({
-      cursorIds: withItems(newGridEntry.getState().cursorIds, [id]),
+      cursors: withItems(newGridEntry.getState().cursors, [
+        new CursorState(
+          id,
+          this.playerStateManager.getState(id)?.color ?? 'white',
+        ),
+      ]),
     });
     // Update player state
     this.playerStateManager.updateState(id, {cursorPos: cell});
