@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import GridEntry, {GridEntryState} from '../../lib/Puzzle/GridEntry';
 import GameManager from '../../lib/Game/GameManager';
+import CursorState from '../../lib/Puzzle/CursorState';
 
 export interface CellComponentProps {
   gridEntry: GridEntry;
@@ -26,14 +27,34 @@ function useGridEntryState(gridEntry: GridEntry): GridEntryState {
   return state;
 }
 
+function getCursorsView(
+  cursors: Array<CursorState>,
+  squareSize: number,
+): React.JSX.Element | null {
+  if (cursors.length === 0) {
+    return null;
+  }
+  const cursorViews = getCursorsView(cursors.slice(1), squareSize);
+
+  const cursorState = cursors[0];
+  const style = makeCursorStyle(cursorState, squareSize);
+  return (
+    <View key={cursorState.id} style={style.cursor}>
+      {cursorViews}
+    </View>
+  );
+}
+
 function CellComponent(props: CellComponentProps): React.JSX.Element {
   const {gridEntry, squareSize} = props;
   const [theme] = useTheme();
   const state = useGridEntryState(gridEntry);
+  const cursorViews = getCursorsView(state.cursors, squareSize);
 
   const styles = makeStyles(theme, state, squareSize);
   return (
     <View style={styles.gridEntry}>
+      {cursorViews}
       <Text style={styles.gridEntryNumber}>{state.number}</Text>
       <Text
         style={styles.gridEntryValue}
@@ -45,6 +66,18 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
     </View>
   );
 }
+
+const makeCursorStyle = (cursorState: CursorState, squareSize: number) => {
+  return StyleSheet.create({
+    cursor: {
+      position: 'absolute',
+      height: '100%',
+      width: '100%',
+      borderWidth: squareSize / 20,
+      borderColor: cursorState.color,
+    },
+  });
+};
 
 const makeStyles = (
   theme: Theme,
@@ -63,7 +96,7 @@ const makeStyles = (
       color: theme.colors.textSecondary,
     },
     gridEntryValue: {
-      fontSize: squareSize * 0.7,
+      fontSize: squareSize * 0.6,
       marginTop: numberSize,
       alignSelf: 'stretch',
       textAlign: 'center',
@@ -73,24 +106,14 @@ const makeStyles = (
     gridEntry: {
       borderWidth: 0.25,
       borderColor: theme.colors.border,
-      backgroundColor: getCellBackgroundColor(state),
+      backgroundColor: state.black ? 'black' : 'white',
       height: squareSize,
       width: squareSize,
       flexGrow: 0,
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 2,
     },
   });
 };
-
-function getCellBackgroundColor(state: GridEntryState): string {
-  if (state.black) {
-    return 'black';
-  } else if (state.cursors.length !== 0) {
-    return state.cursors[0].color;
-  }
-  return 'white';
-}
 
 export default memo(CellComponent);
