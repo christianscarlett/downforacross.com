@@ -12,6 +12,7 @@ export interface GridEntryState {
   edits: Array<string>;
   number: number;
   parents: any;
+  pencil: boolean;
   value: string;
 }
 
@@ -75,6 +76,7 @@ class GridEntry extends EventEmitter {
       edits,
       number,
       parents,
+      pencil: false,
       value,
     };
   }

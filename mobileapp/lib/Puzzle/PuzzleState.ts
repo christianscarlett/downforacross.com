@@ -42,8 +42,8 @@ class PuzzleState {
   }
 
   private onUpdateCellEvent(event: WsUpdateCellEvent) {
-    const {cell, value, color} = event.params;
-    this.getGridEntry(cell).update({value: value, color: color});
+    const {cell, value, color, pencil} = event.params;
+    this.getGridEntry(cell).update({value, color, pencil});
   }
 
   private onUpdateCursorEvent(event: WsUpdateCursorEvent) {

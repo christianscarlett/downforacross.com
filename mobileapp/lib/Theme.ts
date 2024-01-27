@@ -7,6 +7,7 @@ export interface Theme {
     border: string;
     textPrimary: string;
     textSecondary: string;
+    textPencil: string;
   };
 }
 
@@ -21,6 +22,7 @@ export const LightTheme: Theme = {
     border: 'silver',
     textPrimary: 'black',
     textSecondary: 'rgba(0, 0, 0, 0.7)',
+    textPencil: 'rgb(136, 136, 136)',
   },
 };
 

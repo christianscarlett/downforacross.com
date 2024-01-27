@@ -68,6 +68,7 @@ const makeStyles = (
       alignSelf: 'stretch',
       textAlign: 'center',
       paddingHorizontal: 5,
+      color: state.pencil ? theme.colors.textPencil : theme.colors.textPrimary,
     },
     gridEntry: {
       borderWidth: 0.25,
