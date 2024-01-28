@@ -3,6 +3,7 @@ import useGameManager from '../lib/Game/useGameManager';
 import PuzzleInfoHeader from '../components/Chat/PuzzleInfoHeader';
 import {StyleSheet, View} from 'react-native';
 import {Theme, useTheme} from '../lib/Theme';
+import ChatMessages from '../components/Chat/ChatMessages';
 
 function Divider() {
   const [theme] = useTheme();
@@ -32,7 +33,7 @@ function Chat() {
     <View style={styles.chat}>
       {puzzleInfo && <PuzzleInfoHeader puzzleInfo={puzzleInfo} />}
       <Divider />
-      <View>{/* TODO */}</View>
+      <ChatMessages />
     </View>
   );
 }
@@ -41,11 +42,13 @@ const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     chat: {
       padding: 10,
+      height: '100%',
     },
     divider: {
       borderBottomColor: theme.colors.border,
       borderBottomWidth: StyleSheet.hairlineWidth,
       marginVertical: 5,
+      backgroundColor: 'none',
     },
   });
 };

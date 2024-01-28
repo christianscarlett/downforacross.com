@@ -1,11 +1,5 @@
 import EventEmitter from 'events';
-import {WsCell} from '../Events/WsEventTypes';
-
-export interface PlayerState {
-  color: string;
-  cursorPos: WsCell;
-  displayName: string;
-}
+import PlayerState from './PlayerState';
 
 class PlayerStateManager extends EventEmitter {
   private idToState: Map<string, PlayerState>;
