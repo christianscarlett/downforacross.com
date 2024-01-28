@@ -19,8 +19,8 @@ class PlayerStateManager extends EventEmitter {
     return this.idToState.get(id);
   }
 
-  getAllStates(): Map<string, PlayerState> {
-    return this.idToState;
+  getAllStates(): PlayerState[] {
+    return [...this.idToState.values()];
   }
 
   createNewState(): PlayerState {
