@@ -4,6 +4,7 @@ import {WsCell} from '../Events/WsEventTypes';
 export interface PlayerState {
   color: string;
   cursorPos: WsCell;
+  displayName: string;
 }
 
 class PlayerStateManager extends EventEmitter {
@@ -32,6 +33,7 @@ class PlayerStateManager extends EventEmitter {
     return {
       color: 'blue',
       cursorPos: {c: 0, r: 0},
+      displayName: '',
     };
   }
 }

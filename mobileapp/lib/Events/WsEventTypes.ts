@@ -3,6 +3,14 @@ export interface WsEvent {
   type: string;
 }
 
+export interface WsUpdateDisplayNameEvent extends WsEvent {
+  id: string;
+  params: {
+    displayName: string;
+    id: string;
+  };
+}
+
 export interface WsUpdateColorEvent extends WsEvent {
   id: string;
   params: {
