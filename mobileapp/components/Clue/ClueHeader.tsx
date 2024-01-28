@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function ClueHeader() {
   const [theme] = useTheme();
@@ -8,10 +9,10 @@ function ClueHeader() {
   const styles = makeStyles(theme);
   return (
     <View style={styles.clueHeader}>
-      <Text style={styles.chevronLeft}>&#8249;</Text>
+      <Icon name="keyboard-arrow-left" style={styles.chevronLeft} />
       <Text style={styles.clueName}>1A</Text>
       <Text style={styles.clueText}>This is a clue.</Text>
-      <Text style={styles.chevronRight}>&#8250;</Text>
+      <Icon name="keyboard-arrow-right" style={styles.chevronRight} />
     </View>
   );
 }
