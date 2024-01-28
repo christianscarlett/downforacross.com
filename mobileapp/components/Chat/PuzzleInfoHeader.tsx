@@ -19,7 +19,7 @@ function PuzzleInfoHeader(props: PuzzleInfoHeaderProps) {
         <Text style={styles.description}>{puzzleInfo.description} asdf</Text>
       )}
       {(puzzleInfo.type || puzzleInfo.author) && (
-        <Text>
+        <Text style={styles.author}>
           {puzzleInfo.type && `${puzzleInfo.type} | `}
           {puzzleInfo.author && `By ${puzzleInfo.author}`}
         </Text>
@@ -30,6 +30,9 @@ function PuzzleInfoHeader(props: PuzzleInfoHeaderProps) {
 
 const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
+    author: {
+      fontWeight: '500',
+    },
     description: {
       color: theme.colors.textSecondary,
       marginBottom: 10,
