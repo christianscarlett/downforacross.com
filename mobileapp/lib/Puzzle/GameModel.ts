@@ -7,11 +7,13 @@ import {
 import HistoryModel from '../History/HistoryModel';
 import PuzzleState from './PuzzleState';
 import PlayerStateManager from './PlayerStateManager';
+import PuzzleInfo from './PuzzleInfo';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel;
   playerStateManager: PlayerStateManager;
   puzzleState: PuzzleState;
+  puzzleInfo: PuzzleInfo | null = null;
 
   constructor() {
     super();
@@ -29,7 +31,7 @@ class GameModel extends EventEmitter {
       this.updateForOtherEvent(event);
     }
     if (!this.events.has(event.type)) {
-      console.log(event.type);
+      // console.log(event.type);
       this.events.add(event.type);
     }
   }
@@ -53,6 +55,7 @@ class GameModel extends EventEmitter {
       event.params.game.grid,
       this.playerStateManager,
     );
+    this.puzzleInfo = {...event.params.game.info};
     this.emitUpdate();
   }
 

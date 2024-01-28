@@ -23,12 +23,19 @@ class GameManager extends EventEmitter {
   }
 
   private initGameListeners() {
-    this.gameWsModel?.on('wsCreateEvent', (event: any) => {
-      this.gameModel?.updateForEvent(event);
+    this.gameWsModel.on('wsCreateEvent', (event: any) => {
+      this.gameModel.updateForEvent(event);
     });
-    this.gameWsModel?.on('wsEvent', (event: any) => {
-      this.gameModel?.updateForEvent(event);
+    this.gameWsModel.on('wsEvent', (event: any) => {
+      this.gameModel.updateForEvent(event);
     });
+    this.gameModel.on('update', () => {
+      this.emitUpdate();
+    });
+  }
+
+  emitUpdate() {
+    this.emit('update');
   }
 
   async connect() {

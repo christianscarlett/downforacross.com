@@ -1,9 +1,19 @@
-import {useState} from 'react';
+import {createContext, useContext} from 'react';
 import GameManager from './GameManager';
 
+interface GameManagerContext {
+  gameManager: GameManager;
+}
+
+const gameManager: GameManager = new GameManager();
+
+const gameManagerContext = createContext<GameManagerContext>({
+  gameManager,
+});
+
 function useGameManager(): GameManager {
-  const [gameManager] = useState(() => new GameManager());
-  return gameManager;
+  const context = useContext(gameManagerContext);
+  return context.gameManager;
 }
 
 export default useGameManager;
