@@ -6,7 +6,7 @@ export interface ChatMessageProps {
   displayName: string;
   nameColor: string;
   messageText: string;
-  time: string;
+  time: number;
 }
 
 function ChatMessage(props: ChatMessageProps) {

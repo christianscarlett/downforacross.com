@@ -17,10 +17,14 @@ function Chat() {
   const [puzzleInfo, setPuzzleInfo] = useState(
     gameManager.gameModel.puzzleInfo,
   );
+  const [messages, setMessages] = useState(
+    gameManager.gameModel.chatModel.getMessages(),
+  );
 
   useEffect(() => {
     function onUpdate() {
       setPuzzleInfo(gameManager.gameModel.puzzleInfo);
+      setMessages([...gameManager.gameModel.chatModel.getMessages()]);
     }
     gameManager.on('update', onUpdate);
     return () => {
@@ -33,7 +37,7 @@ function Chat() {
     <View style={styles.chat}>
       {puzzleInfo && <PuzzleInfoHeader puzzleInfo={puzzleInfo} />}
       <Divider />
-      <ChatMessages />
+      <ChatMessages chatMessages={messages} />
     </View>
   );
 }

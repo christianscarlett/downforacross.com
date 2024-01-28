@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import {
+  WsChatEvent,
   WsCreateEvent,
   WsEvent,
   WsUpdateDisplayNameEvent,
@@ -8,19 +9,14 @@ import HistoryModel from '../History/HistoryModel';
 import PuzzleState from './PuzzleState';
 import PlayerStateManager from './PlayerStateManager';
 import PuzzleInfo from './PuzzleInfo';
+import ChatModel from './ChatModel';
 
 class GameModel extends EventEmitter {
-  historyModel: HistoryModel;
-  playerStateManager: PlayerStateManager;
-  puzzleState: PuzzleState;
+  historyModel: HistoryModel = new HistoryModel();
+  playerStateManager: PlayerStateManager = new PlayerStateManager();
+  puzzleState: PuzzleState = new PuzzleState([], this.playerStateManager);
   puzzleInfo: PuzzleInfo | null = null;
-
-  constructor() {
-    super();
-    this.historyModel = new HistoryModel();
-    this.playerStateManager = new PlayerStateManager();
-    this.puzzleState = new PuzzleState([], this.playerStateManager);
-  }
+  chatModel: ChatModel = new ChatModel();
 
   events = new Set();
   updateForEvent(event: any) {
@@ -39,9 +35,17 @@ class GameModel extends EventEmitter {
   private updateForOtherEvent(event: WsEvent) {
     if (event.type === 'updateDisplayName') {
       this.onUpdateDisplayNameEvent(event as WsUpdateDisplayNameEvent);
+    } else if (event.type === 'chat') {
+      this.onChatEvent(event as WsChatEvent);
     } else {
       this.puzzleState.updateForEvent(event);
     }
+  }
+
+  private onChatEvent(event: WsChatEvent) {
+    const {senderId, text} = event.params;
+    this.chatModel.pushMessage(senderId, text, event.timestamp);
+    this.emitUpdate();
   }
 
   private onUpdateDisplayNameEvent(event: WsUpdateDisplayNameEvent) {

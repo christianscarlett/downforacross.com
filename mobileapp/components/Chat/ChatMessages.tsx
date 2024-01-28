@@ -1,24 +1,45 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import ChatMessage from './ChatMessage';
+import Message from '../../lib/Puzzle/Message';
+import GameManager from '../../lib/Game/GameManager';
+import useGameManager from '../../lib/Game/useGameManager';
 
-interface MessageData {
+export interface MessageData {
   displayName: string;
   nameColor: string;
   messageText: string;
-  time: string;
+  time: number;
 }
 
-function ChatMessages() {
+interface ChatMessagesProps {
+  chatMessages: Message[];
+}
+
+function messageToMessageData(
+  message: Message,
+  gameManager: GameManager,
+): MessageData {
+  const {senderId, text, timestamp} = message;
+  const messageData = {
+    displayName: '',
+    nameColor: '',
+    messageText: text,
+    time: timestamp,
+  };
+  const state = gameManager.gameModel.playerStateManager.getState(senderId);
+  if (state) {
+    messageData.displayName = state.displayName;
+    messageData.nameColor = state.color;
+  }
+  return messageData;
+}
+
+function ChatMessages(props: ChatMessagesProps) {
+  const {chatMessages} = props;
+  const gameManager = useGameManager();
+  const data = chatMessages.map(m => messageToMessageData(m, gameManager));
   const styles = makeStyles();
-  const data: MessageData[] = [
-    {
-      displayName: 'Test Name',
-      nameColor: 'blue',
-      messageText: 'message',
-      time: '1:33 AM',
-    },
-  ];
   return (
     <View style={styles.wrapper}>
       <FlatList
