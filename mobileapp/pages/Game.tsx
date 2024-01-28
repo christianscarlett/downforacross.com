@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../lib/Theme';
-import GameManager from '../lib/Game/GameManager';
 import GridComponent from '../components/Grid/GridComponent';
 import ClueHeader from '../components/Clue/ClueHeader';
+import useGameManager from '../lib/Game/useGameManager';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -12,11 +12,11 @@ function Game(): React.JSX.Element {
   const [theme] = useTheme();
   const [gid] = useState(GID);
   const [latency, setLatency] = useState<number | null>(null);
-  const [gameManager] = useState(() => new GameManager(gid));
+  const gameManager = useGameManager();
   const [grid, setGrid] = useState(gameManager.gameModel.puzzleState.grid);
 
   useEffect(() => {
-    gameManager.reset();
+    gameManager.init(gid);
 
     function onGameModelUpdate() {
       setGrid(gameManager.gameModel.puzzleState.grid);
@@ -35,7 +35,7 @@ function Game(): React.JSX.Element {
       gameManager.gameModel.removeListener('update', onGameModelUpdate);
       gameManager.gameWsModel.removeListener('latencyUpdate', onLatencyUpdate);
     };
-  }, [gameManager]);
+  }, [gameManager, gid]);
 
   const style = makeStyles(theme);
   return (
