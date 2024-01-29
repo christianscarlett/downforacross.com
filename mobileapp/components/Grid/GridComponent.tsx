@@ -1,79 +1,55 @@
 import React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import CellComponent from './CellComponent';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import GameManager from '../../lib/Game/GameManager';
+
+const SQUARE_SIZE = 20;
+
+interface RowProps {
+  gridEntries: GridEntry[];
+  gameManager: GameManager;
+}
+
+function Row(props: RowProps) {
+  const {gridEntries, gameManager} = props;
+  const styles = makeStyles();
+
+  const cells = gridEntries.map((entry, i) => (
+    <CellComponent
+      key={i}
+      gridEntry={entry}
+      squareSize={SQUARE_SIZE}
+      gameManager={gameManager}
+    />
+  ));
+  return <View style={styles.row}>{cells}</View>;
+}
 
 export interface GridComponentProps {
   grid: GridEntry[][];
   gameManager: GameManager;
 }
 
-// See https://stackoverflow.com/questions/44384773/react-native-100-items-flatlist-very-slow-performance for perf optimizations
-
-const SQUARE_SIZE = 20;
-
-interface RowItem {
-  gridEntries: GridEntry[];
-  gameManager: GameManager;
-}
-
-function renderRow(row: {item: RowItem}) {
-  const {gridEntries, gameManager} = row.item;
-  const styles = makeStyles();
-  return (
-    <FlatList
-      style={styles.row}
-      data={gridEntries}
-      contentContainerStyle={styles.contentContainerStyle}
-      scrollEnabled={false}
-      initialNumToRender={gridEntries.length}
-      getItemLayout={(data, index) => ({
-        length: SQUARE_SIZE,
-        offset: SQUARE_SIZE * index,
-        index,
-      })}
-      renderItem={({item}) => (
-        <CellComponent
-          gridEntry={item}
-          squareSize={SQUARE_SIZE}
-          gameManager={gameManager}
-        />
-      )}
-    />
-  );
-}
-
-function renderGrid(props: GridComponentProps) {
+function Col(props: GridComponentProps) {
   const {grid, gameManager} = props;
   const styles = makeStyles();
 
-  const rowItems = grid.map(gridEntries => {
-    return {
-      gridEntries,
-      gameManager,
-    };
-  });
-  return (
-    <FlatList
-      style={styles.col}
-      data={rowItems}
-      contentContainerStyle={styles.contentContainerStyle}
-      scrollEnabled={false}
-      initialNumToRender={grid.length}
-      getItemLayout={(data, index) => ({
-        length: SQUARE_SIZE,
-        offset: SQUARE_SIZE * index,
-        index,
-      })}
-      renderItem={renderRow}
-    />
-  );
+  const rows = grid.map((entries, i) => (
+    <Row key={i} gridEntries={entries} gameManager={gameManager} />
+  ));
+
+  return <View style={styles.col}>{rows}</View>;
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
   const styles = makeStyles();
-  return <View style={styles.gridContainer}>{renderGrid(props)}</View>;
+
+  return (
+    <View style={styles.gridContainer}>
+      <Col grid={props.grid} gameManager={props.gameManager} />
+    </View>
+  );
 }
 
 const makeStyles = () =>
