@@ -1,29 +1,55 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import CellComponent from './CellComponent';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import GameManager from '../../lib/Game/GameManager';
-
-const SQUARE_SIZE = 20;
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 
 interface RowProps {
   gridEntries: GridEntry[];
   gameManager: GameManager;
+  squareSize: number;
 }
 
 function Row(props: RowProps) {
-  const {gridEntries, gameManager} = props;
+  const {gridEntries, gameManager, squareSize} = props;
   const styles = makeStyles();
 
   const cells = gridEntries.map((entry, i) => (
     <CellComponent
       key={i}
       gridEntry={entry}
-      squareSize={SQUARE_SIZE}
+      squareSize={squareSize}
       gameManager={gameManager}
     />
   ));
   return <View style={styles.row}>{cells}</View>;
+}
+
+interface ColProps {
+  grid: GridEntry[][];
+  gameManager: GameManager;
+  squareSize: number;
+}
+
+function Col(props: ColProps) {
+  const {grid, gameManager, squareSize} = props;
+  const styles = makeStyles();
+
+  const rows = grid.map((entries, i) => (
+    <Row
+      key={i}
+      gridEntries={entries}
+      gameManager={gameManager}
+      squareSize={squareSize}
+    />
+  ));
+
+  return <View style={styles.col}>{rows}</View>;
 }
 
 export interface GridComponentProps {
@@ -31,30 +57,51 @@ export interface GridComponentProps {
   gameManager: GameManager;
 }
 
-function Col(props: GridComponentProps) {
-  const {grid, gameManager} = props;
-  const styles = makeStyles();
-
-  const rows = grid.map((entries, i) => (
-    <Row key={i} gridEntries={entries} gameManager={gameManager} />
-  ));
-
-  return <View style={styles.col}>{rows}</View>;
-}
-
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const styles = makeStyles();
+  // const scale = useRef(new Animated.Value(1)).current;
+  // const onPinchEvent = Animated.event([{nativeEvent: {scale}}], {
+  //   useNativeDriver: true,
+  // });
 
+  const squareSize = 20;
+
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate(e => {
+      scale.value = savedScale.value * e.scale;
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{scale: scale.value}],
+  }));
+
+  console.log('render');
+
+  const styles = makeStyles();
   return (
-    <View style={styles.gridContainer}>
-      <Col grid={props.grid} gameManager={props.gameManager} />
-    </View>
+    <GestureDetector gesture={pinchGesture}>
+      <View style={styles.gridContainer}>
+        <Animated.View style={animatedStyle}>
+          <Col
+            grid={props.grid}
+            gameManager={props.gameManager}
+            squareSize={squareSize}
+          />
+        </Animated.View>
+      </View>
+    </GestureDetector>
   );
 }
 
 const makeStyles = () =>
   StyleSheet.create({
     gridContainer: {
+      overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'center',
     },
