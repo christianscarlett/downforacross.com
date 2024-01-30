@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import CellComponent from './CellComponent';
 import GridEntry from '../../lib/Puzzle/GridEntry';
@@ -58,11 +58,6 @@ export interface GridComponentProps {
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  // const scale = useRef(new Animated.Value(1)).current;
-  // const onPinchEvent = Animated.event([{nativeEvent: {scale}}], {
-  //   useNativeDriver: true,
-  // });
-
   const squareSize = 20;
 
   const scale = useSharedValue(1);
@@ -79,8 +74,6 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{scale: scale.value}],
   }));
-
-  console.log('render');
 
   const styles = makeStyles();
   return (
@@ -111,10 +104,6 @@ const makeStyles = () =>
     row: {
       flexDirection: 'row',
       flexGrow: 0,
-    },
-    contentContainerStyle: {
-      alignItems: 'center',
-      justifyContent: 'center',
     },
   });
 
