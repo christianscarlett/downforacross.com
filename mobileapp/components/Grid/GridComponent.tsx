@@ -1,22 +1,20 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import CellComponent from './CellComponent';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import GameManager from '../../lib/Game/GameManager';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
+import {Theme, useTheme} from '../../lib/Theme';
 
 interface RowProps {
   gridEntries: GridEntry[];
   gameManager: GameManager;
   squareSize: number;
+  gridBorderWidth: number;
 }
 
 function Row(props: RowProps) {
-  const {gridEntries, gameManager, squareSize} = props;
+  const {gridEntries, gameManager, squareSize, gridBorderWidth} = props;
   const styles = makeStyles();
 
   const cells = gridEntries.map((entry, i) => (
@@ -25,6 +23,7 @@ function Row(props: RowProps) {
       gridEntry={entry}
       squareSize={squareSize}
       gameManager={gameManager}
+      gridBorderWidth={gridBorderWidth}
     />
   ));
   return <View style={styles.row}>{cells}</View>;
@@ -38,7 +37,7 @@ interface ColProps {
 
 function Col(props: ColProps) {
   const {grid, gameManager, squareSize} = props;
-  const styles = makeStyles();
+  const gridBorderWidth = squareSize / 80;
 
   const rows = grid.map((entries, i) => (
     <Row
@@ -46,11 +45,23 @@ function Col(props: ColProps) {
       gridEntries={entries}
       gameManager={gameManager}
       squareSize={squareSize}
+      gridBorderWidth={gridBorderWidth}
     />
   ));
 
+  const [theme] = useTheme();
+  const styles = makeColStyles(theme, gridBorderWidth);
   return <View style={styles.col}>{rows}</View>;
 }
+
+const makeColStyles = (theme: Theme, gridBorderWidth: number) =>
+  StyleSheet.create({
+    col: {
+      flexGrow: 0,
+      borderWidth: gridBorderWidth,
+      borderColor: theme.colors.border,
+    },
+  });
 
 export interface GridComponentProps {
   grid: GridEntry[][];
@@ -58,48 +69,62 @@ export interface GridComponentProps {
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const squareSize = 20;
-
-  const scale = useSharedValue(1);
-  const savedScale = useSharedValue(1);
-
-  const pinchGesture = Gesture.Pinch()
-    .onUpdate(e => {
-      scale.value = savedScale.value * e.scale;
-    })
-    .onEnd(() => {
-      savedScale.value = scale.value;
-    });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{scale: scale.value}],
-  }));
-
+  const {grid, gameManager} = props;
   const styles = makeStyles();
+
+  if (!grid[0]) {
+    return <View style={styles.container} />;
+  }
+
+  /**
+   * Unfortunately, the components don't update their
+   * render with the zoom animation smoothly. Therefore,
+   * in order to maintain high fidelity when zooming in,
+   * we're going to render the grid at a higher resolution
+   * than initially displayed, then scale the grid down
+   * as a whole to fit within the zoomable view.
+   *
+   * Scaling the grid with the zoom props to the zoomable
+   * view will cause the zoomable view to render larger
+   * than the screen size which will cause snapping issues.
+   */
+
+  const quality = 10;
+  const zoom = 1 / quality;
+
+  const windowSize = Dimensions.get('window').width;
+  const n = grid[0].length;
+  const squareSize = windowSize / n;
+  const scaledSquareSize = squareSize * quality;
+
   return (
-    <GestureDetector gesture={pinchGesture}>
-      <View style={styles.gridContainer}>
-        <Animated.View style={animatedStyle}>
-          <Col
-            grid={props.grid}
-            gameManager={props.gameManager}
-            squareSize={squareSize}
-          />
-        </Animated.View>
+    <View style={styles.container}>
+      <View style={styles.zoomContainer}>
+        <ReactNativeZoomableView maxZoom={5} initialZoom={1} minZoom={1}>
+          <View style={{transform: [{scale: zoom}]}}>
+            <Col
+              grid={grid}
+              gameManager={gameManager}
+              squareSize={scaledSquareSize}
+            />
+          </View>
+        </ReactNativeZoomableView>
       </View>
-    </GestureDetector>
+    </View>
   );
 }
 
 const makeStyles = () =>
   StyleSheet.create({
-    gridContainer: {
-      overflow: 'hidden',
+    container: {
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    col: {
-      flexGrow: 0,
+    zoomContainer: {
+      flexShrink: 1,
+      width: '100%',
+      height: '100%',
     },
     row: {
       flexDirection: 'row',

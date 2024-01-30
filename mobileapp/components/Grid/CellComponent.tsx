@@ -9,6 +9,7 @@ export interface CellComponentProps {
   gridEntry: GridEntry;
   squareSize: number;
   gameManager: GameManager;
+  gridBorderWidth: number;
 }
 
 function useGridEntryState(gridEntry: GridEntry): GridEntryState {
@@ -46,12 +47,12 @@ function getCursorsView(
 }
 
 function CellComponent(props: CellComponentProps): React.JSX.Element {
-  const {gridEntry, squareSize} = props;
+  const {gridEntry, squareSize, gridBorderWidth} = props;
   const [theme] = useTheme();
   const state = useGridEntryState(gridEntry);
   const cursorViews = getCursorsView(state.cursors, squareSize);
 
-  const styles = makeStyles(theme, state, squareSize);
+  const styles = makeStyles(theme, state, squareSize, gridBorderWidth);
   return (
     <View style={styles.gridEntry}>
       {cursorViews}
@@ -83,6 +84,7 @@ const makeStyles = (
   theme: Theme,
   state: GridEntryState,
   squareSize: number,
+  gridBorderWidth: number,
 ) => {
   let numberPadding = squareSize / 10;
   let numberSize = squareSize / 5;
@@ -104,7 +106,7 @@ const makeStyles = (
       color: state.pencil ? theme.colors.textPencil : theme.colors.textPrimary,
     },
     gridEntry: {
-      borderWidth: 0.25,
+      borderWidth: gridBorderWidth,
       borderColor: theme.colors.border,
       backgroundColor: state.black ? 'black' : 'white',
       height: squareSize,

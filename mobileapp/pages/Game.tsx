@@ -7,6 +7,10 @@ import useGameManager from '../lib/Game/useGameManager';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
+// mini
+// const GID = '4593926-nund';
+// sunday
+// const GID = '4594515-splob';
 
 function Game(): React.JSX.Element {
   const [theme] = useTheme();
