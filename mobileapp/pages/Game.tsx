@@ -25,7 +25,7 @@ function Game(): React.JSX.Element {
     function onGameModelUpdate() {
       setGrid(gameManager.gameModel.puzzleModel.grid);
     }
-    gameManager.gameModel.on('update', onGameModelUpdate);
+    gameManager.on('gameModelUpdate', onGameModelUpdate);
 
     gameManager.connect();
 
@@ -36,7 +36,7 @@ function Game(): React.JSX.Element {
 
     return () => {
       gameManager.disconnect();
-      gameManager.gameModel.removeListener('update', onGameModelUpdate);
+      gameManager.removeListener('gameModelUpdate', onGameModelUpdate);
       gameManager.wsModel.removeListener('latencyUpdate', onLatencyUpdate);
     };
   }, [gameManager, gid]);

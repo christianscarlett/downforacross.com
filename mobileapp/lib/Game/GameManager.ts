@@ -10,15 +10,13 @@ class GameManager extends EventEmitter {
 
   constructor() {
     super();
-    // Dummy placeholders
     this.gid = '';
-    this.wsModel = new WebsocketModel('');
+    this.wsModel = new WebsocketModel();
     this.gameModel = new GameModel();
   }
 
   init(gid: string) {
     this.gid = gid;
-    this.wsModel = new WebsocketModel(this.gid);
     this.gameModel = new GameModel();
     this.initGameListeners();
   }
@@ -33,16 +31,16 @@ class GameManager extends EventEmitter {
   }
 
   emitUpdate() {
-    this.emit('update');
+    this.emit('gameModelUpdate');
   }
 
   async connect() {
-    await this.wsModel?.connectToWebsocket();
-    await this.wsModel?.subscribeToWebsocketEvents();
+    await this.wsModel.connect(this.gid);
+    await this.wsModel.subscribeToWebsocketEvents();
   }
 
   async disconnect() {
-    this.wsModel?.disconnect();
+    this.wsModel.disconnect();
   }
 }
 

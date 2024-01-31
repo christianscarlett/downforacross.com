@@ -13,13 +13,10 @@ export const initSocket = () => {
 
     // debug stuff
     socket.on('connect_error', (err: any) => {
-      console.debug(`connect_error due to ${err.message}`);
+      console.debug(`connect_error: ${err.message}`);
     });
-    socket.on('connect', (event: any) => {
-      console.debug('[ws connect]', event);
-    });
-    socket.on('connect', (event: any) => {
-      console.debug('[ws connect]', event);
+    socket.on('connect', () => {
+      console.debug('[ws connect]');
     });
     socket.once('connect', () => {
       console.debug('Connected!');

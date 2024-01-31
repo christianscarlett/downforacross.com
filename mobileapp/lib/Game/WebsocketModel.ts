@@ -4,22 +4,18 @@ import {emitAsync} from '../Socket/emitAsync';
 
 /** This class manages the websocket connection and emits its events. */
 class WebsocketModel extends EventEmitter {
-  gid: string;
+  gid: string | null;
   socket!: SocketIOClient.Socket;
   latency = -1;
-  isConnected = false;
 
-  constructor(gid: string) {
+  constructor() {
     super();
-    this.gid = gid;
+    this.gid = null;
   }
 
-  async connectToWebsocket() {
-    if (this.isConnected) {
-      return;
-    }
+  async connect(gid: string) {
+    this.gid = gid;
     this.socket = await initSocket();
-    this.isConnected = true;
 
     await emitAsync(this.socket, 'join_game', this.gid);
 
@@ -29,10 +25,9 @@ class WebsocketModel extends EventEmitter {
 
     // handle future reconnects
     this.socket.on('connect', async () => {
-      console.debug('reconnecting...');
+      console.debug('rejoining game...');
       await emitAsync(this.socket, 'join_game', this.gid);
-      console.debug('reconnected...');
-      this.emitReconnect();
+      console.debug('rejoined!');
     });
 
     this.socket.on('pong', (ms: number) => {
@@ -41,13 +36,8 @@ class WebsocketModel extends EventEmitter {
     });
   }
 
-  emitReconnect() {
-    this.emit('reconnect');
-  }
-
   disconnect() {
     this.socket.disconnect();
-    this.isConnected = false;
   }
 
   async subscribeToWebsocketEvents() {
@@ -56,19 +46,22 @@ class WebsocketModel extends EventEmitter {
     }
 
     this.socket.on('game_event', (event: any) => {
-      this.emitWSEvent(event);
+      this.emitWsEvent(event);
     });
     const response = await emitAsync(
       this.socket,
       'sync_all_game_events',
       this.gid,
     );
+    const startTime = Date.now();
+    console.debug('syncing');
     (response as any).forEach((event: any) => {
-      this.emitWSEvent(event);
+      this.emitWsEvent(event);
     });
+    console.debug(`finished sync | ${Date.now() - startTime} ms`);
   }
 
-  emitWSEvent(event: any) {
+  emitWsEvent(event: any) {
     this.emit('wsEvent', event);
   }
 }
