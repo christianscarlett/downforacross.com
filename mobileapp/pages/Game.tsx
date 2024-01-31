@@ -4,6 +4,8 @@ import {Theme, useTheme} from '../lib/Theme';
 import GridComponent from '../components/Grid/GridComponent';
 import ClueHeader from '../components/Clue/ClueHeader';
 import useGameManager from '../lib/Game/useGameManager';
+import CursorState from '../lib/Puzzle/CursorState';
+import PlayerState from '../lib/Player/PlayerState';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -18,21 +20,26 @@ function Game(): React.JSX.Element {
   const [latency, setLatency] = useState<number | null>(null);
   const gameManager = useGameManager();
   const [grid, setGrid] = useState(gameManager.gameModel.puzzleModel.grid);
+  const [playerStates, setPlayerStates] = useState<PlayerState[]>(
+    gameManager.gameModel.playerModel.getAllStates(),
+  );
 
   useEffect(() => {
-    gameManager.init(gid);
-
     function onGameModelUpdate() {
       setGrid(gameManager.gameModel.puzzleModel.grid);
+      setPlayerStates(gameManager.gameModel.playerModel.getAllStates());
     }
-    gameManager.on('gameModelUpdate', onGameModelUpdate);
-
-    gameManager.connect();
-
     function onLatencyUpdate() {
       setLatency(gameManager.wsModel.latency);
     }
-    gameManager.wsModel.on('latencyUpdate', onLatencyUpdate);
+
+    async function init() {
+      gameManager.init(gid);
+      gameManager.on('gameModelUpdate', onGameModelUpdate);
+      gameManager.connect();
+      gameManager.wsModel.on('latencyUpdate', onLatencyUpdate);
+    }
+    init();
 
     return () => {
       gameManager.disconnect();
@@ -45,7 +52,11 @@ function Game(): React.JSX.Element {
   return (
     <View style={style.game}>
       <ClueHeader />
-      <GridComponent grid={grid} gameManager={gameManager} />
+      <GridComponent
+        grid={grid}
+        gameManager={gameManager}
+        playerStates={playerStates}
+      />
       <Text>{'latency: ' + latency}</Text>
     </View>
   );

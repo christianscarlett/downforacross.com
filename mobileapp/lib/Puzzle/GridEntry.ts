@@ -1,14 +1,12 @@
 import EventEmitter from 'events';
 import {deepCopyObject} from '../../util/util';
 import {WsGridEntry} from '../Events/WsGridEntry';
-import CursorState from './CursorState';
 
 export interface GridEntryState {
   r: number;
   c: number;
   black: boolean;
   color?: string;
-  cursors: Array<CursorState>;
   edits: Array<string>;
   number: number;
   parents: any;
@@ -36,14 +34,6 @@ class GridEntry extends EventEmitter {
     this.emitUpdate();
   }
 
-  updateCursor(id: string, color: string) {
-    const cursorState = this.state.cursors.find(cs => cs.id === id);
-    if (cursorState) {
-      cursorState.color = color;
-      this.update({...this.state});
-    }
-  }
-
   emitUpdate() {
     if (!this.syncing) {
       this.emit('update');
@@ -58,7 +48,6 @@ class GridEntry extends EventEmitter {
     return {
       ...state,
       edits: deepCopyObject(state.edits),
-      cursors: deepCopyObject(state.cursors),
     };
   }
 
@@ -75,7 +64,6 @@ class GridEntry extends EventEmitter {
       r,
       c,
       black,
-      cursors: [],
       edits,
       number,
       parents,

@@ -1,27 +1,34 @@
 import React from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
-import CellComponent from './CellComponent';
+import MemoCellComponent from './CellComponent';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import GameManager from '../../lib/Game/GameManager';
 import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
 import {Theme, useTheme} from '../../lib/Theme';
+import PlayerState from '../../lib/Player/PlayerState';
 
 interface RowProps {
   gridEntries: GridEntry[];
   squareSize: number;
   gridBorderWidth: number;
+  playerStates: PlayerState[];
 }
 
 function Row(props: RowProps) {
-  const {gridEntries, squareSize, gridBorderWidth} = props;
+  const {gridEntries, squareSize, gridBorderWidth, playerStates} = props;
   const styles = makeStyles();
 
   const cells = gridEntries.map((entry, i) => (
-    <CellComponent
+    <MemoCellComponent
       key={i}
       gridEntry={entry}
       squareSize={squareSize}
       gridBorderWidth={gridBorderWidth}
+      cursors={playerStates.filter(
+        playerState =>
+          playerState.cursorPos.c === entry.state.c &&
+          playerState.cursorPos.r === entry.state.r,
+      )}
     />
   ));
   return <View style={styles.row}>{cells}</View>;
@@ -31,10 +38,11 @@ interface ColProps {
   grid: GridEntry[][];
   gameManager: GameManager;
   squareSize: number;
+  playerStates: PlayerState[];
 }
 
 function Col(props: ColProps) {
-  const {grid, squareSize} = props;
+  const {grid, squareSize, playerStates} = props;
   const gridBorderWidth = squareSize / 80;
 
   const rows = grid.map((entries, i) => (
@@ -43,6 +51,7 @@ function Col(props: ColProps) {
       gridEntries={entries}
       squareSize={squareSize}
       gridBorderWidth={gridBorderWidth}
+      playerStates={playerStates}
     />
   ));
 
@@ -63,10 +72,11 @@ const makeColStyles = (theme: Theme, gridBorderWidth: number) =>
 export interface GridComponentProps {
   grid: GridEntry[][];
   gameManager: GameManager;
+  playerStates: PlayerState[];
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const {grid, gameManager} = props;
+  const {grid, gameManager, playerStates} = props;
   const styles = makeStyles();
 
   if (!grid[0]) {
@@ -103,6 +113,7 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
               grid={grid}
               gameManager={gameManager}
               squareSize={scaledSquareSize}
+              playerStates={playerStates}
             />
           </View>
         </ReactNativeZoomableView>

@@ -17,6 +17,7 @@ class GameManager extends EventEmitter {
 
   init(gid: string) {
     this.gid = gid;
+    this.wsModel = new WebsocketModel();
     this.gameModel = new GameModel();
     this.initGameListeners();
   }
@@ -24,12 +25,6 @@ class GameManager extends EventEmitter {
   private initGameListeners() {
     this.wsModel.on('wsEvent', (event: any) => {
       this.gameModel.updateForEvent(event);
-    });
-    this.wsModel.on('sync_start', () => {
-      this.gameModel.setSyncing(true);
-    });
-    this.wsModel.on('sync_end', () => {
-      this.gameModel.setSyncing(false);
     });
     this.gameModel.on('update', () => {
       this.emitUpdate();
@@ -41,8 +36,11 @@ class GameManager extends EventEmitter {
   }
 
   async connect() {
+    this.gameModel.setSyncing(true);
     await this.wsModel.connect(this.gid);
     await this.wsModel.subscribeToWebsocketEvents();
+    this.gameModel.setSyncing(false);
+    this.emitUpdate();
   }
 
   async disconnect() {

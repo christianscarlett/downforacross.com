@@ -3,11 +3,14 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import GridEntry, {GridEntryState} from '../../lib/Puzzle/GridEntry';
 import CursorState from '../../lib/Puzzle/CursorState';
+import PlayerState from '../../lib/Player/PlayerState';
+import _ from 'lodash';
 
 export interface CellComponentProps {
   gridEntry: GridEntry;
   squareSize: number;
   gridBorderWidth: number;
+  cursors: PlayerState[];
 }
 
 function useGridEntryState(gridEntry: GridEntry): GridEntryState {
@@ -45,10 +48,14 @@ function getCursorsView(
 }
 
 function CellComponent(props: CellComponentProps): React.JSX.Element {
-  const {gridEntry, squareSize, gridBorderWidth} = props;
+  const {gridEntry, squareSize, gridBorderWidth, cursors} = props;
   const [theme] = useTheme();
   const state = useGridEntryState(gridEntry);
-  const cursorViews = getCursorsView(state.cursors, squareSize);
+
+  const cursorStates = cursors.map(
+    (playerState, i) => new CursorState(i.toString(), playerState.color),
+  );
+  const cursorViews = getCursorsView(cursorStates, squareSize);
 
   const styles = makeStyles(theme, state, squareSize, gridBorderWidth);
   return (
@@ -116,4 +123,13 @@ const makeStyles = (
   });
 };
 
-export default memo(CellComponent);
+function arePropsEqual(
+  oldProps: CellComponentProps,
+  newProps: CellComponentProps,
+): boolean {
+  return _.isEqual(oldProps, newProps);
+}
+
+const MemoCellComponent = memo(CellComponent, arePropsEqual);
+
+export default MemoCellComponent;

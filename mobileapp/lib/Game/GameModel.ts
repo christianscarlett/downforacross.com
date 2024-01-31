@@ -7,11 +7,13 @@ import HistoryModel from '../History/HistoryModel';
 import PlayerModel from '../Player/PlayerModel';
 import PuzzleModel from '../Puzzle/PuzzleModel';
 import PuzzleInfo from './PuzzleInfo';
+import {WsUpdateColorEvent} from '../Events/WsUpdateColorEvent';
+import {WsUpdateCursorEvent} from '../Events/WsUpdateCursorEvent';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
   playerModel: PlayerModel = new PlayerModel();
-  puzzleModel: PuzzleModel = new PuzzleModel([], this.playerModel);
+  puzzleModel: PuzzleModel = new PuzzleModel([]);
   puzzleInfo: PuzzleInfo | null = null;
   chatModel: ChatModel = new ChatModel();
 
@@ -26,6 +28,10 @@ class GameModel extends EventEmitter {
       this.onUpdateDisplayNameEvent(event as WsUpdateDisplayNameEvent);
     } else if (event.type === 'chat') {
       this.onChatEvent(event as WsChatEvent);
+    } else if (event.type === 'updateCursor') {
+      this.onUpdateCursorEvent(event as WsUpdateCursorEvent);
+    } else if (event.type === 'updateColor') {
+      this.onUpdateColorEvent(event as WsUpdateColorEvent);
     } else {
       this.puzzleModel.updateForEvent(event);
     }
@@ -33,28 +39,34 @@ class GameModel extends EventEmitter {
       // console.log(event.type);
       this.events.add(event.type);
     }
+    this.emitUpdate();
+  }
+
+  private onUpdateColorEvent(event: WsUpdateColorEvent) {
+    const {id, color} = event.params;
+    this.playerModel.updateState(id, {
+      color: color,
+    });
+  }
+
+  private onUpdateCursorEvent(event: WsUpdateCursorEvent) {
+    const {cell, id} = event.params;
+    this.playerModel.updateState(id, {cursorPos: cell});
   }
 
   private onChatEvent(event: WsChatEvent) {
     const {senderId, text} = event.params;
     this.chatModel.pushMessage(senderId, text, event.timestamp);
-    this.emitUpdate();
   }
 
   private onUpdateDisplayNameEvent(event: WsUpdateDisplayNameEvent) {
     const {id, displayName} = event.params;
     this.playerModel.updateState(id, {displayName});
-    this.emitUpdate();
   }
 
   private onCreateEvent(event: WsCreateEvent) {
-    this.puzzleModel = PuzzleModel.fromWsGrid(
-      event.params.game.grid,
-      this.playerModel,
-    );
-    this.puzzleModel.setSyncing(this.syncing);
+    this.puzzleModel = PuzzleModel.fromWsGrid(event.params.game.grid);
     this.puzzleInfo = {...event.params.game.info};
-    this.emitUpdate();
   }
 
   setSyncing(syncing: boolean) {
@@ -63,7 +75,9 @@ class GameModel extends EventEmitter {
   }
 
   private emitUpdate() {
-    this.emit('update');
+    if (!this.syncing) {
+      this.emit('update');
+    }
   }
 }
 
