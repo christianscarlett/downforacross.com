@@ -1,32 +1,30 @@
 import {EventEmitter} from 'events';
-import GameWebsocketModel from './GameWebsocketModel';
+import WebsocketModel from './WebsocketModel';
 import GameModel from './GameModel';
 
+/** This class acts as a bridge between the websocket and the model of the game. */
 class GameManager extends EventEmitter {
   gid: string;
-  gameWsModel: GameWebsocketModel;
+  wsModel: WebsocketModel;
   gameModel: GameModel;
 
   constructor() {
     super();
     // Dummy placeholders
     this.gid = '';
-    this.gameWsModel = new GameWebsocketModel('');
+    this.wsModel = new WebsocketModel('');
     this.gameModel = new GameModel();
   }
 
   init(gid: string) {
     this.gid = gid;
-    this.gameWsModel = new GameWebsocketModel(this.gid);
+    this.wsModel = new WebsocketModel(this.gid);
     this.gameModel = new GameModel();
     this.initGameListeners();
   }
 
   private initGameListeners() {
-    this.gameWsModel.on('wsCreateEvent', (event: any) => {
-      this.gameModel.updateForEvent(event);
-    });
-    this.gameWsModel.on('wsEvent', (event: any) => {
+    this.wsModel.on('wsEvent', (event: any) => {
       this.gameModel.updateForEvent(event);
     });
     this.gameModel.on('update', () => {
@@ -39,12 +37,12 @@ class GameManager extends EventEmitter {
   }
 
   async connect() {
-    await this.gameWsModel?.connectToWebsocket();
-    await this.gameWsModel?.subscribeToWebsocketEvents();
+    await this.wsModel?.connectToWebsocket();
+    await this.wsModel?.subscribeToWebsocketEvents();
   }
 
   async disconnect() {
-    this.gameWsModel?.disconnect();
+    this.wsModel?.disconnect();
   }
 }
 

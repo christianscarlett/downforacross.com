@@ -2,7 +2,8 @@ import {EventEmitter} from 'events';
 import {initSocket} from '../Socket/initSocket';
 import {emitAsync} from '../Socket/emitAsync';
 
-class GameWebsocketModel extends EventEmitter {
+/** This class manages the websocket connection and emits its events. */
+class WebsocketModel extends EventEmitter {
   gid: string;
   socket!: SocketIOClient.Socket;
   latency = -1;
@@ -68,12 +69,8 @@ class GameWebsocketModel extends EventEmitter {
   }
 
   emitWSEvent(event: any) {
-    if (event.type === 'create') {
-      this.emit('wsCreateEvent', event);
-    } else {
-      this.emit('wsEvent', event);
-    }
+    this.emit('wsEvent', event);
   }
 }
 
-export default GameWebsocketModel;
+export default WebsocketModel;

@@ -30,14 +30,14 @@ function Game(): React.JSX.Element {
     gameManager.connect();
 
     function onLatencyUpdate() {
-      setLatency(gameManager.gameWsModel.latency);
+      setLatency(gameManager.wsModel.latency);
     }
-    gameManager.gameWsModel.on('latencyUpdate', onLatencyUpdate);
+    gameManager.wsModel.on('latencyUpdate', onLatencyUpdate);
 
     return () => {
       gameManager.disconnect();
       gameManager.gameModel.removeListener('update', onGameModelUpdate);
-      gameManager.gameWsModel.removeListener('latencyUpdate', onLatencyUpdate);
+      gameManager.wsModel.removeListener('latencyUpdate', onLatencyUpdate);
     };
   }, [gameManager, gid]);
 
