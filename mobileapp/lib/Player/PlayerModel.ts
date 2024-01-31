@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import PlayerState from './PlayerState';
 
-class PlayerStateManager extends EventEmitter {
+class PlayerModel extends EventEmitter {
   private idToState: Map<string, PlayerState>;
 
   constructor() {
@@ -32,4 +32,4 @@ class PlayerStateManager extends EventEmitter {
   }
 }
 
-export default PlayerStateManager;
+export default PlayerModel;

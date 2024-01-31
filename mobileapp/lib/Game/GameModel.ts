@@ -6,15 +6,15 @@ import {
   WsUpdateDisplayNameEvent,
 } from '../Events/WsEventTypes';
 import HistoryModel from '../History/HistoryModel';
-import PuzzleState from './PuzzleState';
-import PlayerStateManager from './PlayerStateManager';
+import PuzzleModel from '../Puzzle/PuzzleModel';
+import PlayerModel from '../Player/PlayerModel';
 import PuzzleInfo from './PuzzleInfo';
-import ChatModel from './ChatModel';
+import ChatModel from '../Chat/ChatModel';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
-  playerStateManager: PlayerStateManager = new PlayerStateManager();
-  puzzleState: PuzzleState = new PuzzleState([], this.playerStateManager);
+  playerModel: PlayerModel = new PlayerModel();
+  puzzleModel: PuzzleModel = new PuzzleModel([], this.playerModel);
   puzzleInfo: PuzzleInfo | null = null;
   chatModel: ChatModel = new ChatModel();
 
@@ -38,7 +38,7 @@ class GameModel extends EventEmitter {
     } else if (event.type === 'chat') {
       this.onChatEvent(event as WsChatEvent);
     } else {
-      this.puzzleState.updateForEvent(event);
+      this.puzzleModel.updateForEvent(event);
     }
   }
 
@@ -50,14 +50,14 @@ class GameModel extends EventEmitter {
 
   private onUpdateDisplayNameEvent(event: WsUpdateDisplayNameEvent) {
     const {id, displayName} = event.params;
-    this.playerStateManager.updateState(id, {displayName});
+    this.playerModel.updateState(id, {displayName});
     this.emitUpdate();
   }
 
   private onCreateEvent(event: WsCreateEvent) {
-    this.puzzleState = PuzzleState.fromWsGrid(
+    this.puzzleModel = PuzzleModel.fromWsGrid(
       event.params.game.grid,
-      this.playerStateManager,
+      this.playerModel,
     );
     this.puzzleInfo = {...event.params.game.info};
     this.emitUpdate();

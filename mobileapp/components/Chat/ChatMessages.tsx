@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import ChatMessage from './ChatMessage';
-import Message from '../../lib/Puzzle/Message';
+import Message from '../../lib/Chat/Message';
 import GameManager from '../../lib/Game/GameManager';
 import useGameManager from '../../lib/Game/useGameManager';
 
@@ -27,7 +27,7 @@ function messageToMessageData(
     messageText: text,
     time: timestamp,
   };
-  const state = gameManager.gameModel.playerStateManager.getState(senderId);
+  const state = gameManager.gameModel.playerModel.getState(senderId);
   if (state) {
     messageData.displayName = state.displayName;
     messageData.nameColor = state.color;

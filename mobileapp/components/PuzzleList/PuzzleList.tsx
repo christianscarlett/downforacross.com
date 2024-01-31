@@ -2,13 +2,15 @@ import React, {useEffect, useState} from 'react';
 import PuzzleCard from './PuzzleCard';
 import {ActivityIndicator, FlatList, StyleSheet} from 'react-native';
 import PuzzleListRepo from '../../lib/PuzzleList/PuzzleListRepo';
-import Puzzle from '../../lib/PuzzleList/PuzzleListItem';
+import PuzzleListItem from '../../lib/PuzzleList/PuzzleListItem';
 
 function PuzzleList(): React.JSX.Element {
   let puzzleRepo = PuzzleListRepo.getInstance();
 
   let [isRefreshing, setIsRefreshing] = useState(false);
-  let [puzzles, setPuzzles] = useState<Puzzle[]>(puzzleRepo.getPuzzles());
+  let [puzzles, setPuzzles] = useState<PuzzleListItem[]>(
+    puzzleRepo.getPuzzles(),
+  );
 
   useEffect(() => {
     async function initialFetch() {

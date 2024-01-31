@@ -1,5 +1,5 @@
 import React from 'react';
-import PlayerState from '../../lib/Puzzle/PlayerState';
+import PlayerState from '../../lib/Player/PlayerState';
 import {StyleSheet, Text, View} from 'react-native';
 
 interface PlayerProps {
@@ -39,7 +39,7 @@ export interface PlayersProps {
   playerStates: PlayerState[];
 }
 
-function Players(props: PlayersProps) {
+function PlayerStatuses(props: PlayersProps) {
   const {playerStates} = props;
   const players = playerStates.map((state, i) => (
     <Player key={i} playerState={state} />
@@ -57,4 +57,4 @@ const makeStyles = () =>
     },
   });
 
-export default Players;
+export default PlayerStatuses;

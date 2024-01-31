@@ -17,13 +17,13 @@ function Game(): React.JSX.Element {
   const [gid] = useState(GID);
   const [latency, setLatency] = useState<number | null>(null);
   const gameManager = useGameManager();
-  const [grid, setGrid] = useState(gameManager.gameModel.puzzleState.grid);
+  const [grid, setGrid] = useState(gameManager.gameModel.puzzleModel.grid);
 
   useEffect(() => {
     gameManager.init(gid);
 
     function onGameModelUpdate() {
-      setGrid(gameManager.gameModel.puzzleState.grid);
+      setGrid(gameManager.gameModel.puzzleModel.grid);
     }
     gameManager.gameModel.on('update', onGameModelUpdate);
 

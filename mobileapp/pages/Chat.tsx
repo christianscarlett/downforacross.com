@@ -4,7 +4,7 @@ import PuzzleInfoHeader from '../components/Chat/PuzzleInfoHeader';
 import {StyleSheet, View} from 'react-native';
 import {Theme, useTheme} from '../lib/Theme';
 import ChatMessages from '../components/Chat/ChatMessages';
-import Players from '../components/Chat/Players';
+import PlayerStatuses from '../components/Chat/PlayerStatuses';
 
 function Divider() {
   const [theme] = useTheme();
@@ -22,14 +22,14 @@ function Chat() {
     gameManager.gameModel.chatModel.getMessages(),
   );
   const [playerStates, setPlayerStates] = useState(
-    gameManager.gameModel.playerStateManager.getAllStates(),
+    gameManager.gameModel.playerModel.getAllStates(),
   );
 
   useEffect(() => {
     function onUpdate() {
       setPuzzleInfo(gameManager.gameModel.puzzleInfo);
       setMessages([...gameManager.gameModel.chatModel.getMessages()]);
-      setPlayerStates(gameManager.gameModel.playerStateManager.getAllStates());
+      setPlayerStates(gameManager.gameModel.playerModel.getAllStates());
     }
     gameManager.on('update', onUpdate);
     return () => {
@@ -42,7 +42,7 @@ function Chat() {
     <View style={styles.chat}>
       {puzzleInfo && <PuzzleInfoHeader puzzleInfo={puzzleInfo} />}
       <Divider />
-      <Players playerStates={playerStates} />
+      <PlayerStatuses playerStates={playerStates} />
       <Divider />
       <ChatMessages chatMessages={messages} />
     </View>

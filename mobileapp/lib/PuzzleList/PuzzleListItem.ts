@@ -1,6 +1,6 @@
 import {PuzzleJson, PuzzleStatsJson} from '../../shared/types';
 
-export default class Puzzle {
+export default class PuzzleListItem {
   pid: string;
   content: PuzzleJson;
   stats: PuzzleStatsJson;

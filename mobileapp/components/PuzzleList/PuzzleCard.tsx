@@ -3,11 +3,11 @@ import _ from 'lodash';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PageNames from '../../lib/PageNames';
-import Puzzle from '../../lib/PuzzleList/PuzzleListItem';
+import PuzzleListItem from '../../lib/PuzzleList/PuzzleListItem';
 import {Theme, useTheme} from '../../lib/Theme';
 
 interface PuzzleCardProps {
-  puzzle: Puzzle;
+  puzzle: PuzzleListItem;
 }
 
 function PuzzleCard(props: PuzzleCardProps): React.JSX.Element {

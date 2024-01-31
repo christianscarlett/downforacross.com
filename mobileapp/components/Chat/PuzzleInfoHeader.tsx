@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import PuzzleInfo from '../../lib/Puzzle/PuzzleInfo';
+import PuzzleInfo from '../../lib/Game/PuzzleInfo';
 import {Theme, useTheme} from '../../lib/Theme';
 
 export interface PuzzleInfoHeaderProps {

@@ -9,15 +9,15 @@ import {
 } from '../Events/WsEventTypes';
 import CursorState from './CursorState';
 import GridEntry from './GridEntry';
-import PlayerStateManager from './PlayerStateManager';
+import PlayerModel from '../Player/PlayerModel';
 
-class PuzzleState {
+class PuzzleModel {
   grid: GridEntry[][];
-  playerStateManager: PlayerStateManager;
+  playerModel: PlayerModel;
 
-  constructor(grid: GridEntry[][], playerStateManager: PlayerStateManager) {
-    this.grid = PuzzleState.copyGrid(grid);
-    this.playerStateManager = playerStateManager;
+  constructor(grid: GridEntry[][], playerModel: PlayerModel) {
+    this.grid = PuzzleModel.copyGrid(grid);
+    this.playerModel = playerModel;
   }
 
   updateForEvent(event: WsEvent) {
@@ -32,10 +32,10 @@ class PuzzleState {
 
   private onUpdateColorEvent(event: WsUpdateColorEvent) {
     const {id, color} = event.params;
-    this.playerStateManager.updateState(id, {
+    this.playerModel.updateState(id, {
       color: color,
     });
-    const state = this.playerStateManager.getState(id);
+    const state = this.playerModel.getState(id);
     if (state) {
       this.getGridEntry(state.cursorPos).updateCursor(id, color);
     }
@@ -49,7 +49,7 @@ class PuzzleState {
   private onUpdateCursorEvent(event: WsUpdateCursorEvent) {
     const {cell, id} = event.params;
     // Remove cursor from previous cell
-    const oldState = this.playerStateManager.getState(id);
+    const oldState = this.playerModel.getState(id);
     if (oldState != null) {
       const oldGridEntry = this.getGridEntry(oldState.cursorPos);
       oldGridEntry.update({
@@ -62,14 +62,11 @@ class PuzzleState {
     const newGridEntry = this.getGridEntry(cell);
     newGridEntry.update({
       cursors: withItems(newGridEntry.getState().cursors, [
-        new CursorState(
-          id,
-          this.playerStateManager.getState(id)?.color ?? 'white',
-        ),
+        new CursorState(id, this.playerModel.getState(id)?.color ?? 'white'),
       ]),
     });
     // Update player state
-    this.playerStateManager.updateState(id, {cursorPos: cell});
+    this.playerModel.updateState(id, {cursorPos: cell});
   }
 
   getGridEntry(cell: WsCell): GridEntry {
@@ -88,9 +85,9 @@ class PuzzleState {
 
   static fromWsGrid(
     wsGrid: WsGridEntry[][],
-    playerState: PlayerStateManager,
-  ): PuzzleState {
-    return new PuzzleState(
+    playerState: PlayerModel,
+  ): PuzzleModel {
+    return new PuzzleModel(
       wsGrid.map((rows, r) =>
         rows.map((entry, c) => GridEntry.fromWsGridEntry(entry, r, c)),
       ),
@@ -99,4 +96,4 @@ class PuzzleState {
   }
 }
 
-export default PuzzleState;
+export default PuzzleModel;

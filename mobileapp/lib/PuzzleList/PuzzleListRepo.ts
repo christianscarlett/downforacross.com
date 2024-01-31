@@ -1,5 +1,5 @@
 import {fetchPuzzleList} from '../../api/puzzle_list';
-import Puzzle from './PuzzleListItem';
+import PuzzleListItem from './PuzzleListItem';
 
 /** Repository for the list of puzzles */
 export default class PuzzleListRepo {
@@ -19,12 +19,12 @@ export default class PuzzleListRepo {
   private currentPage = 0;
   private PAGE_SIZE = 10;
 
-  private puzzles: Puzzle[] = [];
+  private puzzles: PuzzleListItem[] = [];
 
   /**
    * Get all puzzles currently stored in the repo
    */
-  getPuzzles(): Puzzle[] {
+  getPuzzles(): PuzzleListItem[] {
     return this.puzzles;
   }
 
@@ -49,7 +49,7 @@ export default class PuzzleListRepo {
     });
 
     let newPuzzles = puzzleListResponse.puzzles.map(
-      p => new Puzzle(p.pid, p.content, p.stats),
+      p => new PuzzleListItem(p.pid, p.content, p.stats),
     );
 
     this.puzzles = this.puzzles.concat(newPuzzles);

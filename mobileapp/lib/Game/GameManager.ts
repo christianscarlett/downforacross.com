@@ -1,6 +1,6 @@
 import {EventEmitter} from 'events';
 import GameWebsocketModel from './GameWebsocketModel';
-import GameModel from '../Puzzle/GameModel';
+import GameModel from './GameModel';
 
 class GameManager extends EventEmitter {
   gid: string;
