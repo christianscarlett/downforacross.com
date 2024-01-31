@@ -18,6 +18,7 @@ export interface GridEntryState {
 
 class GridEntry extends EventEmitter {
   state: GridEntryState;
+  syncing: boolean = false;
 
   constructor(state: GridEntryState) {
     super();
@@ -44,7 +45,9 @@ class GridEntry extends EventEmitter {
   }
 
   emitUpdate() {
-    this.emit('update');
+    if (!this.syncing) {
+      this.emit('update');
+    }
   }
 
   copy(): GridEntry {

@@ -25,6 +25,12 @@ class GameManager extends EventEmitter {
     this.wsModel.on('wsEvent', (event: any) => {
       this.gameModel.updateForEvent(event);
     });
+    this.wsModel.on('sync_start', () => {
+      this.gameModel.setSyncing(true);
+    });
+    this.wsModel.on('sync_end', () => {
+      this.gameModel.setSyncing(false);
+    });
     this.gameModel.on('update', () => {
       this.emitUpdate();
     });

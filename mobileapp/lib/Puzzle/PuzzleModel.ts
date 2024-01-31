@@ -71,6 +71,10 @@ class PuzzleModel {
     return this.grid[cell.r][cell.c];
   }
 
+  setSyncing(syncing: boolean) {
+    this.grid.forEach(row => row.forEach(entry => (entry.syncing = syncing)));
+  }
+
   static copyGrid(grid: GridEntry[][]): GridEntry[][] {
     const copy = deepCopyObject(grid);
     for (let r = 0; r < copy.length; r++) {

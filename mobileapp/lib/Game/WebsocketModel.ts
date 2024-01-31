@@ -55,10 +55,20 @@ class WebsocketModel extends EventEmitter {
     );
     const startTime = Date.now();
     console.debug('syncing');
+    this.emitSyncStart();
     (response as any).forEach((event: any) => {
       this.emitWsEvent(event);
     });
     console.debug(`finished sync | ${Date.now() - startTime} ms`);
+    this.emitSyncEnd();
+  }
+
+  emitSyncStart() {
+    this.emit('sync_start');
+  }
+
+  emitSyncEnd() {
+    this.emit('sync_end');
   }
 
   emitWsEvent(event: any) {

@@ -15,6 +15,8 @@ class GameModel extends EventEmitter {
   puzzleInfo: PuzzleInfo | null = null;
   chatModel: ChatModel = new ChatModel();
 
+  private syncing: boolean = false;
+
   events = new Set();
   updateForEvent(event: any) {
     this.historyModel.pushEvent(event);
@@ -50,8 +52,14 @@ class GameModel extends EventEmitter {
       event.params.game.grid,
       this.playerModel,
     );
+    this.puzzleModel.setSyncing(this.syncing);
     this.puzzleInfo = {...event.params.game.info};
     this.emitUpdate();
+  }
+
+  setSyncing(syncing: boolean) {
+    this.syncing = syncing;
+    this.puzzleModel.setSyncing(syncing);
   }
 
   private emitUpdate() {
