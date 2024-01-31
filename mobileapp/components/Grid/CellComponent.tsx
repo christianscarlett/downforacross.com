@@ -2,13 +2,11 @@ import React, {memo, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import GridEntry, {GridEntryState} from '../../lib/Puzzle/GridEntry';
-import GameManager from '../../lib/Game/GameManager';
 import CursorState from '../../lib/Puzzle/CursorState';
 
 export interface CellComponentProps {
   gridEntry: GridEntry;
   squareSize: number;
-  gameManager: GameManager;
   gridBorderWidth: number;
 }
 

@@ -8,13 +8,12 @@ import {Theme, useTheme} from '../../lib/Theme';
 
 interface RowProps {
   gridEntries: GridEntry[];
-  gameManager: GameManager;
   squareSize: number;
   gridBorderWidth: number;
 }
 
 function Row(props: RowProps) {
-  const {gridEntries, gameManager, squareSize, gridBorderWidth} = props;
+  const {gridEntries, squareSize, gridBorderWidth} = props;
   const styles = makeStyles();
 
   const cells = gridEntries.map((entry, i) => (
@@ -22,7 +21,6 @@ function Row(props: RowProps) {
       key={i}
       gridEntry={entry}
       squareSize={squareSize}
-      gameManager={gameManager}
       gridBorderWidth={gridBorderWidth}
     />
   ));
@@ -36,14 +34,13 @@ interface ColProps {
 }
 
 function Col(props: ColProps) {
-  const {grid, gameManager, squareSize} = props;
+  const {grid, squareSize} = props;
   const gridBorderWidth = squareSize / 80;
 
   const rows = grid.map((entries, i) => (
     <Row
       key={i}
       gridEntries={entries}
-      gameManager={gameManager}
       squareSize={squareSize}
       gridBorderWidth={gridBorderWidth}
     />
