@@ -21,7 +21,7 @@ function Row(props: RowProps) {
   const cells = gridEntries.map((entry, i) => (
     <MemoCellComponent
       key={i}
-      gridEntry={entry}
+      gridEntryState={entry.state}
       squareSize={squareSize}
       gridBorderWidth={gridBorderWidth}
       cursors={playerStates.filter(

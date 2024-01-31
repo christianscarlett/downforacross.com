@@ -2,13 +2,13 @@ import EventEmitter from 'events';
 import ChatModel from '../Chat/ChatModel';
 import {WsChatEvent} from '../Events/WsChatEvent';
 import {WsCreateEvent} from '../Events/WsCreateEvent';
+import {WsUpdateColorEvent} from '../Events/WsUpdateColorEvent';
+import {WsUpdateCursorEvent} from '../Events/WsUpdateCursorEvent';
 import {WsUpdateDisplayNameEvent} from '../Events/WsUpdateDisplayNameEvent';
 import HistoryModel from '../History/HistoryModel';
 import PlayerModel from '../Player/PlayerModel';
 import PuzzleModel from '../Puzzle/PuzzleModel';
 import PuzzleInfo from './PuzzleInfo';
-import {WsUpdateColorEvent} from '../Events/WsUpdateColorEvent';
-import {WsUpdateCursorEvent} from '../Events/WsUpdateCursorEvent';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
@@ -71,7 +71,6 @@ class GameModel extends EventEmitter {
 
   setSyncing(syncing: boolean) {
     this.syncing = syncing;
-    this.puzzleModel.setSyncing(syncing);
   }
 
   private emitUpdate() {

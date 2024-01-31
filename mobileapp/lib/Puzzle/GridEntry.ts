@@ -1,5 +1,4 @@
-import EventEmitter from 'events';
-import {deepCopyObject} from '../../util/util';
+import _ from 'lodash';
 import {WsGridEntry} from '../Events/WsGridEntry';
 
 export interface GridEntryState {
@@ -14,12 +13,10 @@ export interface GridEntryState {
   value: string;
 }
 
-class GridEntry extends EventEmitter {
+class GridEntry {
   state: GridEntryState;
-  syncing: boolean = false;
 
   constructor(state: GridEntryState) {
-    super();
     this.state = state;
   }
 
@@ -30,25 +27,7 @@ class GridEntry extends EventEmitter {
   }
 
   update(newState: Partial<GridEntryState>) {
-    this.state = GridEntry.copyState({...this.state, ...newState});
-    this.emitUpdate();
-  }
-
-  emitUpdate() {
-    if (!this.syncing) {
-      this.emit('update');
-    }
-  }
-
-  copy(): GridEntry {
-    return new GridEntry(GridEntry.copyState(this.state));
-  }
-
-  static copyState(state: GridEntryState): GridEntryState {
-    return {
-      ...state,
-      edits: deepCopyObject(state.edits),
-    };
+    this.state = _.cloneDeep({...this.state, ...newState});
   }
 
   static makeState(

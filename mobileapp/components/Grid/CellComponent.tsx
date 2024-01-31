@@ -1,32 +1,16 @@
-import React, {memo, useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {Theme, useTheme} from '../../lib/Theme';
-import GridEntry, {GridEntryState} from '../../lib/Puzzle/GridEntry';
-import CursorState from '../../lib/Puzzle/CursorState';
-import PlayerState from '../../lib/Player/PlayerState';
 import _ from 'lodash';
+import React, {memo} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import PlayerState from '../../lib/Player/PlayerState';
+import CursorState from '../../lib/Puzzle/CursorState';
+import {GridEntryState} from '../../lib/Puzzle/GridEntry';
+import {Theme, useTheme} from '../../lib/Theme';
 
 export interface CellComponentProps {
-  gridEntry: GridEntry;
+  gridEntryState: GridEntryState;
   squareSize: number;
   gridBorderWidth: number;
   cursors: PlayerState[];
-}
-
-function useGridEntryState(gridEntry: GridEntry): GridEntryState {
-  const [state, setState] = useState(gridEntry.getState());
-
-  useEffect(() => {
-    function gridEntryListener() {
-      setState(gridEntry.getState());
-    }
-    gridEntry.on('update', gridEntryListener);
-    return () => {
-      gridEntry.removeListener('update', gridEntryListener);
-    };
-  }, [gridEntry]);
-
-  return state;
 }
 
 function getCursorsView(
@@ -48,26 +32,24 @@ function getCursorsView(
 }
 
 function CellComponent(props: CellComponentProps): React.JSX.Element {
-  const {gridEntry, squareSize, gridBorderWidth, cursors} = props;
+  const {gridEntryState, squareSize, gridBorderWidth, cursors} = props;
   const [theme] = useTheme();
-  const state = useGridEntryState(gridEntry);
-
   const cursorStates = cursors.map(
     (playerState, i) => new CursorState(i.toString(), playerState.color),
   );
   const cursorViews = getCursorsView(cursorStates, squareSize);
 
-  const styles = makeStyles(theme, state, squareSize, gridBorderWidth);
+  const styles = makeStyles(theme, gridEntryState, squareSize, gridBorderWidth);
   return (
     <View style={styles.gridEntry}>
       {cursorViews}
-      <Text style={styles.gridEntryNumber}>{state.number}</Text>
+      <Text style={styles.gridEntryNumber}>{gridEntryState.number}</Text>
       <Text
         style={styles.gridEntryValue}
         adjustsFontSizeToFit={true}
         numberOfLines={1}
       >
-        {state.value}
+        {gridEntryState.value}
       </Text>
     </View>
   );
