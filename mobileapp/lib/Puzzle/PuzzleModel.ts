@@ -1,15 +1,13 @@
 import {deepCopyObject, withItems} from '../../util/util';
-import {
-  WsCell,
-  WsEvent,
-  WsGridEntry,
-  WsUpdateCellEvent,
-  WsUpdateColorEvent,
-  WsUpdateCursorEvent,
-} from '../Events/WsEventTypes';
+import {WsCell} from '../Events/WsCell';
+import {WsEvent} from '../Events/WsEvent';
+import {WsGridEntry} from '../Events/WsGridEntry';
+import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
+import {WsUpdateColorEvent} from '../Events/WsUpdateColorEvent';
+import {WsUpdateCursorEvent} from '../Events/WsUpdateCursorEvent';
+import PlayerModel from '../Player/PlayerModel';
 import CursorState from './CursorState';
 import GridEntry from './GridEntry';
-import PlayerModel from '../Player/PlayerModel';
 
 class PuzzleModel {
   grid: GridEntry[][];

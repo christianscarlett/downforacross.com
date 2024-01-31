@@ -1,15 +1,13 @@
 import EventEmitter from 'events';
-import {
-  WsChatEvent,
-  WsCreateEvent,
-  WsEvent,
-  WsUpdateDisplayNameEvent,
-} from '../Events/WsEventTypes';
-import HistoryModel from '../History/HistoryModel';
-import PuzzleModel from '../Puzzle/PuzzleModel';
-import PlayerModel from '../Player/PlayerModel';
-import PuzzleInfo from './PuzzleInfo';
 import ChatModel from '../Chat/ChatModel';
+import {WsChatEvent} from '../Events/WsChatEvent';
+import {WsCreateEvent} from '../Events/WsCreateEvent';
+import {WsEvent} from '../Events/WsEvent';
+import {WsUpdateDisplayNameEvent} from '../Events/WsUpdateDisplayNameEvent';
+import HistoryModel from '../History/HistoryModel';
+import PlayerModel from '../Player/PlayerModel';
+import PuzzleModel from '../Puzzle/PuzzleModel';
+import PuzzleInfo from './PuzzleInfo';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();

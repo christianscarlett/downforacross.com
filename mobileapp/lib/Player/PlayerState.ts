@@ -1,8 +1,9 @@
-import {WsCell} from '../Events/WsEventTypes';
-
 interface PlayerState {
   color: string;
-  cursorPos: WsCell;
+  cursorPos: {
+    c: number;
+    r: number;
+  };
   displayName: string;
 }
 

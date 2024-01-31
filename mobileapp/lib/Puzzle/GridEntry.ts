@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import {deepCopyObject} from '../../util/util';
-import {WsGridEntry} from '../Events/WsEventTypes';
+import {WsGridEntry} from '../Events/WsGridEntry';
 import CursorState from './CursorState';
 
 export interface GridEntryState {
