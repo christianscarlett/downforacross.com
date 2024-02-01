@@ -1,17 +1,33 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Clues from '../../lib/Game/Clues';
+import Direction from '../../util/Direction';
 
-function ClueHeader() {
+export interface ClueHeaderProps {
+  clues: Clues;
+  clueIndex: number;
+  direction: Direction;
+}
+
+function ClueHeader(props: ClueHeaderProps) {
   const [theme] = useTheme();
+  const {clues, clueIndex, direction} = props;
+
+  const clueTexts = clues.getClues(direction);
+  const clueText = clueTexts[clueIndex];
 
   const styles = makeStyles(theme);
   return (
     <View style={styles.clueHeader}>
       <Icon name="keyboard-arrow-left" style={styles.chevronLeft} />
-      <Text style={styles.clueName}>1A</Text>
-      <Text style={styles.clueText}>This is a clue.</Text>
+      <Text style={styles.clueName}>{`${clueIndex}${
+        direction === Direction.ACROSS ? 'A' : 'D'
+      }`}</Text>
+      <ScrollView>
+        <Text style={styles.clueText}>{clueText}</Text>
+      </ScrollView>
       <Icon name="keyboard-arrow-right" style={styles.chevronRight} />
     </View>
   );
@@ -28,11 +44,12 @@ const makeStyles = (theme: Theme) =>
       paddingLeft: 10,
       paddingRight: 20,
       fontSize: 25,
-      marginLeft: 'auto',
     },
     clueText: {
       color: theme.colors.textPrimary,
       paddingHorizontal: 10,
+      flexShrink: 1,
+      flexGrow: 1,
     },
     clueName: {
       color: theme.colors.textPrimary,
@@ -41,6 +58,7 @@ const makeStyles = (theme: Theme) =>
     },
     clueHeader: {
       flexDirection: 'row',
+      flexWrap: 'nowrap',
       alignItems: 'center',
       height: 40,
       backgroundColor: theme.colors.tertiary,

@@ -66,7 +66,11 @@ function Game(): React.JSX.Element {
   const style = makeStyles(theme);
   return (
     <View style={style.game}>
-      <ClueHeader />
+      <ClueHeader
+        clues={gameManager.gameModel.clues}
+        clueIndex={1}
+        direction={direction}
+      />
       <GridComponent
         grid={grid}
         playerStates={playerStates}

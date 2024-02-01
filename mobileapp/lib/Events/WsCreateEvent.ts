@@ -15,8 +15,8 @@ export interface WsCreateEvent extends WsEvent {
         trueTotalTime: number;
       };
       clues: {
-        across: string[];
-        down: string[];
+        across: Array<string | null>;
+        down: Array<string | null>;
       };
       cursor: any;
       grid: WsGridEntry[][];
