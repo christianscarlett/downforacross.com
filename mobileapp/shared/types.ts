@@ -164,4 +164,4 @@ export interface RecordSolveRequest {
 
 export interface RecordSolveResponse {}
 
-export type CellCoords = {r: number; c: number};
+export type Coord = {r: number; c: number};

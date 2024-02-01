@@ -36,7 +36,7 @@ class GameModel extends EventEmitter {
       this.puzzleModel.updateForEvent(event);
     }
     if (!this.events.has(event.type)) {
-      // console.log(event.type);
+      console.log(event.type);
       this.events.add(event.type);
     }
     this.emitUpdate();
