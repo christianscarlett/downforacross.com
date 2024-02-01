@@ -69,7 +69,6 @@ function Game(): React.JSX.Element {
       <ClueHeader />
       <GridComponent
         grid={grid}
-        gameManager={gameManager}
         playerStates={playerStates}
         userState={userState}
         direction={direction}

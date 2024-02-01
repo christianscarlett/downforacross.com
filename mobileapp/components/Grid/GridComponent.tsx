@@ -2,7 +2,6 @@ import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view
 import _ from 'lodash';
 import React from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
-import GameManager from '../../lib/Game/GameManager';
 import PlayerState from '../../lib/Player/PlayerState';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
@@ -50,7 +49,6 @@ function Row(props: RowProps) {
 
 interface ColProps {
   grid: GridEntry[][];
-  gameManager: GameManager;
   squareSize: number;
   playerStates: PlayerState[];
   userState: PlayerState;
@@ -98,7 +96,6 @@ const makeColStyles = (theme: Theme, gridBorderWidth: number) =>
 
 export interface GridComponentProps {
   grid: GridEntry[][];
-  gameManager: GameManager;
   playerStates: PlayerState[];
   userState: PlayerState;
   direction: Direction;
@@ -106,14 +103,7 @@ export interface GridComponentProps {
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const {
-    grid,
-    gameManager,
-    playerStates,
-    userState,
-    direction,
-    onCellTap,
-  } = props;
+  const {grid, playerStates, userState, direction, onCellTap} = props;
   const styles = makeStyles();
 
   if (!grid[0]) {
@@ -148,7 +138,6 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
           <View style={{transform: [{scale: zoom}]}}>
             <Col
               grid={grid}
-              gameManager={gameManager}
               squareSize={scaledSquareSize}
               playerStates={playerStates}
               userState={userState}
