@@ -1,4 +1,5 @@
 interface PlayerState {
+  id: string;
   color: string;
   cursorPos: {
     c: number;

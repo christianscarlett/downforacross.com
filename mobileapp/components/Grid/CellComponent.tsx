@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React, {memo} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import PlayerState from '../../lib/Player/PlayerState';
-import CursorState from '../../lib/Puzzle/CursorState';
 import {GridEntryState} from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
 
@@ -14,7 +13,7 @@ export interface CellComponentProps {
 }
 
 function getCursorsView(
-  cursors: Array<CursorState>,
+  cursors: PlayerState[],
   squareSize: number,
 ): React.JSX.Element | null {
   if (cursors.length === 0) {
@@ -34,10 +33,7 @@ function getCursorsView(
 function CellComponent(props: CellComponentProps): React.JSX.Element {
   const {gridEntryState, squareSize, gridBorderWidth, cursors} = props;
   const [theme] = useTheme();
-  const cursorStates = cursors.map(
-    (playerState, i) => new CursorState(i.toString(), playerState.color),
-  );
-  const cursorViews = getCursorsView(cursorStates, squareSize);
+  const cursorViews = getCursorsView(cursors, squareSize);
 
   const styles = makeStyles(theme, gridEntryState, squareSize, gridBorderWidth);
   return (
@@ -55,7 +51,7 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
   );
 }
 
-const makeCursorStyle = (cursorState: CursorState, squareSize: number) => {
+const makeCursorStyle = (cursorState: PlayerState, squareSize: number) => {
   return StyleSheet.create({
     cursor: {
       position: 'absolute',

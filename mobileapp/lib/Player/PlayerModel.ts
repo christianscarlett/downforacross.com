@@ -10,7 +10,7 @@ class PlayerModel extends EventEmitter {
   }
 
   updateState(id: string, update: Partial<PlayerState>) {
-    const state = this.idToState.get(id) ?? this.createNewState();
+    const state = this.idToState.get(id) ?? this.createNewState(id);
     this.idToState.set(id, {...state, ...update});
     this.emit('update');
   }
@@ -23,8 +23,9 @@ class PlayerModel extends EventEmitter {
     return [...this.idToState.values()];
   }
 
-  createNewState(): PlayerState {
+  createNewState(id: string): PlayerState {
     return {
+      id,
       color: 'blue',
       cursorPos: {c: 0, r: 0},
       displayName: '',
