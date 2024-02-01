@@ -1,15 +1,20 @@
 import _ from 'lodash';
 import React, {memo} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PlayerState from '../../lib/Player/PlayerState';
 import {GridEntryState} from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
+import {Coord} from '../../shared/types';
+
+export type OnCellTap = (cell: Coord) => void;
 
 export interface CellComponentProps {
   gridEntryState: GridEntryState;
   squareSize: number;
   gridBorderWidth: number;
   cursors: PlayerState[];
+  userCursor: PlayerState | null;
+  onTap: OnCellTap;
 }
 
 function getCursorsView(
@@ -30,27 +35,6 @@ function getCursorsView(
   );
 }
 
-function CellComponent(props: CellComponentProps): React.JSX.Element {
-  const {gridEntryState, squareSize, gridBorderWidth, cursors} = props;
-  const [theme] = useTheme();
-  const cursorViews = getCursorsView(cursors, squareSize);
-
-  const styles = makeStyles(theme, gridEntryState, squareSize, gridBorderWidth);
-  return (
-    <View style={styles.gridEntry}>
-      {cursorViews}
-      <Text style={styles.gridEntryNumber}>{gridEntryState.number}</Text>
-      <Text
-        style={styles.gridEntryValue}
-        adjustsFontSizeToFit={true}
-        numberOfLines={1}
-      >
-        {gridEntryState.value}
-      </Text>
-    </View>
-  );
-}
-
 const makeCursorStyle = (cursorState: PlayerState, squareSize: number) => {
   return StyleSheet.create({
     cursor: {
@@ -63,11 +47,51 @@ const makeCursorStyle = (cursorState: PlayerState, squareSize: number) => {
   });
 };
 
+function CellComponent(props: CellComponentProps): React.JSX.Element {
+  const {
+    gridEntryState,
+    squareSize,
+    gridBorderWidth,
+    cursors,
+    userCursor,
+    onTap,
+  } = props;
+  const [theme] = useTheme();
+  const cursorViews = getCursorsView(cursors, squareSize);
+
+  const styles = makeStyles(
+    theme,
+    gridEntryState,
+    squareSize,
+    gridBorderWidth,
+    userCursor,
+  );
+  return (
+    <TouchableOpacity
+      disabled={gridEntryState.black}
+      onPress={() => onTap(gridEntryState.cell)}
+    >
+      <View style={styles.gridEntry}>
+        {cursorViews}
+        <Text style={styles.gridEntryNumber}>{gridEntryState.number}</Text>
+        <Text
+          style={styles.gridEntryValue}
+          adjustsFontSizeToFit={true}
+          numberOfLines={1}
+        >
+          {gridEntryState.value}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
 const makeStyles = (
   theme: Theme,
   state: GridEntryState,
   squareSize: number,
   gridBorderWidth: number,
+  userCursor: PlayerState | null,
 ) => {
   let numberPadding = squareSize / 10;
   let numberSize = squareSize / 5;
@@ -91,7 +115,11 @@ const makeStyles = (
     gridEntry: {
       borderWidth: gridBorderWidth,
       borderColor: theme.colors.border,
-      backgroundColor: state.black ? 'black' : 'white',
+      backgroundColor: state.black
+        ? 'black'
+        : userCursor
+        ? userCursor.color
+        : 'white',
       height: squareSize,
       width: squareSize,
       flexGrow: 0,

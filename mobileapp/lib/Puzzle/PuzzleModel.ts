@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {WsCell} from '../Events/WsCell';
+import {Coord} from '../../shared/types';
 import {WsEvent} from '../Events/WsEvent';
 import {WsGridEntry} from '../Events/WsGridEntry';
 import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
@@ -23,14 +23,14 @@ class PuzzleModel {
     this.getGridEntry(cell).update({value, color, pencil});
   }
 
-  getGridEntry(cell: WsCell): GridEntry {
+  getGridEntry(cell: Coord): GridEntry {
     return this.grid[cell.r][cell.c];
   }
 
   static fromWsGrid(wsGrid: WsGridEntry[][]): PuzzleModel {
     return new PuzzleModel(
       wsGrid.map((rows, r) =>
-        rows.map((entry, c) => GridEntry.fromWsGridEntry(entry, r, c)),
+        rows.map((entry, c) => GridEntry.fromWsGridEntry(entry, {r, c})),
       ),
     );
   }

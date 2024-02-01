@@ -1,9 +1,9 @@
 import _ from 'lodash';
+import {Coord} from '../../shared/types';
 import {WsGridEntry} from '../Events/WsGridEntry';
 
 export interface GridEntryState {
-  r: number;
-  c: number;
+  cell: Coord;
   black: boolean;
   color?: string;
   edits: Array<string>;
@@ -31,8 +31,7 @@ class GridEntry {
   }
 
   static makeState(
-    r: number,
-    c: number,
+    cell: Coord,
     black: boolean,
     edits: Array<string>,
     number: number,
@@ -40,8 +39,7 @@ class GridEntry {
     value: string,
   ): GridEntryState {
     return {
-      r,
-      c,
+      cell,
       black,
       edits,
       number,
@@ -51,11 +49,10 @@ class GridEntry {
     };
   }
 
-  static fromWsGridEntry(entry: WsGridEntry, r: number, c: number): GridEntry {
+  static fromWsGridEntry(entry: WsGridEntry, cell: Coord): GridEntry {
     return new GridEntry(
       GridEntry.makeState(
-        r,
-        c,
+        cell,
         entry.black,
         entry.edits,
         entry.number,
@@ -63,10 +60,6 @@ class GridEntry {
         entry.value,
       ),
     );
-  }
-
-  static getEmpty(): GridEntry {
-    return new GridEntry(GridEntry.makeState(0, 0, false, [], 1, [], 'A'));
   }
 }
 

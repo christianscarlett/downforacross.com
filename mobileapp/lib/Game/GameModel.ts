@@ -8,7 +8,9 @@ import {WsUpdateDisplayNameEvent} from '../Events/WsUpdateDisplayNameEvent';
 import HistoryModel from '../History/HistoryModel';
 import PlayerModel from '../Player/PlayerModel';
 import PuzzleModel from '../Puzzle/PuzzleModel';
+import UserModel from '../User/UserModel';
 import PuzzleInfo from './PuzzleInfo';
+import {Coord} from '../../shared/types';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
@@ -16,6 +18,7 @@ class GameModel extends EventEmitter {
   puzzleModel: PuzzleModel = new PuzzleModel([]);
   puzzleInfo: PuzzleInfo | null = null;
   chatModel: ChatModel = new ChatModel();
+  userModel: UserModel = new UserModel();
 
   private syncing: boolean = false;
 
@@ -67,6 +70,14 @@ class GameModel extends EventEmitter {
   private onCreateEvent(event: WsCreateEvent) {
     this.puzzleModel = PuzzleModel.fromWsGrid(event.params.game.grid);
     this.puzzleInfo = {...event.params.game.info};
+  }
+
+  onCellTap(cell: Coord) {
+    if (this.puzzleModel.getGridEntry(cell).state.black) {
+      return;
+    }
+    this.userModel.update({cursorPos: cell});
+    this.emitUpdate();
   }
 
   setSyncing(syncing: boolean) {

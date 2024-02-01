@@ -1,10 +1,9 @@
+import {Coord} from '../../shared/types';
+
 interface PlayerState {
   id: string;
   color: string;
-  cursorPos: {
-    c: number;
-    r: number;
-  };
+  cursorPos: Coord;
   displayName: string;
 }
 

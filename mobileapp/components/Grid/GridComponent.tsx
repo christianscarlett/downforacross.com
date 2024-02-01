@@ -1,21 +1,31 @@
+import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
+import _ from 'lodash';
 import React from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
-import MemoCellComponent from './CellComponent';
-import GridEntry from '../../lib/Puzzle/GridEntry';
 import GameManager from '../../lib/Game/GameManager';
-import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
-import {Theme, useTheme} from '../../lib/Theme';
 import PlayerState from '../../lib/Player/PlayerState';
+import GridEntry from '../../lib/Puzzle/GridEntry';
+import {Theme, useTheme} from '../../lib/Theme';
+import MemoCellComponent, {OnCellTap} from './CellComponent';
 
 interface RowProps {
   gridEntries: GridEntry[];
   squareSize: number;
   gridBorderWidth: number;
   playerStates: PlayerState[];
+  userState: PlayerState;
+  onCellTap: OnCellTap;
 }
 
 function Row(props: RowProps) {
-  const {gridEntries, squareSize, gridBorderWidth, playerStates} = props;
+  const {
+    gridEntries,
+    squareSize,
+    gridBorderWidth,
+    playerStates,
+    userState,
+    onCellTap,
+  } = props;
   const styles = makeStyles();
 
   const cells = gridEntries.map((entry, i) => (
@@ -24,11 +34,13 @@ function Row(props: RowProps) {
       gridEntryState={entry.state}
       squareSize={squareSize}
       gridBorderWidth={gridBorderWidth}
-      cursors={playerStates.filter(
-        playerState =>
-          playerState.cursorPos.c === entry.state.c &&
-          playerState.cursorPos.r === entry.state.r,
+      cursors={playerStates.filter(playerState =>
+        _.isEqual(playerState.cursorPos, entry.state.cell),
       )}
+      userCursor={
+        _.isEqual(userState.cursorPos, entry.state.cell) ? userState : null
+      }
+      onTap={onCellTap}
     />
   ));
   return <View style={styles.row}>{cells}</View>;
@@ -39,10 +51,12 @@ interface ColProps {
   gameManager: GameManager;
   squareSize: number;
   playerStates: PlayerState[];
+  userState: PlayerState;
+  onCellTap: OnCellTap;
 }
 
 function Col(props: ColProps) {
-  const {grid, squareSize, playerStates} = props;
+  const {grid, squareSize, playerStates, userState, onCellTap} = props;
   const gridBorderWidth = squareSize / 80;
 
   const rows = grid.map((entries, i) => (
@@ -52,6 +66,8 @@ function Col(props: ColProps) {
       squareSize={squareSize}
       gridBorderWidth={gridBorderWidth}
       playerStates={playerStates}
+      userState={userState}
+      onCellTap={onCellTap}
     />
   ));
 
@@ -73,10 +89,12 @@ export interface GridComponentProps {
   grid: GridEntry[][];
   gameManager: GameManager;
   playerStates: PlayerState[];
+  userState: PlayerState;
+  onCellTap: OnCellTap;
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const {grid, gameManager, playerStates} = props;
+  const {grid, gameManager, playerStates, userState, onCellTap} = props;
   const styles = makeStyles();
 
   if (!grid[0]) {
@@ -114,6 +132,8 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
               gameManager={gameManager}
               squareSize={scaledSquareSize}
               playerStates={playerStates}
+              userState={userState}
+              onCellTap={onCellTap}
             />
           </View>
         </ReactNativeZoomableView>

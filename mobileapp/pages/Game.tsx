@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {Theme, useTheme} from '../lib/Theme';
-import GridComponent from '../components/Grid/GridComponent';
 import ClueHeader from '../components/Clue/ClueHeader';
+import {OnCellTap} from '../components/Grid/CellComponent';
+import GridComponent from '../components/Grid/GridComponent';
 import useGameManager from '../lib/Game/useGameManager';
-import CursorState from '../lib/Puzzle/CursorState';
 import PlayerState from '../lib/Player/PlayerState';
+import {Theme, useTheme} from '../lib/Theme';
+import {Coord} from '../shared/types';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -23,11 +24,21 @@ function Game(): React.JSX.Element {
   const [playerStates, setPlayerStates] = useState<PlayerState[]>(
     gameManager.gameModel.playerModel.getAllStates(),
   );
+  const [userState, setUserState] = useState<PlayerState>(
+    gameManager.gameModel.userModel.state,
+  );
+  const onCellTap = useMemo<OnCellTap>(
+    () => (cell: Coord) => {
+      gameManager.gameModel.onCellTap(cell);
+    },
+    [gameManager],
+  );
 
   useEffect(() => {
     function onGameModelUpdate() {
       setGrid(gameManager.gameModel.puzzleModel.grid);
       setPlayerStates(gameManager.gameModel.playerModel.getAllStates());
+      setUserState({...gameManager.gameModel.userModel.state});
     }
     function onLatencyUpdate() {
       setLatency(gameManager.wsModel.latency);
@@ -56,6 +67,8 @@ function Game(): React.JSX.Element {
         grid={grid}
         gameManager={gameManager}
         playerStates={playerStates}
+        userState={userState}
+        onCellTap={onCellTap}
       />
       <Text>{'latency: ' + latency}</Text>
     </View>
