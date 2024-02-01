@@ -11,6 +11,8 @@ import PuzzleModel from '../Puzzle/PuzzleModel';
 import UserModel from '../User/UserModel';
 import PuzzleInfo from './PuzzleInfo';
 import {Coord} from '../../shared/types';
+import {areCoordsEqual} from '../../util/util';
+import {toggleDirection} from '../../util/Direction';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
@@ -76,7 +78,17 @@ class GameModel extends EventEmitter {
     if (this.puzzleModel.getGridEntry(cell).state.black) {
       return;
     }
-    this.userModel.update({cursorPos: cell});
+
+    if (areCoordsEqual(this.userModel.playerState.cursorPos, cell)) {
+      this.userModel.update({
+        ...this.userModel.state,
+        direction: toggleDirection(this.userModel.direction),
+      });
+    } else {
+      this.userModel.update({
+        playerState: {...this.userModel.playerState, cursorPos: cell},
+      });
+    }
     this.emitUpdate();
   }
 

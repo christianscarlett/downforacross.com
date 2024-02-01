@@ -7,6 +7,7 @@ import PlayerState from '../../lib/Player/PlayerState';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
 import MemoCellComponent, {OnCellTap} from './CellComponent';
+import Direction from '../../util/Direction';
 
 interface RowProps {
   gridEntries: GridEntry[];
@@ -14,6 +15,7 @@ interface RowProps {
   gridBorderWidth: number;
   playerStates: PlayerState[];
   userState: PlayerState;
+  direction: Direction;
   onCellTap: OnCellTap;
 }
 
@@ -52,11 +54,19 @@ interface ColProps {
   squareSize: number;
   playerStates: PlayerState[];
   userState: PlayerState;
+  direction: Direction;
   onCellTap: OnCellTap;
 }
 
 function Col(props: ColProps) {
-  const {grid, squareSize, playerStates, userState, onCellTap} = props;
+  const {
+    grid,
+    squareSize,
+    playerStates,
+    userState,
+    direction,
+    onCellTap,
+  } = props;
   const gridBorderWidth = squareSize / 80;
 
   const rows = grid.map((entries, i) => (
@@ -67,6 +77,7 @@ function Col(props: ColProps) {
       gridBorderWidth={gridBorderWidth}
       playerStates={playerStates}
       userState={userState}
+      direction={direction}
       onCellTap={onCellTap}
     />
   ));
@@ -90,11 +101,19 @@ export interface GridComponentProps {
   gameManager: GameManager;
   playerStates: PlayerState[];
   userState: PlayerState;
+  direction: Direction;
   onCellTap: OnCellTap;
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const {grid, gameManager, playerStates, userState, onCellTap} = props;
+  const {
+    grid,
+    gameManager,
+    playerStates,
+    userState,
+    direction,
+    onCellTap,
+  } = props;
   const styles = makeStyles();
 
   if (!grid[0]) {
@@ -133,6 +152,7 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
               squareSize={scaledSquareSize}
               playerStates={playerStates}
               userState={userState}
+              direction={direction}
               onCellTap={onCellTap}
             />
           </View>

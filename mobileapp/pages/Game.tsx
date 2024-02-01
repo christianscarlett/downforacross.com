@@ -7,6 +7,7 @@ import useGameManager from '../lib/Game/useGameManager';
 import PlayerState from '../lib/Player/PlayerState';
 import {Theme, useTheme} from '../lib/Theme';
 import {Coord} from '../shared/types';
+import Direction from '../util/Direction';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -16,17 +17,19 @@ const GID = '4539636-besp';
 // const GID = '4594515-splob';
 
 function Game(): React.JSX.Element {
+  const gameManager = useGameManager();
   const [theme] = useTheme();
   const [gid] = useState(GID);
   const [latency, setLatency] = useState<number | null>(null);
-  const gameManager = useGameManager();
   const [grid, setGrid] = useState(gameManager.gameModel.puzzleModel.grid);
   const [playerStates, setPlayerStates] = useState<PlayerState[]>(
     gameManager.gameModel.playerModel.getAllStates(),
   );
   const [userState, setUserState] = useState<PlayerState>(
-    gameManager.gameModel.userModel.state,
+    gameManager.gameModel.userModel.playerState,
   );
+  const [direction, setDirection] = useState<Direction>(Direction.ACROSS);
+
   const onCellTap = useMemo<OnCellTap>(
     () => (cell: Coord) => {
       gameManager.gameModel.onCellTap(cell);
@@ -38,7 +41,8 @@ function Game(): React.JSX.Element {
     function onGameModelUpdate() {
       setGrid(gameManager.gameModel.puzzleModel.grid);
       setPlayerStates(gameManager.gameModel.playerModel.getAllStates());
-      setUserState({...gameManager.gameModel.userModel.state});
+      setUserState({...gameManager.gameModel.userModel.playerState});
+      setDirection(gameManager.gameModel.userModel.direction);
     }
     function onLatencyUpdate() {
       setLatency(gameManager.wsModel.latency);
@@ -68,6 +72,7 @@ function Game(): React.JSX.Element {
         gameManager={gameManager}
         playerStates={playerStates}
         userState={userState}
+        direction={direction}
         onCellTap={onCellTap}
       />
       <Text>{'latency: ' + latency}</Text>
