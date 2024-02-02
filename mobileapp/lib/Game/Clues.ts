@@ -1,6 +1,6 @@
 import Direction from '../../util/Direction';
 
-class Clues {
+class CluesInfo {
   across: Array<string | null>;
   down: Array<string | null>;
 
@@ -19,4 +19,4 @@ class Clues {
   }
 }
 
-export default Clues;
+export default CluesInfo;

@@ -29,6 +29,7 @@ function Game(): React.JSX.Element {
     gameManager.gameModel.userModel.playerState,
   );
   const [direction, setDirection] = useState<Direction>(Direction.ACROSS);
+  const [clueIndex] = useState(1);
 
   const onCellTap = useMemo<OnCellTap>(
     () => (cell: Coord) => {
@@ -67,8 +68,8 @@ function Game(): React.JSX.Element {
   return (
     <View style={style.game}>
       <ClueHeader
-        clues={gameManager.gameModel.clues}
-        clueIndex={1}
+        cluesInfo={gameManager.gameModel.cluesInfo}
+        clueIndex={clueIndex}
         direction={direction}
       />
       <GridComponent

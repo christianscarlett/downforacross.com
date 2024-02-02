@@ -2,21 +2,21 @@ import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Clues from '../../lib/Game/Clues';
+import CluesInfo from '../../lib/Game/Clues';
 import Direction from '../../util/Direction';
 
 export interface ClueHeaderProps {
-  clues: Clues;
+  cluesInfo: CluesInfo;
   clueIndex: number;
   direction: Direction;
 }
 
 function ClueHeader(props: ClueHeaderProps) {
   const [theme] = useTheme();
-  const {clues, clueIndex, direction} = props;
+  const {cluesInfo, clueIndex, direction} = props;
 
-  const clueTexts = clues.getClues(direction);
-  const clueText = clueTexts[clueIndex];
+  const clues = cluesInfo.getClues(direction);
+  const clueText = clues[clueIndex];
 
   const styles = makeStyles(theme);
   return (

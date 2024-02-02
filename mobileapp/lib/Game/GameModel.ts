@@ -13,7 +13,7 @@ import PuzzleInfo from './PuzzleInfo';
 import {Coord} from '../../shared/types';
 import {areCoordsEqual} from '../../util/util';
 import {toggleDirection} from '../../util/Direction';
-import Clues from './Clues';
+import CluesInfo from './Clues';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
@@ -22,7 +22,7 @@ class GameModel extends EventEmitter {
   puzzleInfo: PuzzleInfo | null = null;
   chatModel: ChatModel = new ChatModel();
   userModel: UserModel = new UserModel();
-  clues: Clues = new Clues([], []);
+  cluesInfo: CluesInfo = new CluesInfo([], []);
 
   private syncing: boolean = false;
 
@@ -75,7 +75,7 @@ class GameModel extends EventEmitter {
     this.puzzleModel = PuzzleModel.fromWsGrid(event.params.game.grid);
     this.puzzleInfo = {...event.params.game.info};
     const {across, down} = event.params.game.clues;
-    this.clues = new Clues(across, down);
+    this.cluesInfo = new CluesInfo(across, down);
   }
 
   onCellTap(cell: Coord) {
