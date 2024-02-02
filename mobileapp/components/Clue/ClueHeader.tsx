@@ -7,7 +7,7 @@ import Direction from '../../util/Direction';
 
 export interface ClueHeaderProps {
   cluesInfo: CluesInfo;
-  clueIndex: number;
+  clueIndex: number | null;
   direction: Direction;
 }
 
@@ -16,15 +16,17 @@ function ClueHeader(props: ClueHeaderProps) {
   const {cluesInfo, clueIndex, direction} = props;
 
   const clues = cluesInfo.getClues(direction);
-  const clueText = clues[clueIndex];
+  const clueText = clueIndex !== null ? clues[clueIndex] : '';
 
   const styles = makeStyles(theme);
   return (
     <View style={styles.clueHeader}>
       <Icon name="keyboard-arrow-left" style={styles.chevronLeft} />
-      <Text style={styles.clueName}>{`${clueIndex}${
-        direction === Direction.ACROSS ? 'A' : 'D'
-      }`}</Text>
+      {clueIndex && (
+        <Text style={styles.clueName}>{`${clueIndex}${
+          direction === Direction.ACROSS ? 'A' : 'D'
+        }`}</Text>
+      )}
       <ScrollView>
         <Text style={styles.clueText}>{clueText}</Text>
       </ScrollView>

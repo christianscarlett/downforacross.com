@@ -7,7 +7,7 @@ export interface GridEntryState {
   black: boolean;
   color?: string;
   edits: Array<string>;
-  number: number;
+  number: number | null;
   parents: any;
   pencil: boolean;
   value: string;

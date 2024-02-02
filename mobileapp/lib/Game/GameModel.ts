@@ -12,7 +12,7 @@ import UserModel from '../User/UserModel';
 import PuzzleInfo from './PuzzleInfo';
 import {Coord} from '../../shared/types';
 import {areCoordsEqual} from '../../util/util';
-import {toggleDirection} from '../../util/Direction';
+import Direction, {toggleDirection} from '../../util/Direction';
 import CluesInfo from './Clues';
 
 class GameModel extends EventEmitter {
@@ -94,6 +94,17 @@ class GameModel extends EventEmitter {
       });
     }
     this.emitUpdate();
+  }
+
+  getSelectedClueIndex(): number | null {
+    return this.getClueIndex(
+      this.userModel.playerState.cursorPos,
+      this.userModel.direction,
+    );
+  }
+
+  getClueIndex(cell: Coord, direction: Direction): number | null {
+    return this.puzzleModel.getClueIndex(cell, direction);
   }
 
   setSyncing(syncing: boolean) {
