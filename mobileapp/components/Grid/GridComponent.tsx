@@ -7,6 +7,7 @@ import GridEntry from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
 import MemoCellComponent, {OnCellTap} from './CellComponent';
 import Direction from '../../util/Direction';
+import {Coord} from '../../shared/types';
 
 interface RowProps {
   gridEntries: GridEntry[];
@@ -15,6 +16,7 @@ interface RowProps {
   playerStates: PlayerState[];
   userState: PlayerState;
   direction: Direction;
+  scopedCells: Coord[];
   onCellTap: OnCellTap;
 }
 
@@ -25,6 +27,7 @@ function Row(props: RowProps) {
     gridBorderWidth,
     playerStates,
     userState,
+    scopedCells,
     onCellTap,
   } = props;
   const styles = makeStyles();
@@ -41,6 +44,7 @@ function Row(props: RowProps) {
       userCursor={
         _.isEqual(userState.cursorPos, entry.state.cell) ? userState : null
       }
+      isScoped={scopedCells.some(coord => _.isEqual(coord, entry.state.cell))}
       onTap={onCellTap}
     />
   ));
@@ -53,6 +57,7 @@ interface ColProps {
   playerStates: PlayerState[];
   userState: PlayerState;
   direction: Direction;
+  scopedCells: Coord[];
   onCellTap: OnCellTap;
 }
 
@@ -63,6 +68,7 @@ function Col(props: ColProps) {
     playerStates,
     userState,
     direction,
+    scopedCells,
     onCellTap,
   } = props;
   const gridBorderWidth = squareSize / 80;
@@ -76,6 +82,7 @@ function Col(props: ColProps) {
       playerStates={playerStates}
       userState={userState}
       direction={direction}
+      scopedCells={scopedCells}
       onCellTap={onCellTap}
     />
   ));
@@ -99,11 +106,19 @@ export interface GridComponentProps {
   playerStates: PlayerState[];
   userState: PlayerState;
   direction: Direction;
+  scopedCells: Coord[];
   onCellTap: OnCellTap;
 }
 
 function GridComponent(props: GridComponentProps): React.JSX.Element {
-  const {grid, playerStates, userState, direction, onCellTap} = props;
+  const {
+    grid,
+    playerStates,
+    userState,
+    direction,
+    scopedCells,
+    onCellTap,
+  } = props;
   const styles = makeStyles();
 
   if (!grid[0]) {
@@ -142,6 +157,7 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
               playerStates={playerStates}
               userState={userState}
               direction={direction}
+              scopedCells={scopedCells}
               onCellTap={onCellTap}
             />
           </View>

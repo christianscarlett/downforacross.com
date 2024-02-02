@@ -107,6 +107,15 @@ class GameModel extends EventEmitter {
     return this.puzzleModel.getClueIndex(cell, direction);
   }
 
+  getScopedCells(): Coord[] {
+    return this.puzzleModel
+      .getScopedCells(
+        this.userModel.playerState.cursorPos,
+        this.userModel.direction,
+      )
+      .map(entry => entry.state.cell);
+  }
+
   setSyncing(syncing: boolean) {
     this.syncing = syncing;
   }

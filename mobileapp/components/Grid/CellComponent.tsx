@@ -14,6 +14,7 @@ export interface CellComponentProps {
   gridBorderWidth: number;
   cursors: PlayerState[];
   userCursor: PlayerState | null;
+  isScoped: boolean;
   onTap: OnCellTap;
 }
 
@@ -54,6 +55,7 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
     gridBorderWidth,
     cursors,
     userCursor,
+    isScoped,
     onTap,
   } = props;
   const [theme] = useTheme();
@@ -65,6 +67,7 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
     squareSize,
     gridBorderWidth,
     userCursor,
+    isScoped,
   );
   return (
     <TouchableOpacity
@@ -92,6 +95,7 @@ const makeStyles = (
   squareSize: number,
   gridBorderWidth: number,
   userCursor: PlayerState | null,
+  isScoped: boolean,
 ) => {
   let numberPadding = squareSize / 10;
   let numberSize = squareSize / 5;
@@ -119,6 +123,8 @@ const makeStyles = (
         ? 'black'
         : userCursor
         ? userCursor.color
+        : isScoped
+        ? theme.colors.tertiary
         : 'white',
       height: squareSize,
       width: squareSize,

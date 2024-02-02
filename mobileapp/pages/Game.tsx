@@ -32,6 +32,9 @@ function Game(): React.JSX.Element {
   const [clueIndex, setClueIndex] = useState(
     gameManager.gameModel.getSelectedClueIndex(),
   );
+  const [scopedCells, setScopedCells] = useState(
+    gameManager.gameModel.getScopedCells(),
+  );
 
   const onCellTap = useMemo<OnCellTap>(
     () => (cell: Coord) => {
@@ -47,6 +50,7 @@ function Game(): React.JSX.Element {
       setUserState({...gameManager.gameModel.userModel.playerState});
       setDirection(gameManager.gameModel.userModel.direction);
       setClueIndex(gameManager.gameModel.getSelectedClueIndex());
+      setScopedCells(gameManager.gameModel.getScopedCells());
     }
     function onLatencyUpdate() {
       setLatency(gameManager.wsModel.latency);
@@ -80,6 +84,7 @@ function Game(): React.JSX.Element {
         playerStates={playerStates}
         userState={userState}
         direction={direction}
+        scopedCells={scopedCells}
         onCellTap={onCellTap}
       />
       <Text>{'latency: ' + latency}</Text>

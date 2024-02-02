@@ -40,6 +40,9 @@ class PuzzleModel {
     selectedIndex: number,
     cells: GridEntry[],
   ): GridEntry[] {
+    if (cells.length === 0) {
+      return [];
+    }
     const scopedCells = [cells[selectedIndex]];
     let i = selectedIndex - 1;
     // Cells before
@@ -71,6 +74,10 @@ class PuzzleModel {
   }
 
   getScopedCells(selectedCell: Coord, direction: Direction): GridEntry[] {
+    if (this.grid.length === 0 || this.grid[0].length === 0) {
+      // Empty grid, return
+      return [];
+    }
     switch (direction) {
       case Direction.DOWN:
         return this.getScopedCol(selectedCell);
