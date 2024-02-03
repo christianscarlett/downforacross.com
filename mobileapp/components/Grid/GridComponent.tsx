@@ -1,14 +1,13 @@
 import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
 import _ from 'lodash';
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import PlayerState from '../../lib/Player/PlayerState';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
 import {Coord} from '../../shared/types';
 import Direction from '../../util/Direction';
 import MemoCellComponent, {OnCellTap} from './CellComponent';
-import KeyboardButton from './KeyboardButton';
 
 interface RowProps {
   gridEntries: GridEntry[];
@@ -115,6 +114,9 @@ function getSquareSize(numSquares: number, viewLength: number) {
   return viewLength / numSquares;
 }
 
+const QUALITY = 10;
+const SCALE = 1 / QUALITY;
+
 function GridComponent(props: GridComponentProps): React.JSX.Element {
   const {
     grid,
@@ -138,19 +140,17 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
    * than the screen size which will cause snapping issues.
    */
 
-  const [viewWidth, setViewWidth] = useState(1);
-  const [viewHeight, setViewHeight] = useState(1);
+  const [viewWidth, setViewWidth] = useState(Dimensions.get('window').width);
+  const [viewHeight, setViewHeight] = useState(Dimensions.get('window').width);
 
-  const quality = 10;
-  const scale = 1 / quality;
-
-  // Ensure grid can fit on screen
-  const squareSize = Math.min(
-    getSquareSize(grid.length, viewHeight),
-    getSquareSize(grid[0].length, viewWidth),
-  );
-
-  const scaledSquareSize = squareSize * quality;
+  const scaledSquareSize = useMemo(() => {
+    // Ensure grid can fit on screen
+    const squareSize = Math.min(
+      getSquareSize(grid.length, viewHeight),
+      getSquareSize(grid[0].length, viewWidth),
+    );
+    return squareSize * QUALITY;
+  }, [viewWidth, viewHeight, grid]);
 
   const styles = makeStyles();
   return (
@@ -160,11 +160,12 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
         const {width, height} = e.nativeEvent.layout;
         setViewWidth(width);
         setViewHeight(height);
+        console.log('t');
       }}
     >
       <View style={styles.zoomContainer}>
         <ReactNativeZoomableView maxZoom={5} initialZoom={1} minZoom={1}>
-          <View style={{transform: [{scale: scale}]}}>
+          <View style={{transform: [{scale: SCALE}]}}>
             <Col
               grid={grid}
               squareSize={scaledSquareSize}
