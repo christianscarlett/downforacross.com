@@ -1,8 +1,10 @@
+import {useHeaderHeight} from '@react-navigation/elements';
 import React, {useEffect, useMemo, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {KeyboardAvoidingView, StyleSheet, Text, View} from 'react-native';
 import ClueHeader from '../components/Clue/ClueHeader';
 import {OnCellTap} from '../components/Grid/CellComponent';
 import GridComponent from '../components/Grid/GridComponent';
+import KeyboardButton from '../components/Grid/KeyboardButton';
 import useGameManager from '../lib/Game/useGameManager';
 import PlayerState from '../lib/Player/PlayerState';
 import {Theme, useTheme} from '../lib/Theme';
@@ -71,22 +73,34 @@ function Game(): React.JSX.Element {
     };
   }, [gameManager, gid]);
 
-  const style = makeStyles(theme);
+  const headerHeight = useHeaderHeight();
+  const styles = makeStyles(theme);
   return (
-    <View style={style.game}>
+    <View style={styles.game}>
       <ClueHeader
         cluesInfo={gameManager.gameModel.cluesInfo}
         clueIndex={clueIndex}
         direction={direction}
       />
-      <GridComponent
-        grid={grid}
-        playerStates={playerStates}
-        userState={userState}
-        direction={direction}
-        scopedCells={scopedCells}
-        onCellTap={onCellTap}
-      />
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoiding}
+        keyboardVerticalOffset={headerHeight}
+        behavior="padding"
+      >
+        <View style={styles.gridWrapper}>
+          {grid[0] && (
+            <GridComponent
+              grid={grid}
+              playerStates={playerStates}
+              userState={userState}
+              direction={direction}
+              scopedCells={scopedCells}
+              onCellTap={onCellTap}
+            />
+          )}
+          <KeyboardButton />
+        </View>
+      </KeyboardAvoidingView>
       <Text>{'latency: ' + latency}</Text>
     </View>
   );
@@ -94,6 +108,12 @@ function Game(): React.JSX.Element {
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
+    gridWrapper: {
+      flexGrow: 1,
+    },
+    keyboardAvoiding: {
+      flexGrow: 1,
+    },
     game: {
       backgroundColor: theme.colors.background,
       height: '100%',

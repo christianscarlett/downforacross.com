@@ -10,6 +10,9 @@ export interface Theme {
     textPrimary: string;
     textSecondary: string;
     textPencil: string;
+    mainGray1: string;
+    mainGray2: string;
+    mainGray3: string;
   };
 }
 
@@ -27,6 +30,9 @@ export const LightTheme: Theme = {
     textPrimary: 'black',
     textSecondary: 'rgba(0, 0, 0, 0.7)',
     textPencil: 'rgb(136, 136, 136)',
+    mainGray1: '#666',
+    mainGray2: '#ccc',
+    mainGray3: '#f0f0f0',
   },
 };
 

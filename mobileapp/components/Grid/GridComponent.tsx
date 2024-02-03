@@ -1,13 +1,14 @@
 import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
 import _ from 'lodash';
-import React from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import PlayerState from '../../lib/Player/PlayerState';
 import GridEntry from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
-import MemoCellComponent, {OnCellTap} from './CellComponent';
-import Direction from '../../util/Direction';
 import {Coord} from '../../shared/types';
+import Direction from '../../util/Direction';
+import MemoCellComponent, {OnCellTap} from './CellComponent';
+import KeyboardButton from './KeyboardButton';
 
 interface RowProps {
   gridEntries: GridEntry[];
@@ -110,6 +111,10 @@ export interface GridComponentProps {
   onCellTap: OnCellTap;
 }
 
+function getSquareSize(numSquares: number, viewLength: number) {
+  return viewLength / numSquares;
+}
+
 function GridComponent(props: GridComponentProps): React.JSX.Element {
   const {
     grid,
@@ -119,11 +124,6 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
     scopedCells,
     onCellTap,
   } = props;
-  const styles = makeStyles();
-
-  if (!grid[0]) {
-    return <View style={styles.container} />;
-  }
 
   /**
    * Unfortunately, the components don't update their
@@ -138,19 +138,33 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
    * than the screen size which will cause snapping issues.
    */
 
-  const quality = 10;
-  const zoom = 1 / quality;
+  const [viewWidth, setViewWidth] = useState(1);
+  const [viewHeight, setViewHeight] = useState(1);
 
-  const windowSize = Dimensions.get('window').width;
-  const n = grid[0].length;
-  const squareSize = windowSize / n;
+  const quality = 10;
+  const scale = 1 / quality;
+
+  // Ensure grid can fit on screen
+  const squareSize = Math.min(
+    getSquareSize(grid.length, viewHeight),
+    getSquareSize(grid[0].length, viewWidth),
+  );
+
   const scaledSquareSize = squareSize * quality;
 
+  const styles = makeStyles();
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onLayout={e => {
+        const {width, height} = e.nativeEvent.layout;
+        setViewWidth(width);
+        setViewHeight(height);
+      }}
+    >
       <View style={styles.zoomContainer}>
         <ReactNativeZoomableView maxZoom={5} initialZoom={1} minZoom={1}>
-          <View style={{transform: [{scale: zoom}]}}>
+          <View style={{transform: [{scale: scale}]}}>
             <Col
               grid={grid}
               squareSize={scaledSquareSize}
