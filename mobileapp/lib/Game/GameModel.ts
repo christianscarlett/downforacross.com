@@ -18,7 +18,7 @@ import CluesInfo from './Clues';
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
   playerModel: PlayerModel = new PlayerModel();
-  puzzleModel: PuzzleModel = new PuzzleModel([]);
+  puzzleModel: PuzzleModel = new PuzzleModel([], []);
   puzzleInfo: PuzzleInfo | null = null;
   chatModel: ChatModel = new ChatModel();
   userModel: UserModel = new UserModel();
@@ -72,9 +72,10 @@ class GameModel extends EventEmitter {
   }
 
   private onCreateEvent(event: WsCreateEvent) {
-    this.puzzleModel = PuzzleModel.fromWsGrid(event.params.game.grid);
-    this.puzzleInfo = {...event.params.game.info};
-    const {across, down} = event.params.game.clues;
+    const {game} = event.params;
+    this.puzzleModel = PuzzleModel.fromWsGrid(game.grid, game.solution);
+    this.puzzleInfo = {...game.info};
+    const {across, down} = game.clues;
     this.cluesInfo = new CluesInfo(across, down);
   }
 

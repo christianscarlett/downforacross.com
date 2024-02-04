@@ -3,26 +3,54 @@ import {Coord} from '../../shared/types';
 import {WsEvent} from '../Events/WsEvent';
 import {WsGridEntry} from '../Events/WsGridEntry';
 import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
-import GridEntry from './GridEntry';
+import GridEntry, {CheckState} from './GridEntry';
 import Direction from '../../util/Direction';
 import {areCoordsEqual} from '../../util/util';
+import {WsCheckEvent} from '../Events/WsCheckEvent';
 
 class PuzzleModel {
   grid: GridEntry[][];
+  solution: string[][];
 
-  constructor(grid: GridEntry[][]) {
+  constructor(grid: GridEntry[][], solution: string[][]) {
     this.grid = _.cloneDeep(grid);
+    this.solution = _.cloneDeep(solution);
   }
 
   updateForEvent(event: WsEvent) {
     if (event.type === 'updateCell') {
       this.onUpdateCellEvent(event as WsUpdateCellEvent);
+    } else if (event.type === 'check') {
+      this.onCheckEvent(event as WsCheckEvent);
     }
+  }
+
+  private onCheckEvent(event: WsCheckEvent) {
+    const {scope} = event.params;
+    for (const cell of scope) {
+      this.checkCell(cell);
+    }
+    console.log(scope);
   }
 
   private onUpdateCellEvent(event: WsUpdateCellEvent) {
     const {cell, value, color, pencil} = event.params;
     this.getGridEntry(cell).update({value, color, pencil});
+  }
+
+  private checkCell(cell: Coord) {
+    const entry = this.getGridEntry(cell);
+    const correctValue = this.getSolution(cell);
+    entry.update({
+      checkState:
+        entry.state.value === correctValue
+          ? CheckState.CORRECT
+          : CheckState.INCORRECT,
+    });
+  }
+
+  getSolution(cell: Coord): string {
+    return this.solution[cell.r][cell.c];
   }
 
   getGridEntry(cell: Coord): GridEntry {
@@ -117,11 +145,15 @@ class PuzzleModel {
     return cell;
   }
 
-  static fromWsGrid(wsGrid: WsGridEntry[][]): PuzzleModel {
+  static fromWsGrid(
+    wsGrid: WsGridEntry[][],
+    solution: string[][],
+  ): PuzzleModel {
     return new PuzzleModel(
       wsGrid.map((rows, r) =>
         rows.map((entry, c) => GridEntry.fromWsGridEntry(entry, {r, c})),
       ),
+      solution,
     );
   }
 }

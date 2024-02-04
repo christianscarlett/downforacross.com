@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, {memo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PlayerState from '../../lib/Player/PlayerState';
-import {GridEntryState} from '../../lib/Puzzle/GridEntry';
+import {CheckState, GridEntryState} from '../../lib/Puzzle/GridEntry';
 import {Theme, useTheme} from '../../lib/Theme';
 import {Coord} from '../../shared/types';
 
@@ -89,6 +89,19 @@ function CellComponent(props: CellComponentProps): React.JSX.Element {
   );
 }
 
+const getValueColor = (state: GridEntryState, theme: Theme): string => {
+  switch (state.checkState) {
+    case CheckState.CORRECT:
+      return 'blue';
+    case CheckState.INCORRECT:
+      return 'red';
+    case CheckState.REVEALED:
+      return 'green';
+    case CheckState.NONE:
+      return state.pencil ? theme.colors.textPencil : theme.colors.textPrimary;
+  }
+};
+
 const makeStyles = (
   theme: Theme,
   state: GridEntryState,
@@ -114,7 +127,7 @@ const makeStyles = (
       alignSelf: 'stretch',
       textAlign: 'center',
       paddingHorizontal: 5,
-      color: state.pencil ? theme.colors.textPencil : theme.colors.textPrimary,
+      color: getValueColor(state, theme),
     },
     gridEntry: {
       borderWidth: gridBorderWidth,

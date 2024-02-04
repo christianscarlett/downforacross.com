@@ -2,6 +2,13 @@ import _ from 'lodash';
 import {Coord} from '../../shared/types';
 import {WsGridEntry} from '../Events/WsGridEntry';
 
+export enum CheckState {
+  CORRECT,
+  INCORRECT,
+  REVEALED,
+  NONE,
+}
+
 export interface GridEntryState {
   cell: Coord;
   black: boolean;
@@ -11,6 +18,7 @@ export interface GridEntryState {
   parents: any;
   pencil: boolean;
   value: string;
+  checkState: CheckState;
 }
 
 class GridEntry {
@@ -46,6 +54,7 @@ class GridEntry {
       parents,
       pencil: false,
       value,
+      checkState: CheckState.NONE,
     };
   }
 
