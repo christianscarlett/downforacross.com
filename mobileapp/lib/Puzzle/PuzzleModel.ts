@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import {Coord} from '../../shared/types';
-import {WsEvent} from '../Events/WsEvent';
-import {WsGridEntry} from '../Events/WsGridEntry';
-import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
-import GridEntry, {CheckState} from './GridEntry';
 import Direction from '../../util/Direction';
 import {areCoordsEqual} from '../../util/util';
 import {WsCheckEvent} from '../Events/WsCheckEvent';
+import {WsEvent} from '../Events/WsEvent';
+import {WsGridEntry} from '../Events/WsGridEntry';
+import {WsRevealEvent} from '../Events/WsRevealEvent';
+import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
+import GridEntry, {CheckState} from './GridEntry';
 
 class PuzzleModel {
   grid: GridEntry[][];
@@ -22,6 +23,15 @@ class PuzzleModel {
       this.onUpdateCellEvent(event as WsUpdateCellEvent);
     } else if (event.type === 'check') {
       this.onCheckEvent(event as WsCheckEvent);
+    } else if (event.type === 'reveal') {
+      this.onRevealEvent(event as WsRevealEvent);
+    }
+  }
+
+  private onRevealEvent(event: WsRevealEvent) {
+    const {scope} = event.params;
+    for (const cell of scope) {
+      this.revealCell(cell);
     }
   }
 
@@ -35,6 +45,15 @@ class PuzzleModel {
   private onUpdateCellEvent(event: WsUpdateCellEvent) {
     const {cell, value, color, pencil} = event.params;
     this.getGridEntry(cell).update({value, color, pencil});
+  }
+
+  private revealCell(cell: Coord) {
+    const entry = this.getGridEntry(cell);
+    const correctValue = this.getSolution(cell);
+    entry.update({
+      value: correctValue,
+      checkState: CheckState.REVEALED,
+    });
   }
 
   private checkCell(cell: Coord) {
