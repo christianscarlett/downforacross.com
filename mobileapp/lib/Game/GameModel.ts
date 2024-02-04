@@ -11,7 +11,7 @@ import PuzzleModel from '../Puzzle/PuzzleModel';
 import UserModel from '../User/UserModel';
 import PuzzleInfo from './PuzzleInfo';
 import {Coord} from '../../shared/types';
-import {areCoordsEqual} from '../../util/util';
+import {areCoordsEqual, isValidInput} from '../../util/util';
 import Direction, {toggleDirection} from '../../util/Direction';
 import CluesInfo from './Clues';
 
@@ -114,6 +114,33 @@ class GameModel extends EventEmitter {
         this.userModel.direction,
       )
       .map(entry => entry.state.cell);
+  }
+
+  /** Process keyboard input. Returns true if value was ingested, false otherwise. */
+  onKeyboardInput(input: string): boolean {
+    const cell = this.getSelectedCell();
+    // Handle backspace
+    if (input === 'Backspace' && cell) {
+      this.puzzleModel.onKeyboardInput('', cell);
+      this.emitUpdate();
+      return true;
+    }
+    // Process input
+    input = input.toUpperCase().trim();
+    // Reject invalid characters
+    if (!isValidInput(input)) {
+      return false;
+    }
+    // Handle input
+    if (cell) {
+      this.puzzleModel.onKeyboardInput(input, cell);
+      this.emitUpdate();
+    }
+    return true;
+  }
+
+  private getSelectedCell(): Coord {
+    return this.userModel.playerState.cursorPos;
   }
 
   setSyncing(syncing: boolean) {

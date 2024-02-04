@@ -1,11 +1,15 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Keyboard, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Theme, useTheme} from '../../lib/Theme';
 import useKeyboardShown from './useKeyboardShown';
 
-function KeyboardButton() {
-  const textInputRef = useRef<TextInput | null>(null);
+export interface KeyboardButtonProps {
+  textInputRef: React.MutableRefObject<TextInput | null>;
+}
+
+function KeyboardButton(props: KeyboardButtonProps) {
+  const {textInputRef} = props;
   const [keyboardShown] = useKeyboardShown();
   const tryToggleKeyboard = () => {
     if (keyboardShown) {
@@ -23,22 +27,12 @@ function KeyboardButton() {
         style={styles.icon}
         name={keyboardShown ? 'keyboard-hide' : 'keyboard'}
       />
-      <TextInput
-        style={styles.textInput}
-        ref={textInputRef}
-        autoComplete="off"
-        autoCorrect={false}
-        spellCheck={false}
-      />
     </TouchableOpacity>
   );
 }
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    textInput: {
-      display: 'none',
-    },
     icon: {
       color: theme.colors.background,
       fontSize: 40,

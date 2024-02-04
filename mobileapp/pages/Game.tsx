@@ -1,6 +1,12 @@
 import {useHeaderHeight} from '@react-navigation/elements';
-import React, {useEffect, useMemo, useState} from 'react';
-import {KeyboardAvoidingView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import ClueHeader from '../components/Clue/ClueHeader';
 import {OnCellTap} from '../components/Grid/CellComponent';
 import GridComponent from '../components/Grid/GridComponent';
@@ -73,6 +79,8 @@ function Game(): React.JSX.Element {
     };
   }, [gameManager, gid]);
 
+  const textInputRef = useRef<TextInput | null>(null);
+
   const headerHeight = useHeaderHeight();
   const styles = makeStyles(theme);
   return (
@@ -98,7 +106,18 @@ function Game(): React.JSX.Element {
               onCellTap={onCellTap}
             />
           )}
-          <KeyboardButton />
+          <KeyboardButton textInputRef={textInputRef} />
+          <TextInput
+            style={styles.textInput}
+            ref={textInputRef}
+            onKeyPress={e =>
+              gameManager.gameModel.onKeyboardInput(e.nativeEvent.key)
+            }
+            autoCapitalize="characters"
+            autoComplete="off"
+            autoCorrect={false}
+            spellCheck={false}
+          />
         </View>
       </KeyboardAvoidingView>
       <Text>{'latency: ' + latency}</Text>
@@ -108,6 +127,9 @@ function Game(): React.JSX.Element {
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
+    textInput: {
+      display: 'none',
+    },
     gridWrapper: {
       flexGrow: 1,
     },

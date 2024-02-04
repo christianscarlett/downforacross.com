@@ -160,7 +160,6 @@ function GridComponent(props: GridComponentProps): React.JSX.Element {
         const {width, height} = e.nativeEvent.layout;
         setViewWidth(width);
         setViewHeight(height);
-        console.log('t');
       }}
     >
       <View style={styles.zoomContainer}>

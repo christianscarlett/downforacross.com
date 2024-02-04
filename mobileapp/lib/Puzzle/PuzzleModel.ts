@@ -95,6 +95,11 @@ class PuzzleModel {
     return scopedCells[0].state.number;
   }
 
+  onKeyboardInput(input: string, cell: Coord) {
+    const entry = this.getGridEntry(cell);
+    entry.update({value: input});
+  }
+
   static fromWsGrid(wsGrid: WsGridEntry[][]): PuzzleModel {
     return new PuzzleModel(
       wsGrid.map((rows, r) =>
