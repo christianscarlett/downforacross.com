@@ -85,10 +85,7 @@ class GameModel extends EventEmitter {
     }
 
     if (areCoordsEqual(this.getSelectedCell(), cell)) {
-      this.userModel.update({
-        ...this.userModel.state,
-        direction: toggleDirection(this.userModel.direction),
-      });
+      this.userModel.toggleDirection();
     } else {
       this.updateUserCursorPos(cell);
     }
@@ -117,6 +114,12 @@ class GameModel extends EventEmitter {
 
   /** Process keyboard input. Returns true if value was ingested, false otherwise. */
   onKeyboardInput(input: string): boolean {
+    // Handle space
+    if (input === ' ') {
+      this.userModel.toggleDirection();
+      this.emitUpdate();
+      return true;
+    }
     // Handle backspace
     if (input === 'Backspace') {
       return this.updateSelectedCellValue('', true);

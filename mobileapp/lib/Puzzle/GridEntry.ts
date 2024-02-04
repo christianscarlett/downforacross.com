@@ -28,10 +28,11 @@ class GridEntry {
     this.state = state;
   }
 
-  getState(): GridEntryState {
-    return {
-      ...this.state,
-    };
+  isEditable(): boolean {
+    return (
+      this.state.checkState !== CheckState.CORRECT &&
+      this.state.checkState !== CheckState.REVEALED
+    );
   }
 
   update(newState: Partial<GridEntryState>) {

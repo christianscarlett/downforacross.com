@@ -1,6 +1,6 @@
 import _ from 'lodash';
+import Direction, {toggleDirection} from '../../util/Direction';
 import PlayerState from '../Player/PlayerState';
-import Direction from '../../util/Direction';
 
 export interface UserState {
   direction: Direction;
@@ -28,6 +28,12 @@ class UserModel {
 
   get playerState(): PlayerState {
     return this.state.playerState;
+  }
+
+  toggleDirection() {
+    this.update({
+      direction: toggleDirection(this.state.direction),
+    });
   }
 
   update(newState: Partial<UserState>) {

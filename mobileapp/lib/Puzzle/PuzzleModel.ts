@@ -30,7 +30,6 @@ class PuzzleModel {
     for (const cell of scope) {
       this.checkCell(cell);
     }
-    console.log(scope);
   }
 
   private onUpdateCellEvent(event: WsUpdateCellEvent) {
@@ -126,7 +125,9 @@ class PuzzleModel {
 
   updateCellValue(value: string, cell: Coord) {
     const entry = this.getGridEntry(cell);
-    entry.update({value: value});
+    if (entry.isEditable()) {
+      entry.update({value});
+    }
   }
 
   /** Given the current cell and direction, find the next one to select */
