@@ -83,24 +83,25 @@ class GameModel extends EventEmitter {
       return;
     }
 
-    if (areCoordsEqual(this.userModel.playerState.cursorPos, cell)) {
+    if (areCoordsEqual(this.getSelectedCell(), cell)) {
       this.userModel.update({
         ...this.userModel.state,
         direction: toggleDirection(this.userModel.direction),
       });
     } else {
-      this.userModel.update({
-        playerState: {...this.userModel.playerState, cursorPos: cell},
-      });
+      this.updateUserCursorPos(cell);
     }
     this.emitUpdate();
   }
 
+  private updateUserCursorPos(cell: Coord) {
+    this.userModel.update({
+      playerState: {...this.userModel.playerState, cursorPos: cell},
+    });
+  }
+
   getSelectedClueIndex(): number | null {
-    return this.getClueIndex(
-      this.userModel.playerState.cursorPos,
-      this.userModel.direction,
-    );
+    return this.getClueIndex(this.getSelectedCell(), this.userModel.direction);
   }
 
   getClueIndex(cell: Coord, direction: Direction): number | null {
@@ -109,21 +110,15 @@ class GameModel extends EventEmitter {
 
   getScopedCells(): Coord[] {
     return this.puzzleModel
-      .getScopedCells(
-        this.userModel.playerState.cursorPos,
-        this.userModel.direction,
-      )
+      .getScopedCells(this.getSelectedCell(), this.userModel.direction)
       .map(entry => entry.state.cell);
   }
 
   /** Process keyboard input. Returns true if value was ingested, false otherwise. */
   onKeyboardInput(input: string): boolean {
-    const cell = this.getSelectedCell();
     // Handle backspace
-    if (input === 'Backspace' && cell) {
-      this.puzzleModel.onKeyboardInput('', cell);
-      this.emitUpdate();
-      return true;
+    if (input === 'Backspace') {
+      return this.updateSelectedCellValue('', true);
     }
     // Process input
     input = input.toUpperCase().trim();
@@ -132,11 +127,27 @@ class GameModel extends EventEmitter {
       return false;
     }
     // Handle input
+    return this.updateSelectedCellValue(input);
+  }
+
+  private updateSelectedCellValue(
+    value: string,
+    isBackspace: boolean = false,
+  ): boolean {
+    const cell = this.getSelectedCell();
     if (cell) {
-      this.puzzleModel.onKeyboardInput(input, cell);
+      this.puzzleModel.updateCellValue(value, cell);
+      this.updateUserCursorPos(
+        this.puzzleModel.getNextCell(
+          cell,
+          this.userModel.direction,
+          isBackspace,
+        ),
+      );
       this.emitUpdate();
+      return true;
     }
-    return true;
+    return false;
   }
 
   private getSelectedCell(): Coord {

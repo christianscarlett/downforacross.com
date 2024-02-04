@@ -5,6 +5,7 @@ import {WsGridEntry} from '../Events/WsGridEntry';
 import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
 import GridEntry from './GridEntry';
 import Direction from '../../util/Direction';
+import {areCoordsEqual} from '../../util/util';
 
 class PuzzleModel {
   grid: GridEntry[][];
@@ -95,9 +96,25 @@ class PuzzleModel {
     return scopedCells[0].state.number;
   }
 
-  onKeyboardInput(input: string, cell: Coord) {
+  updateCellValue(value: string, cell: Coord) {
     const entry = this.getGridEntry(cell);
-    entry.update({value: input});
+    entry.update({value: value});
+  }
+
+  /** Given the current cell and direction, find the next one to select */
+  getNextCell(cell: Coord, dir: Direction, invert: boolean = false): Coord {
+    const cells = this.getScopedCells(cell, dir);
+    if (cells.length === 0) {
+      return cell;
+    }
+    const cellIndex = cells.findIndex(entry =>
+      areCoordsEqual(entry.state.cell, cell),
+    );
+    const nextCellIndex = cellIndex + (invert ? -1 : 1);
+    if (nextCellIndex >= 0 && nextCellIndex < cells.length) {
+      return cells[nextCellIndex].state.cell;
+    }
+    return cell;
   }
 
   static fromWsGrid(wsGrid: WsGridEntry[][]): PuzzleModel {
