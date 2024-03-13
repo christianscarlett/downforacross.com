@@ -30,6 +30,16 @@ function GameHeaderRight() {
       >
         <Icon name="chat-bubble" style={makeIconStyle(theme, false).icon} />
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          gameContext.setShowMenu(!gameContext.showMenu);
+        }}
+      >
+        <Icon
+          name="menu"
+          style={makeIconStyle(theme, gameContext.showMenu).icon}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -37,7 +47,7 @@ function GameHeaderRight() {
 const makeIconStyle = (theme: Theme, selected: boolean) => {
   return StyleSheet.create({
     icon: {
-      marginLeft: 15,
+      marginLeft: 20,
       fontSize: 25,
       color: selected ? theme.colors.textSecondary : 'white',
     },
