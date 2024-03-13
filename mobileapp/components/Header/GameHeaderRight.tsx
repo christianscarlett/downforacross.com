@@ -1,28 +1,61 @@
-import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import PageNames from '../../lib/PageNames';
 import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {GameContextIntf} from '../../context/GameContext';
+import PageNames from '../../lib/PageNames';
+import {Theme, useTheme} from '../../lib/Theme';
 
-function GameHeaderRight() {
+interface GameHeaderRightProps {
+  gameContext: GameContextIntf;
+  setGameContext: (gc: GameContextIntf) => void;
+}
+
+function GameHeaderRight(props: GameHeaderRightProps) {
+  const {gameContext, setGameContext} = props;
   const navigation = useNavigation();
+  const [theme] = useTheme();
   const styles = makeStyles();
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate(PageNames.CHAT as never);
-      }}
-    >
-      <Icon name="chat-bubble" style={styles.icon} />
-    </TouchableOpacity>
+    <View style={styles.iconRow}>
+      <TouchableOpacity
+        onPress={() => {
+          setGameContext({
+            ...gameContext,
+            pencil: !gameContext.pencil,
+          });
+        }}
+      >
+        <Icon
+          name="drive-file-rename-outline"
+          style={makeIconStyle(theme, gameContext.pencil).icon}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(PageNames.CHAT as never);
+        }}
+      >
+        <Icon name="chat-bubble" style={makeIconStyle(theme, false).icon} />
+      </TouchableOpacity>
+    </View>
   );
 }
 
-const makeStyles = () => {
+const makeIconStyle = (theme: Theme, selected: boolean) => {
   return StyleSheet.create({
     icon: {
-      fontSize: 20,
-      color: 'white',
+      marginLeft: 15,
+      fontSize: 25,
+      color: selected ? theme.colors.textPencil : 'white',
+    },
+  });
+};
+
+const makeStyles = () => {
+  return StyleSheet.create({
+    iconRow: {
+      flexDirection: 'row',
     },
   });
 };
