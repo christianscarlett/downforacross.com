@@ -4,34 +4,35 @@ import {Theme, useTheme} from '../../lib/Theme';
 
 interface GameMenuItemProps {
   title: string;
+  onPress: () => void;
 }
 
 function GameMenuItem(props: GameMenuItemProps) {
-  const {title} = props;
+  const {title, onPress} = props;
   const [theme] = useTheme();
   const styles = makeStyles(theme);
   return (
     <View style={styles.gameMenuItem}>
-      <TouchableOpacity
-        style={styles.gameMenuItemTouchable}
-        onPress={() => {
-          console.log('test');
-        }}
-      >
+      <TouchableOpacity style={styles.gameMenuItemTouchable} onPress={onPress}>
         <Text>{title}</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-function GameMenu() {
+interface GameMenuProps {
+  onCheckPress: () => void;
+}
+
+function GameMenu(props: GameMenuProps) {
+  const {onCheckPress} = props;
   const [theme] = useTheme();
   const styles = makeStyles(theme);
   return (
     <View style={styles.gameMenu}>
-      <GameMenuItem title="Check" />
-      <GameMenuItem title="Reveal" />
-      <GameMenuItem title="Reset" />
+      <GameMenuItem title="Check" onPress={onCheckPress} />
+      <GameMenuItem title="Reveal" onPress={() => {}} />
+      <GameMenuItem title="Reset" onPress={() => {}} />
     </View>
   );
 }
@@ -39,7 +40,7 @@ function GameMenu() {
 const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     gameMenuItemTouchable: {
-      padding: 10,
+      paddingVertical: 20,
       justifyContent: 'center',
       alignItems: 'center',
     },

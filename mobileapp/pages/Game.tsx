@@ -18,6 +18,7 @@ import {Coord} from '../shared/types';
 import Direction from '../util/Direction';
 import {useGameContext} from '../context/GameContext';
 import GameMenu from '../components/Header/GameMenu';
+import ScopeModal from '../components/Header/ScopeModal';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -46,6 +47,8 @@ function Game(): React.JSX.Element {
   const [scopedCells, setScopedCells] = useState(
     gameManager.gameModel.getScopedCells(),
   );
+
+  const [scopeModalVisible, setScopeModalVisible] = useState(false);
 
   const onCellTap = useMemo<OnCellTap>(
     () => (cell: Coord) => {
@@ -131,7 +134,16 @@ function Game(): React.JSX.Element {
         </View>
       </KeyboardAvoidingView>
       <Text>{'latency: ' + latency}</Text>
-      {gameContext.showMenu && <GameMenu />}
+      {gameContext.showMenu && (
+        <GameMenu onCheckPress={() => setScopeModalVisible(true)} />
+      )}
+      <ScopeModal
+        visible={scopeModalVisible}
+        setVisible={setScopeModalVisible}
+        onSelectScope={() => {
+          /* TODO */
+        }}
+      />
     </View>
   );
 }
