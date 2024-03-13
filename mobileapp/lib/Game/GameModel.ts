@@ -12,7 +12,7 @@ import UserModel from '../User/UserModel';
 import PuzzleInfo from './PuzzleInfo';
 import {Coord} from '../../shared/types';
 import {areCoordsEqual, isValidInput} from '../../util/util';
-import Direction, {toggleDirection} from '../../util/Direction';
+import Direction from '../../util/Direction';
 import CluesInfo from './Clues';
 
 class GameModel extends EventEmitter {
@@ -96,6 +96,7 @@ class GameModel extends EventEmitter {
     this.userModel.update({
       playerState: {...this.userModel.playerState, cursorPos: cell},
     });
+    this.emitUserCursorUpdate();
   }
 
   getSelectedClueIndex(): number | null {
@@ -112,13 +113,13 @@ class GameModel extends EventEmitter {
       .map(entry => entry.state.cell);
   }
 
-  /** Process keyboard input. Returns true if value was ingested, false otherwise. */
-  onKeyboardInput(input: string): boolean {
+  /** Process keyboard input. Returns the processed value if ingested. Returns null if the value was not ingested. */
+  onKeyboardInput(input: string): string | null {
     // Handle space
     if (input === ' ') {
       this.userModel.toggleDirection();
       this.emitUpdate();
-      return true;
+      return null;
     }
     // Handle backspace
     if (input === 'Backspace') {
@@ -128,7 +129,7 @@ class GameModel extends EventEmitter {
     input = input.toUpperCase().trim();
     // Reject invalid characters
     if (!isValidInput(input)) {
-      return false;
+      return null;
     }
     // Handle input
     return this.updateSelectedCellValue(input);
@@ -137,7 +138,7 @@ class GameModel extends EventEmitter {
   private updateSelectedCellValue(
     value: string,
     isBackspace: boolean = false,
-  ): boolean {
+  ): string | null {
     const cell = this.getSelectedCell();
     if (cell) {
       this.puzzleModel.updateCellValue(value, cell);
@@ -149,17 +150,21 @@ class GameModel extends EventEmitter {
         ),
       );
       this.emitUpdate();
-      return true;
+      return value;
     }
-    return false;
+    return null;
   }
 
-  private getSelectedCell(): Coord {
+  getSelectedCell(): Coord {
     return this.userModel.playerState.cursorPos;
   }
 
   setSyncing(syncing: boolean) {
     this.syncing = syncing;
+  }
+
+  private emitUserCursorUpdate() {
+    this.emit('userCursorUpdate');
   }
 
   private emitUpdate() {

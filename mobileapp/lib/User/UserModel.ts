@@ -3,6 +3,7 @@ import Direction, {toggleDirection} from '../../util/Direction';
 import PlayerState from '../Player/PlayerState';
 
 export interface UserState {
+  id: string;
   direction: Direction;
   playerState: PlayerState;
 }
@@ -10,15 +11,16 @@ export interface UserState {
 /** Object to keep track of the user's state */
 class UserModel {
   state: UserState = {
+    id: 'test_id',
     direction: Direction.ACROSS,
     playerState: {
       id: '0',
-      color: 'lightgreen',
+      color: '#90EE90',
       cursorPos: {
         r: 0,
         c: 0,
       },
-      displayName: 'user',
+      displayName: 'test name',
     },
   };
 

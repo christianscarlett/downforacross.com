@@ -1,6 +1,9 @@
 import {EventEmitter} from 'events';
 import {initSocket} from '../Socket/initSocket';
 import {emitAsync} from '../Socket/emitAsync';
+import {Coord} from '../../shared/types';
+
+const SERVER_TIME = {'.sv': 'timestamp'};
 
 /** This class manages the websocket connection and emits its events. */
 class WebsocketModel extends EventEmitter {
@@ -63,6 +66,67 @@ class WebsocketModel extends EventEmitter {
 
   emitWsEvent(event: any) {
     this.emit('wsEvent', event);
+  }
+
+  updateCell(
+    cell: Coord,
+    id: string,
+    color: string,
+    pencil: boolean,
+    value: string,
+  ) {
+    this.publishEvent({
+      type: 'updateCell',
+      params: {
+        cell,
+        value,
+        color,
+        pencil,
+        id,
+      },
+    });
+  }
+
+  updateCursor(cell: Coord, id: string) {
+    this.publishEvent({
+      type: 'updateCursor',
+      params: {
+        timestamp: SERVER_TIME,
+        cell,
+        id,
+      },
+    });
+  }
+
+  updateDisplayName(displayName: string, id: string) {
+    this.publishEvent({
+      type: 'updateDisplayName',
+      params: {
+        displayName,
+        id,
+      },
+    });
+  }
+
+  /** `color` should be in hsl format. */
+  updateColor(color: string, id: string) {
+    this.publishEvent({
+      type: 'updateColor',
+      params: {
+        color,
+        id,
+      },
+    });
+  }
+
+  private publishEvent(event: any) {
+    emitAsync(this.socket, 'game_event', {
+      event: {
+        timestamp: SERVER_TIME,
+        ...event,
+      },
+      gid: this.gid,
+    });
   }
 }
 

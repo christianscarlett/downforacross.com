@@ -29,10 +29,32 @@ class GameManager extends EventEmitter {
     this.gameModel.on('update', () => {
       this.emitUpdate();
     });
+    this.gameModel.on('userCursorUpdate', () => {
+      this.onUserCursorUpdate();
+    });
   }
 
   emitUpdate() {
     this.emit('gameModelUpdate');
+  }
+
+  onKeyboardInput(input: string) {
+    const selectedCell = this.gameModel.getSelectedCell();
+    const value = this.gameModel.onKeyboardInput(input);
+    if (value !== null) {
+      this.wsModel.updateCell(selectedCell, 'test_id', '#32a852', false, value);
+    }
+  }
+
+  onUserCursorUpdate() {
+    const selectedCell = this.gameModel.getSelectedCell();
+    this.wsModel.updateCursor(selectedCell, 'test_id');
+  }
+
+  initUser() {
+    const {id, playerState} = this.gameModel.userModel.state;
+    this.wsModel.updateColor(playerState.color, id);
+    this.wsModel.updateDisplayName(playerState.displayName, id);
   }
 
   async connect() {
@@ -41,6 +63,7 @@ class GameManager extends EventEmitter {
     await this.wsModel.subscribeToWebsocketEvents();
     this.gameModel.setSyncing(false);
     this.emitUpdate();
+    this.initUser();
   }
 
   async disconnect() {

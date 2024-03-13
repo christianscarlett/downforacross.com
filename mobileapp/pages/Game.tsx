@@ -110,9 +110,7 @@ function Game(): React.JSX.Element {
           <TextInput
             style={styles.textInput}
             ref={textInputRef}
-            onKeyPress={e =>
-              gameManager.gameModel.onKeyboardInput(e.nativeEvent.key)
-            }
+            onKeyPress={e => gameManager.onKeyboardInput(e.nativeEvent.key)}
             autoCapitalize="characters"
             autoComplete="off"
             autoCorrect={false}
