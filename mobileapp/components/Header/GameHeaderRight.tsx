@@ -2,17 +2,12 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {GameContextIntf} from '../../context/GameContext';
+import {useGameContext} from '../../context/GameContext';
 import PageNames from '../../lib/PageNames';
 import {Theme, useTheme} from '../../lib/Theme';
 
-interface GameHeaderRightProps {
-  gameContext: GameContextIntf;
-  setGameContext: (gc: GameContextIntf) => void;
-}
-
-function GameHeaderRight(props: GameHeaderRightProps) {
-  const {gameContext, setGameContext} = props;
+function GameHeaderRight() {
+  const gameContext = useGameContext();
   const navigation = useNavigation();
   const [theme] = useTheme();
   const styles = makeStyles();
@@ -20,10 +15,7 @@ function GameHeaderRight(props: GameHeaderRightProps) {
     <View style={styles.iconRow}>
       <TouchableOpacity
         onPress={() => {
-          setGameContext({
-            ...gameContext,
-            pencil: !gameContext.pencil,
-          });
+          gameContext.setPencil(!gameContext.pencil);
         }}
       >
         <Icon

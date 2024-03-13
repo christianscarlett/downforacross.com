@@ -1,13 +1,10 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import GameHeaderRight from './components/Header/GameHeaderRight';
-import GameContext, {
-  GameContextIntf,
-  getDefaultGameContext,
-} from './context/GameContext';
+import {GameContextProvider} from './context/GameContext';
 import PageNames from './lib/PageNames';
 import {Theme, useTheme} from './lib/Theme';
 import Chat from './pages/Chat';
@@ -18,12 +15,9 @@ const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   const [theme] = useTheme();
-  const [gameContext, setGameContext] = useState<GameContextIntf>(
-    getDefaultGameContext(),
-  );
   const styles = makeStyles(theme);
   return (
-    <GameContext.Provider value={gameContext}>
+    <GameContextProvider>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -44,12 +38,7 @@ function App(): React.JSX.Element {
               headerBackTitle: 'Home',
               headerTintColor: 'white',
               headerStyle: styles.header,
-              headerRight: () => (
-                <GameHeaderRight
-                  gameContext={gameContext}
-                  setGameContext={setGameContext}
-                />
-              ),
+              headerRight: () => <GameHeaderRight />,
             }}
           />
           <Stack.Screen
@@ -63,7 +52,7 @@ function App(): React.JSX.Element {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </GameContext.Provider>
+    </GameContextProvider>
   );
 }
 
