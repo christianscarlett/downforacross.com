@@ -38,11 +38,17 @@ class GameManager extends EventEmitter {
     this.emit('gameModelUpdate');
   }
 
-  onKeyboardInput(input: string) {
+  onKeyboardInput(input: string, pencil: boolean) {
     const selectedCell = this.gameModel.getSelectedCell();
-    const value = this.gameModel.onKeyboardInput(input);
+    const value = this.gameModel.onKeyboardInput(input, pencil);
     if (value !== null) {
-      this.wsModel.updateCell(selectedCell, 'test_id', '#32a852', false, value);
+      this.wsModel.updateCell(
+        selectedCell,
+        'test_id',
+        '#32a852',
+        pencil,
+        value,
+      );
     }
   }
 

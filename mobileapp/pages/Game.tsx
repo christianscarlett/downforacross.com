@@ -16,6 +16,7 @@ import PlayerState from '../lib/Player/PlayerState';
 import {Theme, useTheme} from '../lib/Theme';
 import {Coord} from '../shared/types';
 import Direction from '../util/Direction';
+import {useGameContext} from '../context/GameContext';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -25,6 +26,7 @@ const GID = '4539636-besp';
 // const GID = '4594515-splob';
 
 function Game(): React.JSX.Element {
+  const gameContext = useGameContext();
   const gameManager = useGameManager();
   const [theme] = useTheme();
   const [gid] = useState(GID);
@@ -110,7 +112,9 @@ function Game(): React.JSX.Element {
           <TextInput
             style={styles.textInput}
             ref={textInputRef}
-            onKeyPress={e => gameManager.onKeyboardInput(e.nativeEvent.key)}
+            onKeyPress={e =>
+              gameManager.onKeyboardInput(e.nativeEvent.key, gameContext.pencil)
+            }
             autoCapitalize="characters"
             autoComplete="off"
             autoCorrect={false}

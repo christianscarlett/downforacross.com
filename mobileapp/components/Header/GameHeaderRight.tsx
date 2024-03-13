@@ -39,7 +39,7 @@ const makeIconStyle = (theme: Theme, selected: boolean) => {
     icon: {
       marginLeft: 15,
       fontSize: 25,
-      color: selected ? theme.colors.textPencil : 'white',
+      color: selected ? theme.colors.textSecondary : 'white',
     },
   });
 };

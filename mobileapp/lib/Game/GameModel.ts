@@ -114,7 +114,7 @@ class GameModel extends EventEmitter {
   }
 
   /** Process keyboard input. Returns the processed value if ingested. Returns null if the value was not ingested. */
-  onKeyboardInput(input: string): string | null {
+  onKeyboardInput(input: string, pencil: boolean): string | null {
     // Handle space
     if (input === ' ') {
       this.userModel.toggleDirection();
@@ -123,7 +123,7 @@ class GameModel extends EventEmitter {
     }
     // Handle backspace
     if (input === 'Backspace') {
-      return this.updateSelectedCellValue('', true);
+      return this.updateSelectedCellValue('', pencil, true);
     }
     // Process input
     input = input.toUpperCase().trim();
@@ -132,16 +132,17 @@ class GameModel extends EventEmitter {
       return null;
     }
     // Handle input
-    return this.updateSelectedCellValue(input);
+    return this.updateSelectedCellValue(input, pencil);
   }
 
   private updateSelectedCellValue(
     value: string,
+    pencil: boolean,
     isBackspace: boolean = false,
   ): string | null {
     const cell = this.getSelectedCell();
     if (cell) {
-      this.puzzleModel.updateCellValue(value, cell);
+      this.puzzleModel.updateCellValue(cell, value, pencil);
       this.updateUserCursorPos(
         this.puzzleModel.getNextCell(
           cell,

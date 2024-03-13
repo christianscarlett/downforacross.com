@@ -142,10 +142,10 @@ class PuzzleModel {
     return scopedCells[0].state.number;
   }
 
-  updateCellValue(value: string, cell: Coord) {
+  updateCellValue(cell: Coord, value: string, pencil: boolean) {
     const entry = this.getGridEntry(cell);
     if (entry.isEditable()) {
-      entry.update({value});
+      entry.update({value, pencil});
     }
   }
 
