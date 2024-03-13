@@ -112,9 +112,16 @@ function Game(): React.JSX.Element {
           <TextInput
             style={styles.textInput}
             ref={textInputRef}
-            onKeyPress={e =>
-              gameManager.onKeyboardInput(e.nativeEvent.key, gameContext.pencil)
-            }
+            onKeyPress={e => {
+              if (e.nativeEvent.key === '.') {
+                gameContext.setPencil(!gameContext.pencil);
+              } else {
+                gameManager.onKeyboardInput(
+                  e.nativeEvent.key,
+                  gameContext.pencil,
+                );
+              }
+            }}
             autoCapitalize="characters"
             autoComplete="off"
             autoCorrect={false}
