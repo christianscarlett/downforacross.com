@@ -1,8 +1,8 @@
 import {EventEmitter} from 'events';
 import {Coord} from '../../shared/types';
+import Scope from '../Puzzle/Scopes';
 import GameModel from './GameModel';
 import WebsocketModel from './WebsocketModel';
-import Scope from '../Puzzle/Scopes';
 
 /** This class acts as a bridge between the websocket and the model of the game. */
 class GameManager extends EventEmitter {
@@ -41,11 +41,11 @@ class GameManager extends EventEmitter {
   }
 
   onKeyboardInput(input: string, pencil: boolean) {
-    const selectedCell = this.gameModel.getSelectedCoord();
+    const selectedCell = this.gameModel.getSelectedCell();
     const value = this.gameModel.onKeyboardInput(input, pencil);
-    if (value !== null) {
+    if (value !== null && selectedCell.isEditable()) {
       this.wsModel.updateCell(
-        selectedCell,
+        selectedCell.state.cell,
         'test_id',
         '#32a852',
         pencil,

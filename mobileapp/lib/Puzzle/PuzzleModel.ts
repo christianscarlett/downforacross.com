@@ -44,7 +44,10 @@ class PuzzleModel {
 
   private onUpdateCellEvent(event: WsUpdateCellEvent) {
     const {cell, value, color, pencil} = event.params;
-    this.getGridEntry(cell).update({value, color, pencil});
+    const gridEntry = this.getGridEntry(cell);
+    if (gridEntry.isEditable()) {
+      this.getGridEntry(cell).update({value, color, pencil});
+    }
   }
 
   private revealCell(cell: Coord) {

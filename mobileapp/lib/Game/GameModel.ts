@@ -14,6 +14,7 @@ import {Coord} from '../../shared/types';
 import {areCoordsEqual, isValidInput} from '../../util/util';
 import Direction from '../../util/Direction';
 import CluesInfo from './Clues';
+import GridEntry from '../Puzzle/GridEntry';
 
 class GameModel extends EventEmitter {
   historyModel: HistoryModel = new HistoryModel();
@@ -162,6 +163,10 @@ class GameModel extends EventEmitter {
 
   getSelectedCoord(): Coord {
     return this.userModel.playerState.cursorPos;
+  }
+
+  getSelectedCell(): GridEntry {
+    return this.puzzleModel.getGridEntry(this.getSelectedCoord());
   }
 
   setSyncing(syncing: boolean) {
