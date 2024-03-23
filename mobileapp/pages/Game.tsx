@@ -7,7 +7,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import ClueHeader from '../components/Clue/ClueHeader';
+import ClueBar from '../components/Clue/ClueBar';
 import {OnCellTap} from '../components/Grid/CellComponent';
 import GridComponent from '../components/Grid/GridComponent';
 import KeyboardButton from '../components/Grid/KeyboardButton';
@@ -116,16 +116,12 @@ function Game(): React.JSX.Element {
       }}
     >
       <View style={styles.game}>
-        <ClueHeader
-          cluesInfo={gameManager.gameModel.cluesInfo}
-          clueIndex={clueIndex}
-          direction={direction}
-        />
         <KeyboardAvoidingView
           style={styles.keyboardAvoiding}
           keyboardVerticalOffset={headerHeight}
           behavior="padding"
         >
+          <Text>{'latency: ' + latency}</Text>
           <View style={styles.gridWrapper}>
             {grid[0] && (
               <GridComponent
@@ -157,8 +153,12 @@ function Game(): React.JSX.Element {
               spellCheck={false}
             />
           </View>
+          <ClueBar
+            cluesInfo={gameManager.gameModel.cluesInfo}
+            clueIndex={clueIndex}
+            direction={direction}
+          />
         </KeyboardAvoidingView>
-        <Text>{'latency: ' + latency}</Text>
       </View>
     </SideMenu>
   );

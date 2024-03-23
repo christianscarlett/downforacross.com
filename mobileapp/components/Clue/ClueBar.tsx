@@ -11,7 +11,7 @@ export interface ClueHeaderProps {
   direction: Direction;
 }
 
-function ClueHeader(props: ClueHeaderProps) {
+function ClueBar(props: ClueHeaderProps) {
   const [theme] = useTheme();
   const {cluesInfo, clueIndex, direction} = props;
 
@@ -67,4 +67,4 @@ const makeStyles = (theme: Theme) =>
     },
   });
 
-export default ClueHeader;
+export default ClueBar;

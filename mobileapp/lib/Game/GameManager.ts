@@ -80,13 +80,11 @@ class GameManager extends EventEmitter {
 
   onReveal(scope: Scope) {
     const coords = this.getScopedCoords(scope);
-    console.log('hre ' + coords.length);
     this.wsModel.reveal(coords);
   }
 
   onReset(scope: Scope) {
     const coords = this.getScopedCoords(scope);
-    console.log('here ' + coords.length);
     this.wsModel.reset(coords);
   }
 

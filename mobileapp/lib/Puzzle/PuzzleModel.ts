@@ -8,6 +8,7 @@ import {WsGridEntry} from '../Events/WsGridEntry';
 import {WsRevealEvent} from '../Events/WsRevealEvent';
 import {WsUpdateCellEvent} from '../Events/WsUpdateCellEvent';
 import GridEntry, {CheckState} from './GridEntry';
+import {WsResetEvent} from '../Events/WsResetEvent';
 
 class PuzzleModel {
   grid: GridEntry[][];
@@ -25,6 +26,15 @@ class PuzzleModel {
       this.onCheckEvent(event as WsCheckEvent);
     } else if (event.type === 'reveal') {
       this.onRevealEvent(event as WsRevealEvent);
+    } else if (event.type === 'reset') {
+      this.onResetEvent(event as WsResetEvent);
+    }
+  }
+
+  private onResetEvent(event: WsResetEvent) {
+    const {scope} = event.params;
+    for (const cell of scope) {
+      this.resetCell(cell);
     }
   }
 
@@ -53,6 +63,15 @@ class PuzzleModel {
         checkState: CheckState.NONE,
       });
     }
+  }
+
+  private resetCell(cell: Coord) {
+    const entry = this.getGridEntry(cell);
+    entry.update({
+      value: '',
+      pencil: false,
+      checkState: CheckState.NONE,
+    });
   }
 
   private revealCell(cell: Coord) {
