@@ -6,53 +6,67 @@ import {useGameContext} from '../../context/GameContext';
 import PageNames from '../../lib/PageNames';
 import {Theme, useTheme} from '../../lib/Theme';
 
-function GameHeaderRight() {
-  const gameContext = useGameContext();
-  const navigation = useNavigation();
+interface GameHeaderIconProps {
+  name: string;
+  selected: boolean;
+  onPress?: () => void;
+}
+
+function GameHeaderIcon(props: GameHeaderIconProps) {
+  const {name, selected, onPress} = props;
   const [theme] = useTheme();
-  const styles = makeStyles();
+  const styles = makeIconStyles(theme, selected);
   return (
-    <View style={styles.iconRow}>
-      <TouchableOpacity
-        onPress={() => {
-          gameContext.setPencil(!gameContext.pencil);
-        }}
-      >
-        <Icon
-          name="drive-file-rename-outline"
-          style={makeIconStyle(theme, gameContext.pencil).icon}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(PageNames.CHAT as never);
-        }}
-      >
-        <Icon name="chat-bubble" style={makeIconStyle(theme, false).icon} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          gameContext.setShowMenu(!gameContext.showMenu);
-        }}
-      >
-        <Icon
-          name="menu"
-          style={makeIconStyle(theme, gameContext.showMenu).icon}
-        />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={onPress}>
+      <Icon name={name} style={styles.icon} />
+    </TouchableOpacity>
   );
 }
 
-const makeIconStyle = (theme: Theme, selected: boolean) => {
+const makeIconStyles = (theme: Theme, selected: boolean) => {
   return StyleSheet.create({
     icon: {
       marginLeft: 20,
-      fontSize: 25,
-      color: selected ? theme.colors.textSecondary : 'white',
+      fontSize: 20,
+      color: selected ? theme.colors.textSecondary : theme.colors.background,
+      backgroundColor: selected ? theme.colors.background : 'transparent',
+      borderRadius: 5,
+      overflow: 'hidden',
+      padding: 4,
     },
   });
 };
+
+function GameHeaderRight() {
+  const gameContext = useGameContext();
+  const navigation = useNavigation();
+  const styles = makeStyles();
+  return (
+    <View style={styles.iconRow}>
+      <GameHeaderIcon
+        name="drive-file-rename-outline"
+        selected={gameContext.pencil}
+        onPress={() => {
+          gameContext.setPencil(!gameContext.pencil);
+        }}
+      />
+      <GameHeaderIcon
+        name="chat-bubble"
+        selected={false}
+        onPress={() => {
+          navigation.navigate(PageNames.CHAT as never);
+        }}
+      />
+      <GameHeaderIcon
+        name="menu"
+        selected={gameContext.showMenu}
+        onPress={() => {
+          gameContext.setShowMenu(!gameContext.showMenu);
+        }}
+      />
+    </View>
+  );
+}
 
 const makeStyles = () => {
   return StyleSheet.create({

@@ -42,6 +42,7 @@ function ScopeModal(props: ScopeModalProps) {
   const scopes = Object.entries(Scope);
   const scopeOptions = scopes.map(([_, scope], i) => (
     <ScopeModalOption
+      key={scope}
       title={scope}
       border={i !== scopes.length - 1}
       onPress={() => {
