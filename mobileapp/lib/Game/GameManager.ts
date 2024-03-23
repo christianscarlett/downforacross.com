@@ -1,6 +1,8 @@
 import {EventEmitter} from 'events';
-import WebsocketModel from './WebsocketModel';
+import {Coord} from '../../shared/types';
 import GameModel from './GameModel';
+import WebsocketModel from './WebsocketModel';
+import Scope from '../Puzzle/Scopes';
 
 /** This class acts as a bridge between the websocket and the model of the game. */
 class GameManager extends EventEmitter {
@@ -39,7 +41,7 @@ class GameManager extends EventEmitter {
   }
 
   onKeyboardInput(input: string, pencil: boolean) {
-    const selectedCell = this.gameModel.getSelectedCell();
+    const selectedCell = this.gameModel.getSelectedCoord();
     const value = this.gameModel.onKeyboardInput(input, pencil);
     if (value !== null) {
       this.wsModel.updateCell(
@@ -53,8 +55,27 @@ class GameManager extends EventEmitter {
   }
 
   onUserCursorUpdate() {
-    const selectedCell = this.gameModel.getSelectedCell();
+    const selectedCell = this.gameModel.getSelectedCoord();
     this.wsModel.updateCursor(selectedCell, 'test_id');
+  }
+
+  getScopedCoords(scope: Scope): Coord[] {
+    switch (scope) {
+      case Scope.SQUARE: {
+        return [this.gameModel.getSelectedCoord()];
+      }
+      case Scope.WORD: {
+        return this.gameModel.getWordScopedCoords();
+      }
+      case Scope.PUZZLE: {
+        return this.gameModel.getWhiteCoords();
+      }
+    }
+  }
+
+  onCheck(scope: Scope) {
+    const coords = this.getScopedCoords(scope);
+    this.wsModel.check(coords);
   }
 
   initUser() {

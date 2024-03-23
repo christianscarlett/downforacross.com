@@ -83,7 +83,7 @@ class PuzzleModel {
     return this.grid.map(row => row[col]);
   }
 
-  getScopedCellsUnsorted(
+  getWordScopedCellsUnsorted(
     selectedIndex: number,
     cells: GridEntry[],
   ): GridEntry[] {
@@ -106,30 +106,30 @@ class PuzzleModel {
     return scopedCells;
   }
 
-  getScopedRow(selectedCell: Coord): GridEntry[] {
+  getWordScopedRow(selectedCell: Coord): GridEntry[] {
     const row = this.getRow(selectedCell.r);
-    const scopedCells = this.getScopedCellsUnsorted(selectedCell.c, row);
+    const scopedCells = this.getWordScopedCellsUnsorted(selectedCell.c, row);
     scopedCells.sort((e1, e2) => e1.state.cell.c - e2.state.cell.c);
     return scopedCells;
   }
 
-  getScopedCol(selectedCell: Coord): GridEntry[] {
+  getWordScopedCol(selectedCell: Coord): GridEntry[] {
     const col = this.getCol(selectedCell.c);
-    const scopedCells = this.getScopedCellsUnsorted(selectedCell.r, col);
+    const scopedCells = this.getWordScopedCellsUnsorted(selectedCell.r, col);
     scopedCells.sort((e1, e2) => e1.state.cell.r - e2.state.cell.r);
     return scopedCells;
   }
 
-  getScopedCells(selectedCell: Coord, direction: Direction): GridEntry[] {
+  getWordScopedCells(selectedCell: Coord, direction: Direction): GridEntry[] {
     if (this.grid.length === 0 || this.grid[0].length === 0) {
       // Empty grid, return
       return [];
     }
     switch (direction) {
       case Direction.DOWN:
-        return this.getScopedCol(selectedCell);
+        return this.getWordScopedCol(selectedCell);
       case Direction.ACROSS:
-        return this.getScopedRow(selectedCell);
+        return this.getWordScopedRow(selectedCell);
     }
   }
 
@@ -138,7 +138,7 @@ class PuzzleModel {
       // Empty grid, return
       return null;
     }
-    const scopedCells = this.getScopedCells(cell, direction);
+    const scopedCells = this.getWordScopedCells(cell, direction);
     return scopedCells[0].state.number;
   }
 
@@ -151,7 +151,7 @@ class PuzzleModel {
 
   /** Given the current cell and direction, find the next one to select */
   getNextCell(cell: Coord, dir: Direction, invert: boolean = false): Coord {
-    const cells = this.getScopedCells(cell, dir);
+    const cells = this.getWordScopedCells(cell, dir);
     if (cells.length === 0) {
       return cell;
     }
@@ -163,6 +163,10 @@ class PuzzleModel {
       return cells[nextCellIndex].state.cell;
     }
     return cell;
+  }
+
+  getWhiteCells(): GridEntry[] {
+    return this.grid.flat().filter(gridEntry => !gridEntry.state.black);
   }
 
   static fromWsGrid(

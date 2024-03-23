@@ -18,7 +18,6 @@ import {Coord} from '../shared/types';
 import Direction from '../util/Direction';
 import {useGameContext} from '../context/GameContext';
 import GameMenu from '../components/Header/GameMenu';
-import ScopeModal from '../components/Header/ScopeModal';
 import SideMenu from '@chakrahq/react-native-side-menu';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
@@ -46,10 +45,8 @@ function Game(): React.JSX.Element {
     gameManager.gameModel.getSelectedClueIndex(),
   );
   const [scopedCells, setScopedCells] = useState(
-    gameManager.gameModel.getScopedCells(),
+    gameManager.gameModel.getWordScopedCoords(),
   );
-
-  const [scopeModalVisible, setScopeModalVisible] = useState(false);
 
   const onCellTap = useMemo<OnCellTap>(
     () => (cell: Coord) => {
@@ -65,7 +62,7 @@ function Game(): React.JSX.Element {
       setUserState({...gameManager.gameModel.userModel.playerState});
       setDirection(gameManager.gameModel.userModel.direction);
       setClueIndex(gameManager.gameModel.getSelectedClueIndex());
-      setScopedCells(gameManager.gameModel.getScopedCells());
+      setScopedCells(gameManager.gameModel.getWordScopedCoords());
     }
     function onLatencyUpdate() {
       setLatency(gameManager.wsModel.latency);
@@ -93,7 +90,17 @@ function Game(): React.JSX.Element {
   return (
     // @ts-ignore
     <SideMenu
-      menu={<GameMenu onCheckPress={() => setScopeModalVisible(true)} />}
+      menu={
+        <GameMenu
+          onClose={() => {
+            gameContext.setShowMenu(false);
+          }}
+          onCheck={scope => {
+            gameManager.onCheck(scope);
+            gameContext.setShowMenu(false);
+          }}
+        />
+      }
       isOpen={gameContext.showMenu}
       menuPosition="right"
       onChange={isOpen => {
@@ -144,13 +151,6 @@ function Game(): React.JSX.Element {
           </View>
         </KeyboardAvoidingView>
         <Text>{'latency: ' + latency}</Text>
-        <ScopeModal
-          visible={scopeModalVisible}
-          setVisible={setScopeModalVisible}
-          onSelectScope={() => {
-            /* TODO */
-          }}
-        />
       </View>
     </SideMenu>
   );

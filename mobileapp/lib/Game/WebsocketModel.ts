@@ -119,6 +119,15 @@ class WebsocketModel extends EventEmitter {
     });
   }
 
+  check(scope: Coord[]) {
+    this.publishEvent({
+      type: 'check',
+      params: {
+        scope,
+      },
+    });
+  }
+
   private publishEvent(event: any) {
     emitAsync(this.socket, 'game_event', {
       event: {

@@ -84,7 +84,7 @@ class GameModel extends EventEmitter {
       return;
     }
 
-    if (areCoordsEqual(this.getSelectedCell(), cell)) {
+    if (areCoordsEqual(this.getSelectedCoord(), cell)) {
       this.userModel.toggleDirection();
     } else {
       this.updateUserCursorPos(cell);
@@ -100,17 +100,21 @@ class GameModel extends EventEmitter {
   }
 
   getSelectedClueIndex(): number | null {
-    return this.getClueIndex(this.getSelectedCell(), this.userModel.direction);
+    return this.getClueIndex(this.getSelectedCoord(), this.userModel.direction);
   }
 
   getClueIndex(cell: Coord, direction: Direction): number | null {
     return this.puzzleModel.getClueIndex(cell, direction);
   }
 
-  getScopedCells(): Coord[] {
+  getWordScopedCoords(): Coord[] {
     return this.puzzleModel
-      .getScopedCells(this.getSelectedCell(), this.userModel.direction)
+      .getWordScopedCells(this.getSelectedCoord(), this.userModel.direction)
       .map(entry => entry.state.cell);
+  }
+
+  getWhiteCoords(): Coord[] {
+    return this.puzzleModel.getWhiteCells().map(entry => entry.state.cell);
   }
 
   /** Process keyboard input. Returns the processed value if ingested. Returns null if the value was not ingested. */
@@ -140,7 +144,7 @@ class GameModel extends EventEmitter {
     pencil: boolean,
     isBackspace: boolean = false,
   ): string | null {
-    const cell = this.getSelectedCell();
+    const cell = this.getSelectedCoord();
     if (cell) {
       this.puzzleModel.updateCellValue(cell, value, pencil);
       this.updateUserCursorPos(
@@ -156,7 +160,7 @@ class GameModel extends EventEmitter {
     return null;
   }
 
-  getSelectedCell(): Coord {
+  getSelectedCoord(): Coord {
     return this.userModel.playerState.cursorPos;
   }
 
