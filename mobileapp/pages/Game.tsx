@@ -99,6 +99,14 @@ function Game(): React.JSX.Element {
             gameManager.onCheck(scope);
             gameContext.setShowMenu(false);
           }}
+          onReveal={scope => {
+            gameManager.onReveal(scope);
+            gameContext.setShowMenu(false);
+          }}
+          onReset={scope => {
+            gameManager.onReset(scope);
+            gameContext.setShowMenu(false);
+          }}
         />
       }
       isOpen={gameContext.showMenu}

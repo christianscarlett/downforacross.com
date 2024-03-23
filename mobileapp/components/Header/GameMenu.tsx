@@ -7,6 +7,8 @@ import Scope from '../../lib/Puzzle/Scopes';
 
 interface GameMenuProps {
   onCheck: (scope: Scope) => void;
+  onReveal: (scope: Scope) => void;
+  onReset: (scope: Scope) => void;
   onClose: () => void;
 }
 
@@ -15,29 +17,39 @@ enum GameMenuPage {
   SCOPE,
 }
 
+enum InitialMenuItem {
+  CHECK = 'Check',
+  REVEAL = 'Reveal',
+  RESET = 'Reset',
+}
+
 function GameMenu(props: GameMenuProps) {
-  const {onCheck, onClose} = props;
+  const {onCheck, onReveal, onReset, onClose} = props;
   const [theme] = useTheme();
   const [page, setPage] = useState(GameMenuPage.INITIAL);
-  const [selectedMenuItemTitle, setSelectedMenuItemTitle] = useState<
-    string | null
-  >(null);
+  const [selectedMenuItem, setSelectedMenuItem] = useState<string | null>(null);
 
   function openScope(title: string) {
-    setSelectedMenuItemTitle(title);
+    setSelectedMenuItem(title);
     setPage(GameMenuPage.SCOPE);
   }
 
   function renderPage(selectedPage: GameMenuPage) {
     switch (selectedPage) {
       case GameMenuPage.INITIAL: {
-        return (
-          <>
-            <GameMenuItem title="Check" onPress={() => openScope('Check')} />
-            <GameMenuItem title="Reveal" onPress={() => openScope('Reveal')} />
-            <GameMenuItem title="Reset" onPress={() => openScope('Reset')} />
-          </>
-        );
+        const scopedCommands = [
+          InitialMenuItem.CHECK,
+          InitialMenuItem.REVEAL,
+          InitialMenuItem.RESET,
+        ];
+        const scopedCommandItems = scopedCommands.map(command => (
+          <GameMenuItem
+            key={command}
+            title={command}
+            onPress={() => openScope(command)}
+          />
+        ));
+        return scopedCommandItems;
       }
       case GameMenuPage.SCOPE: {
         const scopes = Object.entries(Scope);
@@ -46,8 +58,19 @@ function GameMenu(props: GameMenuProps) {
             key={scope}
             title={scope}
             onPress={() => {
-              if (selectedMenuItemTitle === 'Check') {
-                onCheck(scope);
+              switch (selectedMenuItem) {
+                case InitialMenuItem.CHECK: {
+                  onCheck(scope);
+                  break;
+                }
+                case InitialMenuItem.REVEAL: {
+                  onReveal(scope);
+                  break;
+                }
+                case InitialMenuItem.RESET: {
+                  onReset(scope);
+                  break;
+                }
               }
             }}
           />
@@ -67,15 +90,13 @@ function GameMenu(props: GameMenuProps) {
             if (page === GameMenuPage.INITIAL) {
               onClose();
             } else if (page === GameMenuPage.SCOPE) {
-              setSelectedMenuItemTitle('');
+              setSelectedMenuItem('');
               setPage(GameMenuPage.INITIAL);
             }
           }}
         >
           <Icon name="chevron-left" style={styles.backButton} />
-          <Text style={styles.selectedMenuItemTitle}>
-            {selectedMenuItemTitle}
-          </Text>
+          <Text style={styles.selectedMenuItemTitle}>{selectedMenuItem}</Text>
         </TouchableOpacity>
       </View>
       {renderPage(page)}

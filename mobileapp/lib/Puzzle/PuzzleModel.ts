@@ -46,28 +46,37 @@ class PuzzleModel {
     const {cell, value, color, pencil} = event.params;
     const gridEntry = this.getGridEntry(cell);
     if (gridEntry.isEditable()) {
-      this.getGridEntry(cell).update({value, color, pencil});
+      this.getGridEntry(cell).update({
+        value,
+        color,
+        pencil,
+        checkState: CheckState.NONE,
+      });
     }
   }
 
   private revealCell(cell: Coord) {
     const entry = this.getGridEntry(cell);
     const correctValue = this.getSolution(cell);
-    entry.update({
-      value: correctValue,
-      checkState: CheckState.REVEALED,
-    });
+    if (entry.isEditable()) {
+      entry.update({
+        value: correctValue,
+        checkState: CheckState.REVEALED,
+      });
+    }
   }
 
   private checkCell(cell: Coord) {
     const entry = this.getGridEntry(cell);
     const correctValue = this.getSolution(cell);
-    entry.update({
-      checkState:
-        entry.state.value === correctValue
-          ? CheckState.CORRECT
-          : CheckState.INCORRECT,
-    });
+    if (entry.isEditable()) {
+      entry.update({
+        checkState:
+          entry.state.value === correctValue
+            ? CheckState.CORRECT
+            : CheckState.INCORRECT,
+      });
+    }
   }
 
   getSolution(cell: Coord): string {

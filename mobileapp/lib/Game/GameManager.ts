@@ -78,6 +78,18 @@ class GameManager extends EventEmitter {
     this.wsModel.check(coords);
   }
 
+  onReveal(scope: Scope) {
+    const coords = this.getScopedCoords(scope);
+    console.log('hre ' + coords.length);
+    this.wsModel.reveal(coords);
+  }
+
+  onReset(scope: Scope) {
+    const coords = this.getScopedCoords(scope);
+    console.log('here ' + coords.length);
+    this.wsModel.reset(coords);
+  }
+
   initUser() {
     const {id, playerState} = this.gameModel.userModel.state;
     this.wsModel.updateColor(playerState.color, id);
