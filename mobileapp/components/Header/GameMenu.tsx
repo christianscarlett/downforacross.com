@@ -1,24 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
-
-interface GameMenuItemProps {
-  title: string;
-  onPress: () => void;
-}
-
-function GameMenuItem(props: GameMenuItemProps) {
-  const {title, onPress} = props;
-  const [theme] = useTheme();
-  const styles = makeStyles(theme);
-  return (
-    <View style={styles.gameMenuItem}>
-      <TouchableOpacity style={styles.gameMenuItemTouchable} onPress={onPress}>
-        <Text>{title}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+import GameMenuItem from './GameMenuItem';
 
 interface GameMenuProps {
   onCheckPress: () => void;
@@ -39,21 +22,13 @@ function GameMenu(props: GameMenuProps) {
 
 const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
-    gameMenuItemTouchable: {
-      paddingVertical: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    gameMenuItem: {
-      backgroundColor: theme.colors.background,
-      borderBottomColor: theme.colors.border,
-      borderBottomWidth: 1,
-    },
     gameMenu: {
       position: 'absolute',
       top: 0,
       left: 0,
       width: '100%',
+      height: '100%',
+      backgroundColor: theme.colors.mainGray3,
     },
   });
 };

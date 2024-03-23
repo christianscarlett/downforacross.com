@@ -19,6 +19,7 @@ import Direction from '../util/Direction';
 import {useGameContext} from '../context/GameContext';
 import GameMenu from '../components/Header/GameMenu';
 import ScopeModal from '../components/Header/ScopeModal';
+import SideMenu from '@chakrahq/react-native-side-menu';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -90,61 +91,68 @@ function Game(): React.JSX.Element {
   const headerHeight = useHeaderHeight();
   const styles = makeStyles(theme);
   return (
-    <View style={styles.game}>
-      <ClueHeader
-        cluesInfo={gameManager.gameModel.cluesInfo}
-        clueIndex={clueIndex}
-        direction={direction}
-      />
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoiding}
-        keyboardVerticalOffset={headerHeight}
-        behavior="padding"
-      >
-        <View style={styles.gridWrapper}>
-          {grid[0] && (
-            <GridComponent
-              grid={grid}
-              playerStates={playerStates}
-              userState={userState}
-              direction={direction}
-              scopedCells={scopedCells}
-              onCellTap={onCellTap}
+    // @ts-ignore
+    <SideMenu
+      menu={<GameMenu onCheckPress={() => setScopeModalVisible(true)} />}
+      isOpen={gameContext.showMenu}
+      menuPosition="right"
+      onChange={isOpen => {
+        gameContext.setShowMenu(isOpen);
+      }}
+    >
+      <View style={styles.game}>
+        <ClueHeader
+          cluesInfo={gameManager.gameModel.cluesInfo}
+          clueIndex={clueIndex}
+          direction={direction}
+        />
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoiding}
+          keyboardVerticalOffset={headerHeight}
+          behavior="padding"
+        >
+          <View style={styles.gridWrapper}>
+            {grid[0] && (
+              <GridComponent
+                grid={grid}
+                playerStates={playerStates}
+                userState={userState}
+                direction={direction}
+                scopedCells={scopedCells}
+                onCellTap={onCellTap}
+              />
+            )}
+            <KeyboardButton textInputRef={textInputRef} />
+            <TextInput
+              style={styles.textInput}
+              ref={textInputRef}
+              onKeyPress={e => {
+                if (e.nativeEvent.key === '.') {
+                  gameContext.setPencil(!gameContext.pencil);
+                } else {
+                  gameManager.onKeyboardInput(
+                    e.nativeEvent.key,
+                    gameContext.pencil,
+                  );
+                }
+              }}
+              autoCapitalize="characters"
+              autoComplete="off"
+              autoCorrect={false}
+              spellCheck={false}
             />
-          )}
-          <KeyboardButton textInputRef={textInputRef} />
-          <TextInput
-            style={styles.textInput}
-            ref={textInputRef}
-            onKeyPress={e => {
-              if (e.nativeEvent.key === '.') {
-                gameContext.setPencil(!gameContext.pencil);
-              } else {
-                gameManager.onKeyboardInput(
-                  e.nativeEvent.key,
-                  gameContext.pencil,
-                );
-              }
-            }}
-            autoCapitalize="characters"
-            autoComplete="off"
-            autoCorrect={false}
-            spellCheck={false}
-          />
-        </View>
-      </KeyboardAvoidingView>
-      <Text>{'latency: ' + latency}</Text>
-      {gameContext.showMenu && (
-        <GameMenu onCheckPress={() => setScopeModalVisible(true)} />
-      )}
-      <ScopeModal
-        visible={scopeModalVisible}
-        setVisible={setScopeModalVisible}
-        onSelectScope={() => {
-          /* TODO */
-        }}
-      />
-    </View>
+          </View>
+        </KeyboardAvoidingView>
+        <Text>{'latency: ' + latency}</Text>
+        <ScopeModal
+          visible={scopeModalVisible}
+          setVisible={setScopeModalVisible}
+          onSelectScope={() => {
+            /* TODO */
+          }}
+        />
+      </View>
+    </SideMenu>
   );
 }
 
