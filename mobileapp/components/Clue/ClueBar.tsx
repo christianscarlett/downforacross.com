@@ -1,19 +1,26 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import CluesInfo from '../../lib/Game/Clues';
+import CluesInfo from '../../lib/Game/CluesInfo';
 import Direction from '../../util/Direction';
 
 export interface ClueHeaderProps {
   cluesInfo: CluesInfo;
   clueIndex: number | null;
   direction: Direction;
+  onNextCluePressed: (clueIndex: number) => void;
 }
 
 function ClueBar(props: ClueHeaderProps) {
   const [theme] = useTheme();
-  const {cluesInfo, clueIndex, direction} = props;
+  const {cluesInfo, clueIndex, direction, onNextCluePressed} = props;
 
   const clues = cluesInfo.getClues(direction);
   const clueText = clueIndex !== null ? clues[clueIndex] : '';
@@ -30,7 +37,15 @@ function ClueBar(props: ClueHeaderProps) {
       <ScrollView>
         <Text style={styles.clueText}>{clueText}</Text>
       </ScrollView>
-      <Icon name="keyboard-arrow-right" style={styles.chevronRight} />
+      <TouchableOpacity
+        onPress={() => {
+          if (clueIndex) {
+            onNextCluePressed(clueIndex);
+          }
+        }}
+      >
+        <Icon name="keyboard-arrow-right" style={styles.chevronRight} />
+      </TouchableOpacity>
     </View>
   );
 }

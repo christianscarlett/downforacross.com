@@ -164,13 +164,21 @@ class PuzzleModel {
     }
   }
 
-  getClueIndex(cell: Coord, direction: Direction): number | null {
+  getClueGridEntry(cell: Coord, direction: Direction): GridEntry | null {
     if (this.grid.length === 0 || this.grid[0].length === 0) {
       // Empty grid, return
       return null;
     }
     const scopedCells = this.getWordScopedCells(cell, direction);
-    return scopedCells[0].state.number;
+    return scopedCells[0];
+  }
+
+  getClueIndex(cell: Coord, direction: Direction): number | null {
+    const entry = this.getClueGridEntry(cell, direction);
+    if (entry) {
+      return entry.state.number;
+    }
+    return null;
   }
 
   updateCellValue(cell: Coord, value: string, pencil: boolean) {
@@ -198,6 +206,30 @@ class PuzzleModel {
 
   getWhiteCells(): GridEntry[] {
     return this.grid.flat().filter(gridEntry => !gridEntry.state.black);
+  }
+
+  isWordComplete(cell: Coord, dir: Direction): boolean {
+    const entries = this.getWordScopedCells(cell, dir);
+    return entries.every(entry => entry.state.value !== '');
+  }
+
+  getClueGridEntryFromIndex(clueIndex: number): GridEntry | null {
+    for (const row of this.grid) {
+      for (const entry of row) {
+        if (entry.state.number === clueIndex) {
+          return entry;
+        }
+      }
+    }
+    return null;
+  }
+
+  isClueComplete(clueIndex: number, dir: Direction): boolean | null {
+    const entry = this.getClueGridEntryFromIndex(clueIndex);
+    if (entry) {
+      return this.isWordComplete(entry.state.cell, dir);
+    }
+    return null;
   }
 
   static fromWsGrid(

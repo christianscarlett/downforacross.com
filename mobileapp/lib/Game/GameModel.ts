@@ -12,8 +12,8 @@ import UserModel from '../User/UserModel';
 import PuzzleInfo from './PuzzleInfo';
 import {Coord} from '../../shared/types';
 import {areCoordsEqual, isValidInput} from '../../util/util';
-import Direction from '../../util/Direction';
-import CluesInfo from './Clues';
+import Direction, {toggleDirection} from '../../util/Direction';
+import CluesInfo from './CluesInfo';
 import GridEntry from '../Puzzle/GridEntry';
 
 class GameModel extends EventEmitter {
@@ -167,6 +167,44 @@ class GameModel extends EventEmitter {
 
   getSelectedCell(): GridEntry {
     return this.puzzleModel.getGridEntry(this.getSelectedCoord());
+  }
+
+  getNextUnfinishedClueWithFallback(clueIndex: number): [number, Direction] {
+    // Check in current direction
+    const currentDir = this.userModel.direction;
+    let nextIndexes = this.cluesInfo
+      .getClueIndexes(currentDir)
+      .filter(
+        index =>
+          index > clueIndex &&
+          !this.puzzleModel.isClueComplete(index, currentDir),
+      );
+    if (nextIndexes.length > 0) {
+      return [Math.min(...nextIndexes), currentDir];
+    }
+
+    // Check in other direction
+    const nextDir = toggleDirection(currentDir);
+    nextIndexes = this.cluesInfo
+      .getClueIndexes(nextDir)
+      .filter(index => !this.puzzleModel.isClueComplete(index, nextDir));
+    if (nextIndexes.length > 0) {
+      return [Math.min(...nextIndexes), nextDir];
+    }
+
+    // Just get another clue
+    return this.cluesInfo.getNextClueIndex(clueIndex, currentDir);
+  }
+
+  selectNextClue(clueIndex: number) {
+    const [nextClueIndex, nextDirection] =
+      this.getNextUnfinishedClueWithFallback(clueIndex);
+    const nextEntry = this.puzzleModel.getClueGridEntryFromIndex(nextClueIndex);
+    if (nextEntry) {
+      this.updateUserCursorPos(nextEntry.state.cell);
+      this.userModel.update({direction: nextDirection});
+      this.emitUpdate();
+    }
   }
 
   setSyncing(syncing: boolean) {
