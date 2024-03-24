@@ -1,18 +1,19 @@
 import React, {createContext, useContext, useState} from 'react';
+import GameMenuPage from './GameMenuPage';
 
 export interface GameContextIntf {
   pencil: boolean;
   setPencil: (_: boolean) => void;
-  showMenu: boolean;
-  setShowMenu: (_: boolean) => void;
+  menuPage: GameMenuPage | null;
+  setMenuPage: (_: GameMenuPage | null) => void;
 }
 
 function getDefaultGameContext(): GameContextIntf {
   return {
     pencil: false,
     setPencil: _ => {},
-    showMenu: false,
-    setShowMenu: _ => {},
+    menuPage: null,
+    setMenuPage: _ => {},
   };
 }
 
@@ -22,13 +23,13 @@ export function GameContextProvider(props: any) {
   const {children} = props;
 
   const [pencil, setPencil] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
+  const [menuPage, setMenuPage] = useState<GameMenuPage | null>(null);
 
   const value: GameContextIntf = {
     pencil,
     setPencil,
-    showMenu,
-    setShowMenu,
+    menuPage,
+    setMenuPage,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -35,6 +35,7 @@ function App(): React.JSX.Element {
             name={PageNames.GAME}
             component={Game}
             options={{
+              title: '',
               headerBackTitle: 'Home',
               headerTintColor: 'white',
               headerStyle: styles.header,

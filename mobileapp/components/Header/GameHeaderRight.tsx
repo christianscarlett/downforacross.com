@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useGameContext} from '../../context/GameContext';
 import PageNames from '../../lib/PageNames';
 import {Theme, useTheme} from '../../lib/Theme';
+import GameMenuPage from '../../context/GameMenuPage';
 
 interface GameHeaderIconProps {
   name: string;
@@ -26,7 +27,7 @@ function GameHeaderIcon(props: GameHeaderIconProps) {
 const makeIconStyles = (theme: Theme, selected: boolean) => {
   return StyleSheet.create({
     icon: {
-      marginLeft: 20,
+      marginLeft: 15,
       fontSize: 20,
       color: selected ? theme.colors.textSecondary : theme.colors.background,
       backgroundColor: selected ? theme.colors.background : 'transparent',
@@ -44,6 +45,17 @@ function GameHeaderRight() {
   return (
     <View style={styles.iconRow}>
       <GameHeaderIcon
+        name="format-list-numbered"
+        selected={gameContext.menuPage === GameMenuPage.LIST_VIEW}
+        onPress={() => {
+          gameContext.setMenuPage(
+            gameContext.menuPage === GameMenuPage.LIST_VIEW
+              ? null
+              : GameMenuPage.LIST_VIEW,
+          );
+        }}
+      />
+      <GameHeaderIcon
         name="drive-file-rename-outline"
         selected={gameContext.pencil}
         onPress={() => {
@@ -59,9 +71,13 @@ function GameHeaderRight() {
       />
       <GameHeaderIcon
         name="menu"
-        selected={gameContext.showMenu}
+        selected={gameContext.menuPage === GameMenuPage.ACTIONS}
         onPress={() => {
-          gameContext.setShowMenu(!gameContext.showMenu);
+          gameContext.setMenuPage(
+            gameContext.menuPage === GameMenuPage.ACTIONS
+              ? null
+              : GameMenuPage.ACTIONS,
+          );
         }}
       />
     </View>

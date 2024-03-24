@@ -19,6 +19,7 @@ import Direction from '../util/Direction';
 import {useGameContext} from '../context/GameContext';
 import GameMenu from '../components/Header/GameMenu';
 import SideMenu from '@chakrahq/react-native-side-menu';
+import GameMenuPage from '../context/GameMenuPage';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -91,28 +92,35 @@ function Game(): React.JSX.Element {
     // @ts-ignore
     <SideMenu
       menu={
-        <GameMenu
-          onClose={() => {
-            gameContext.setShowMenu(false);
-          }}
-          onCheck={scope => {
-            gameManager.onCheck(scope);
-            gameContext.setShowMenu(false);
-          }}
-          onReveal={scope => {
-            gameManager.onReveal(scope);
-            gameContext.setShowMenu(false);
-          }}
-          onReset={scope => {
-            gameManager.onReset(scope);
-            gameContext.setShowMenu(false);
-          }}
-        />
+        <>
+          {gameContext.menuPage === GameMenuPage.ACTIONS && (
+            <GameMenu
+              onClose={() => {
+                gameContext.setMenuPage(null);
+              }}
+              onCheck={scope => {
+                gameManager.onCheck(scope);
+                gameContext.setMenuPage(null);
+              }}
+              onReveal={scope => {
+                gameManager.onReveal(scope);
+                gameContext.setMenuPage(null);
+              }}
+              onReset={scope => {
+                gameManager.onReset(scope);
+                gameContext.setMenuPage(null);
+              }}
+            />
+          )}
+        </>
       }
-      isOpen={gameContext.showMenu}
+      isOpen={gameContext.menuPage !== null}
       menuPosition="right"
       onChange={isOpen => {
-        gameContext.setShowMenu(isOpen);
+        console.log(isOpen + ' ' + gameContext.menuPage);
+        if (!isOpen) {
+          gameContext.setMenuPage(null);
+        }
       }}
     >
       <View style={styles.game}>
