@@ -16,11 +16,18 @@ export interface ClueHeaderProps {
   clueIndex: number | null;
   direction: Direction;
   onNextCluePressed: (clueIndex: number) => void;
+  onPreviousCluePressed: (clueIndex: number) => void;
 }
 
 function ClueBar(props: ClueHeaderProps) {
   const [theme] = useTheme();
-  const {cluesInfo, clueIndex, direction, onNextCluePressed} = props;
+  const {
+    cluesInfo,
+    clueIndex,
+    direction,
+    onNextCluePressed,
+    onPreviousCluePressed,
+  } = props;
 
   const clues = cluesInfo.getClues(direction);
   const clueText = clueIndex !== null ? clues[clueIndex] : '';
@@ -28,7 +35,16 @@ function ClueBar(props: ClueHeaderProps) {
   const styles = makeStyles(theme);
   return (
     <View style={styles.clueHeader}>
-      <Icon name="keyboard-arrow-left" style={styles.chevronLeft} />
+      <TouchableOpacity
+        style={styles.chevronTouchable}
+        onPress={() => {
+          if (clueIndex) {
+            onPreviousCluePressed(clueIndex);
+          }
+        }}
+      >
+        <Icon name="keyboard-arrow-left" style={styles.chevronLeft} />
+      </TouchableOpacity>
       {clueIndex && (
         <Text style={styles.clueName}>{`${clueIndex}${
           direction === Direction.ACROSS ? 'A' : 'D'
@@ -38,6 +54,7 @@ function ClueBar(props: ClueHeaderProps) {
         <Text style={styles.clueText}>{clueText}</Text>
       </ScrollView>
       <TouchableOpacity
+        style={styles.chevronTouchable}
         onPress={() => {
           if (clueIndex) {
             onNextCluePressed(clueIndex);
@@ -61,6 +78,10 @@ const makeStyles = (theme: Theme) =>
       paddingLeft: 10,
       paddingRight: 20,
       fontSize: 25,
+    },
+    chevronTouchable: {
+      height: '100%',
+      justifyContent: 'center',
     },
     clueText: {
       color: theme.colors.textPrimary,

@@ -160,6 +160,9 @@ function Game(): React.JSX.Element {
             onNextCluePressed={clueIndex => {
               gameManager.selectNextClue(clueIndex);
             }}
+            onPreviousCluePressed={clueIndex => {
+              gameManager.selectPreviousClue(clueIndex);
+            }}
           />
         </KeyboardAvoidingView>
       </View>

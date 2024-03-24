@@ -169,18 +169,24 @@ class GameModel extends EventEmitter {
     return this.puzzleModel.getGridEntry(this.getSelectedCoord());
   }
 
-  getNextUnfinishedClueWithFallback(clueIndex: number): [number, Direction] {
+  getNextUnfinishedClueWithFallback(
+    clueIndex: number,
+    reverse: boolean = false,
+  ): [number, Direction] {
     // Check in current direction
     const currentDir = this.userModel.direction;
     let nextIndexes = this.cluesInfo
       .getClueIndexes(currentDir)
       .filter(
         index =>
-          index > clueIndex &&
+          (reverse ? index < clueIndex : index > clueIndex) &&
           !this.puzzleModel.isClueComplete(index, currentDir),
       );
     if (nextIndexes.length > 0) {
-      return [Math.min(...nextIndexes), currentDir];
+      return [
+        reverse ? Math.max(...nextIndexes) : Math.min(...nextIndexes),
+        currentDir,
+      ];
     }
 
     // Check in other direction
@@ -189,16 +195,19 @@ class GameModel extends EventEmitter {
       .getClueIndexes(nextDir)
       .filter(index => !this.puzzleModel.isClueComplete(index, nextDir));
     if (nextIndexes.length > 0) {
-      return [Math.min(...nextIndexes), nextDir];
+      return [
+        reverse ? Math.max(...nextIndexes) : Math.min(...nextIndexes),
+        nextDir,
+      ];
     }
 
     // Just get another clue
-    return this.cluesInfo.getNextClueIndex(clueIndex, currentDir);
+    return this.cluesInfo.getNextClueIndex(clueIndex, currentDir, reverse);
   }
 
-  selectNextClue(clueIndex: number) {
+  selectNextClue(clueIndex: number, reverse: boolean = false) {
     const [nextClueIndex, nextDirection] =
-      this.getNextUnfinishedClueWithFallback(clueIndex);
+      this.getNextUnfinishedClueWithFallback(clueIndex, reverse);
     const nextEntry = this.puzzleModel.getClueGridEntryFromIndex(nextClueIndex);
     if (nextEntry) {
       this.updateUserCursorPos(nextEntry.state.cell);

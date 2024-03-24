@@ -21,8 +21,11 @@ class CluesInfo {
   getNextClueIndexForceDirection(
     clueIndex: number,
     direction: Direction,
+    reverse: boolean = false,
   ): number | null {
-    const cluesToScan = this.getClues(direction).slice(clueIndex + 1);
+    const cluesToScan = reverse
+      ? this.getClues(direction).slice(0, clueIndex).reverse() // Search before clueIndex
+      : this.getClues(direction).slice(clueIndex + 1); // Search after clueIndex
     const nextClueIndex = cluesToScan.findIndex(clue => clue !== null);
     if (nextClueIndex === -1) {
       return null;
@@ -30,18 +33,20 @@ class CluesInfo {
     return nextClueIndex;
   }
 
-  /** Gets the index and direction for the next clue. If there is no next clue for a given direction, this will return the first clue index in the other direction. */
+  /** Gets the index and direction for the next clue. If there is no next clue for a given direction, this will return the first clue index in the other direction. If there is no clue index in the other direction, it will return the input clue. */
   getNextClueIndex(
     clueIndex: number,
     direction: Direction,
+    reverse: boolean = false,
   ): [number, Direction] {
     let nextClueIndex = this.getNextClueIndexForceDirection(
       clueIndex,
       direction,
+      reverse,
     );
     if (!nextClueIndex) {
       direction = toggleDirection(direction);
-      nextClueIndex = this.getClueIndexes(direction)[0];
+      nextClueIndex = this.getClueIndexes(direction)[reverse ? -1 : 0];
     }
     if (!nextClueIndex) {
       return [clueIndex, direction];
