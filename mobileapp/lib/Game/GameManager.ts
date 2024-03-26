@@ -96,6 +96,10 @@ class GameManager extends EventEmitter {
     this.gameModel.selectNextClue(clueIndex, true);
   }
 
+  selectClue(clueIndex: number, direction: Direction) {
+    this.gameModel.selectClue(clueIndex, direction);
+  }
+
   initUser() {
     const {id, playerState} = this.gameModel.userModel.state;
     this.wsModel.updateColor(playerState.color, id);

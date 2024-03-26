@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 
 interface ClueItemProps {
@@ -7,17 +7,20 @@ interface ClueItemProps {
   text: string;
   selected: boolean;
   perpendicular: boolean;
+  onPress: () => void;
 }
 
 function ClueItem(props: ClueItemProps) {
-  const {index, text, selected, perpendicular} = props;
+  const {index, text, selected, perpendicular, onPress} = props;
   const [theme] = useTheme();
   const styles = makeStyles(theme, selected, perpendicular);
   return (
-    <View style={styles.clueItem}>
-      <Text style={styles.number}>{index}</Text>
-      <Text style={styles.text}>{text}</Text>
-    </View>
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.clueItem}>
+        <Text style={styles.number}>{index}</Text>
+        <Text style={styles.text}>{text}</Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 

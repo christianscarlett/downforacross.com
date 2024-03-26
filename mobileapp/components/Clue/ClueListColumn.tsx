@@ -9,6 +9,7 @@ interface ClueColumnProps {
   clues: Array<string | null>;
   selectedClueIndex: number | null;
   perpendicularClueIndex: number | null;
+  onCluePressed: (index: number) => void;
 }
 
 interface ClueListItemData {
@@ -19,7 +20,13 @@ interface ClueListItemData {
 }
 
 function ClueListColumn(props: ClueColumnProps) {
-  const {title, clues, selectedClueIndex, perpendicularClueIndex} = props;
+  const {
+    title,
+    clues,
+    selectedClueIndex,
+    perpendicularClueIndex,
+    onCluePressed,
+  } = props;
   const [theme] = useTheme();
 
   const cluesData: ClueListItemData[] = [];
@@ -42,6 +49,7 @@ function ClueListColumn(props: ClueColumnProps) {
         text={text}
         selected={selected}
         perpendicular={perpendicular}
+        onPress={() => onCluePressed(index)}
       />
     );
   }

@@ -216,6 +216,15 @@ class GameModel extends EventEmitter {
     }
   }
 
+  selectClue(clueIndex: number, direction: Direction) {
+    const entry = this.puzzleModel.getClueGridEntryFromIndex(clueIndex);
+    if (entry) {
+      this.updateUserCursorPos(entry.state.cell);
+      this.userModel.update({direction});
+      this.emitUpdate();
+    }
+  }
+
   setSyncing(syncing: boolean) {
     this.syncing = syncing;
   }

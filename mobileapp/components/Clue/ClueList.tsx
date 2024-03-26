@@ -10,6 +10,7 @@ interface ClueListProps {
   selectedClueIndex: number | null;
   selectedClueDirection: Direction;
   perpendicularClueIndex: number | null;
+  onCluePressed: (index: number, direction: Direction) => void;
 }
 
 function ClueList(props: ClueListProps) {
@@ -18,6 +19,7 @@ function ClueList(props: ClueListProps) {
     selectedClueIndex,
     selectedClueDirection,
     perpendicularClueIndex,
+    onCluePressed,
   } = props;
   const [theme] = useTheme();
 
@@ -32,6 +34,7 @@ function ClueList(props: ClueListProps) {
         perpendicularClueIndex={
           selectedClueDirection !== dir ? perpendicularClueIndex : null
         }
+        onCluePressed={index => onCluePressed(index, dir)}
       />
     );
   });

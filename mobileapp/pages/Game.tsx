@@ -123,6 +123,10 @@ function Game(): React.JSX.Element {
                 userState.cursorPos,
                 toggleDirection(direction),
               )}
+              onCluePressed={(index, dir) => {
+                gameManager.selectClue(index, dir);
+                gameContext.setMenuPage(null);
+              }}
             />
           )}
         </>
