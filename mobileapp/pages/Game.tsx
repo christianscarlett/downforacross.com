@@ -20,6 +20,7 @@ import {useGameContext} from '../context/GameContext';
 import GameMenu from '../components/Header/GameMenu';
 import SideMenu from '@chakrahq/react-native-side-menu';
 import GameMenuPage from '../context/GameMenuPage';
+import ClueList from '../components/Clue/ClueList';
 
 // const GAME_URL = 'https://downforacross.com/beta/game/4539636-besp';
 const GID = '4539636-besp';
@@ -112,12 +113,14 @@ function Game(): React.JSX.Element {
               }}
             />
           )}
+          {gameContext.menuPage === GameMenuPage.LIST_VIEW && (
+            <ClueList cluesInfo={gameManager.gameModel.cluesInfo} />
+          )}
         </>
       }
       isOpen={gameContext.menuPage !== null}
       menuPosition="right"
       onChange={isOpen => {
-        console.log(isOpen + ' ' + gameContext.menuPage);
         if (!isOpen) {
           gameContext.setMenuPage(null);
         }
