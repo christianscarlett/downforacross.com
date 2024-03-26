@@ -1,6 +1,6 @@
 enum Direction {
-  DOWN,
-  ACROSS,
+  DOWN = 'Down',
+  ACROSS = 'Across',
 }
 
 export function toggleDirection(dir: Direction): Direction {

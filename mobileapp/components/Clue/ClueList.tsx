@@ -3,22 +3,41 @@ import {StyleSheet, View} from 'react-native';
 import {Theme, useTheme} from '../../lib/Theme';
 import ClueListColumn from './ClueListColumn';
 import CluesInfo from '../../lib/Game/CluesInfo';
+import Direction from '../../util/Direction';
 
 interface ClueListProps {
   cluesInfo: CluesInfo;
+  selectedClueIndex: number | null;
+  selectedClueDirection: Direction;
+  perpendicularClueIndex: number | null;
 }
 
 function ClueList(props: ClueListProps) {
-  const {cluesInfo} = props;
+  const {
+    cluesInfo,
+    selectedClueIndex,
+    selectedClueDirection,
+    perpendicularClueIndex,
+  } = props;
   const [theme] = useTheme();
 
+  const columns = [Direction.ACROSS, Direction.DOWN].map(dir => {
+    return (
+      <ClueListColumn
+        title={dir}
+        clues={dir === Direction.ACROSS ? cluesInfo.across : cluesInfo.down}
+        selectedClueIndex={
+          selectedClueDirection === dir ? selectedClueIndex : null
+        }
+        perpendicularClueIndex={
+          selectedClueDirection !== dir ? perpendicularClueIndex : null
+        }
+      />
+    );
+  });
+
   const styles = makeStyles(theme);
-  return (
-    <View style={styles.clueList}>
-      <ClueListColumn title="Across" clues={cluesInfo.across} />
-      <ClueListColumn title="Down" clues={cluesInfo.down} />
-    </View>
-  );
+  return <View style={styles.clueList}>{columns}</View>;
 }
 
 const makeStyles = (theme: Theme) => {

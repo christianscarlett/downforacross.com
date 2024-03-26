@@ -16,7 +16,7 @@ import useGameManager from '../lib/Game/useGameManager';
 import PlayerState from '../lib/Player/PlayerState';
 import {Theme, useTheme} from '../lib/Theme';
 import {Coord} from '../shared/types';
-import Direction from '../util/Direction';
+import Direction, {toggleDirection} from '../util/Direction';
 import {useGameContext} from '../context/GameContext';
 import GameMenu from '../components/Header/GameMenu';
 import SideMenu from '@chakrahq/react-native-side-menu';
@@ -115,7 +115,15 @@ function Game(): React.JSX.Element {
             />
           )}
           {gameContext.menuPage === GameMenuPage.LIST_VIEW && (
-            <ClueList cluesInfo={gameManager.gameModel.cluesInfo} />
+            <ClueList
+              cluesInfo={gameManager.gameModel.cluesInfo}
+              selectedClueIndex={clueIndex}
+              selectedClueDirection={direction}
+              perpendicularClueIndex={gameManager.gameModel.getClueIndex(
+                userState.cursorPos,
+                toggleDirection(direction),
+              )}
+            />
           )}
         </>
       }
