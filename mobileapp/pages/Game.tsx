@@ -1,6 +1,7 @@
 import {useHeaderHeight} from '@react-navigation/elements';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
+  Animated,
   KeyboardAvoidingView,
   StyleSheet,
   Text,
@@ -125,6 +126,14 @@ function Game(): React.JSX.Element {
           gameContext.setMenuPage(null);
         }
       }}
+      bounceBackOnOverdraw={false}
+      animationFunction={(prop, value) =>
+        Animated.spring(prop, {
+          toValue: value,
+          friction: 10,
+          useNativeDriver: true,
+        })
+      }
     >
       <View style={styles.game}>
         <KeyboardAvoidingView
