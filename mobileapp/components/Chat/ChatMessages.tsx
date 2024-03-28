@@ -1,9 +1,9 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import ChatMessage from './ChatMessage';
 import Message from '../../lib/Chat/Message';
 import GameManager from '../../lib/Game/GameManager';
 import useGameManager from '../../lib/Game/useGameManager';
+import ChatMessage from './ChatMessage';
 
 export interface MessageData {
   displayName: string;
@@ -38,12 +38,17 @@ function messageToMessageData(
 function ChatMessages(props: ChatMessagesProps) {
   const {chatMessages} = props;
   const gameManager = useGameManager();
-  const data = chatMessages.map(m => messageToMessageData(m, gameManager));
+  const data = chatMessages
+    .map(m => messageToMessageData(m, gameManager))
+    .reverse();
+
   const styles = makeStyles();
   return (
     <View style={styles.wrapper}>
       <FlatList
+        style={styles.list}
         data={data}
+        inverted={true}
         renderItem={({item}) => (
           <ChatMessage
             displayName={item.displayName}
@@ -59,9 +64,13 @@ function ChatMessages(props: ChatMessagesProps) {
 
 const makeStyles = () => {
   return StyleSheet.create({
+    list: {
+      flex: 1,
+      flexGrow: 1,
+    },
     wrapper: {
-      padding: 10,
-      height: '100%',
+      paddingHorizontal: 10,
+      flexGrow: 1,
     },
   });
 };

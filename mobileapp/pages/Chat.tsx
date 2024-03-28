@@ -1,10 +1,12 @@
+import {useHeaderHeight} from '@react-navigation/elements';
 import React, {useEffect, useState} from 'react';
-import useGameManager from '../lib/Game/useGameManager';
-import PuzzleInfoHeader from '../components/Chat/PuzzleInfoHeader';
-import {StyleSheet, View} from 'react-native';
-import {Theme, useTheme} from '../lib/Theme';
+import {KeyboardAvoidingView, StyleSheet, TextInput, View} from 'react-native';
 import ChatMessages from '../components/Chat/ChatMessages';
 import PlayerStatuses from '../components/Chat/PlayerStatuses';
+import PuzzleInfoHeader from '../components/Chat/PuzzleInfoHeader';
+import useGameManager from '../lib/Game/useGameManager';
+import {Theme, useTheme} from '../lib/Theme';
+import {makeTextInputStyles} from '../styles/textInputStyle';
 
 function Divider() {
   const [theme] = useTheme();
@@ -37,29 +39,53 @@ function Chat() {
     };
   }, [gameManager]);
 
+  const headerHeight = useHeaderHeight();
   const styles = makeStyles(theme);
   return (
     <View style={styles.chat}>
-      {puzzleInfo && <PuzzleInfoHeader puzzleInfo={puzzleInfo} />}
-      <Divider />
-      <PlayerStatuses playerStates={playerStates} />
-      <Divider />
-      <ChatMessages chatMessages={messages} />
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoiding}
+        keyboardVerticalOffset={headerHeight}
+        behavior="position"
+      >
+        <View style={styles.inner}>
+          {puzzleInfo && <PuzzleInfoHeader puzzleInfo={puzzleInfo} />}
+          <Divider />
+          <PlayerStatuses playerStates={playerStates} />
+          <Divider />
+          <ChatMessages chatMessages={messages} />
+          <TextInput
+            style={makeTextInputStyles(theme).textInput}
+            placeholder="Say something..."
+            placeholderTextColor={theme.colors.mainGray1}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
+    input: {
+      flexDirection: 'row',
+      marginVertical: 5,
+    },
     chat: {
-      padding: 10,
       height: '100%',
+    },
+    keyboardAvoiding: {
+      flexGrow: 1,
     },
     divider: {
       borderBottomColor: theme.colors.border,
       borderBottomWidth: StyleSheet.hairlineWidth,
       marginVertical: 5,
       backgroundColor: 'none',
+    },
+    inner: {
+      height: '100%',
+      padding: 5,
     },
   });
 };
