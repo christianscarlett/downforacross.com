@@ -1,7 +1,9 @@
 import React, {createContext, useContext, useState} from 'react';
 import GameMenuPage from './GameMenuPage';
+import GameManager from '../lib/Game/GameManager';
 
 export interface GameContextIntf {
+  gameManager: GameManager;
   pencil: boolean;
   setPencil: (_: boolean) => void;
   menuPage: GameMenuPage | null;
@@ -10,6 +12,7 @@ export interface GameContextIntf {
 
 function getDefaultGameContext(): GameContextIntf {
   return {
+    gameManager: new GameManager(),
     pencil: false,
     setPencil: _ => {},
     menuPage: null,
@@ -24,8 +27,10 @@ export function GameContextProvider(props: any) {
 
   const [pencil, setPencil] = useState(false);
   const [menuPage, setMenuPage] = useState<GameMenuPage | null>(null);
+  const [gameManager] = useState<GameManager>(new GameManager());
 
   const value: GameContextIntf = {
+    gameManager,
     pencil,
     setPencil,
     menuPage,

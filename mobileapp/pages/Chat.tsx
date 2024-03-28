@@ -11,9 +11,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ChatMessages from '../components/Chat/ChatMessages';
 import PlayerStatuses from '../components/Chat/PlayerStatuses';
 import PuzzleInfoHeader from '../components/Chat/PuzzleInfoHeader';
-import useGameManager from '../lib/Game/useGameManager';
 import {Theme, useTheme} from '../lib/Theme';
 import {makeTextInputStyles} from '../styles/textInputStyle';
+import {useGameContext} from '../context/GameContext';
 
 function Divider() {
   const [theme] = useTheme();
@@ -23,7 +23,8 @@ function Divider() {
 
 function Chat() {
   const [theme] = useTheme();
-  const gameManager = useGameManager();
+  const gameContext = useGameContext();
+  const gameManager = gameContext.gameManager;
   const [puzzleInfo, setPuzzleInfo] = useState(
     gameManager.gameModel.puzzleInfo,
   );

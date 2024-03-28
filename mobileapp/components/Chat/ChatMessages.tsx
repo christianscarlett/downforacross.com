@@ -2,8 +2,8 @@ import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Message from '../../lib/Chat/Message';
 import GameManager from '../../lib/Game/GameManager';
-import useGameManager from '../../lib/Game/useGameManager';
 import ChatMessage from './ChatMessage';
+import {useGameContext} from '../../context/GameContext';
 
 export interface MessageData {
   displayName: string;
@@ -37,7 +37,8 @@ function messageToMessageData(
 
 function ChatMessages(props: ChatMessagesProps) {
   const {chatMessages} = props;
-  const gameManager = useGameManager();
+  const gameContext = useGameContext();
+  const gameManager = gameContext.gameManager;
   const data = chatMessages
     .map(m => messageToMessageData(m, gameManager))
     .reverse();

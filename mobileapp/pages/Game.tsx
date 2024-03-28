@@ -12,7 +12,6 @@ import ClueBar from '../components/Clue/ClueBar';
 import {OnCellTap} from '../components/Grid/CellComponent';
 import GridComponent from '../components/Grid/GridComponent';
 import KeyboardButton from '../components/Grid/KeyboardButton';
-import useGameManager from '../lib/Game/useGameManager';
 import PlayerState from '../lib/Player/PlayerState';
 import {Theme, useTheme} from '../lib/Theme';
 import {Coord} from '../shared/types';
@@ -32,7 +31,7 @@ const GID = '4539636-besp';
 
 function Game(): React.JSX.Element {
   const gameContext = useGameContext();
-  const gameManager = useGameManager();
+  const gameManager = gameContext.gameManager;
   const [theme] = useTheme();
   const [gid] = useState(GID);
   const [latency, setLatency] = useState<number | null>(null);
