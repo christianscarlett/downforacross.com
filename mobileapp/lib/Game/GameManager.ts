@@ -1,5 +1,6 @@
 import {EventEmitter} from 'events';
 import {Coord} from '../../shared/types';
+import Direction from '../../util/Direction';
 import Scope from '../Puzzle/Scopes';
 import GameModel from './GameModel';
 import WebsocketModel from './WebsocketModel';

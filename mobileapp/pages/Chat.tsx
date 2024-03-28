@@ -41,9 +41,9 @@ function Chat() {
       setMessages([...gameManager.gameModel.chatModel.getMessages()]);
       setPlayerStates(gameManager.gameModel.playerModel.getAllStates());
     }
-    gameManager.on('update', onUpdate);
+    gameManager.on('gameModelUpdate', onUpdate);
     return () => {
-      gameManager.removeListener('update', onUpdate);
+      gameManager.removeListener('gameModelUpdate', onUpdate);
     };
   }, [gameManager]);
 
