@@ -26,6 +26,7 @@ function ClueList(props: ClueListProps) {
   const columns = [Direction.ACROSS, Direction.DOWN].map(dir => {
     return (
       <ClueListColumn
+        key={dir}
         title={dir}
         clues={dir === Direction.ACROSS ? cluesInfo.across : cluesInfo.down}
         selectedClueIndex={
