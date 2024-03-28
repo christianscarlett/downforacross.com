@@ -3,18 +3,17 @@ import React, {useEffect, useState} from 'react';
 import {
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import ChatMessages from '../components/Chat/ChatMessages';
 import PlayerStatuses from '../components/Chat/PlayerStatuses';
 import PuzzleInfoHeader from '../components/Chat/PuzzleInfoHeader';
 import useGameManager from '../lib/Game/useGameManager';
 import {Theme, useTheme} from '../lib/Theme';
 import {makeTextInputStyles} from '../styles/textInputStyle';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function Divider() {
   const [theme] = useTheme();
@@ -82,7 +81,9 @@ const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     bottomBar: {
       flexDirection: 'row',
+      justifyContent: 'space-around',
       marginVertical: 5,
+      width: '100%',
     },
     sendButton: {
       justifyContent: 'center',
