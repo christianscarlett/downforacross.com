@@ -119,6 +119,17 @@ class WebsocketModel extends EventEmitter {
     });
   }
 
+  chat(text: string, senderId: string, sender: string) {
+    this.publishEvent({
+      type: 'chat',
+      params: {
+        text,
+        senderId,
+        sender,
+      },
+    });
+  }
+
   check(scope: Coord[]) {
     this.publishEvent({
       type: 'check',

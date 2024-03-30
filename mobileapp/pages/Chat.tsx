@@ -34,6 +34,7 @@ function Chat() {
   const [playerStates, setPlayerStates] = useState(
     gameManager.gameModel.playerModel.getAllStates(),
   );
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     function onUpdate() {
@@ -67,8 +68,14 @@ function Chat() {
               style={makeTextInputStyles(theme).textInput}
               placeholder="Say something..."
               placeholderTextColor={theme.colors.mainGray1}
+              onChangeText={newText => setMessage(newText)}
             />
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() => {
+                gameManager.onChat(message);
+              }}
+            >
               <Icon name="send" style={styles.sendButtonIcon} />
             </TouchableOpacity>
           </View>

@@ -74,6 +74,11 @@ class GameManager extends EventEmitter {
     }
   }
 
+  onChat(message: string) {
+    const {id, displayName} = this.gameModel.userModel.playerState;
+    this.wsModel.chat(message, id, displayName);
+  }
+
   onCheck(scope: Scope) {
     const coords = this.getScopedCoords(scope);
     this.wsModel.check(coords);
